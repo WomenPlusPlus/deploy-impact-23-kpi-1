@@ -1,0 +1,11 @@
+user_id,Circle_id,username,email,password,role,created_at,updated_at
+1,1,User_1,user1@example.com,password,Admin,2023-03-01 16:07:44.071103,2022-04-04 16:07:44.071122
+2,4,User_2,user2@example.com,password,User,2021-12-15 16:07:44.071111,2023-02-11 16:07:44.071123
+3,4,User_3,user3@example.com,password,User,2023-07-26 16:07:44.071113,2022-07-05 16:07:44.071124
+4,5,User_4,user4@example.com,password,User,2023-08-12 16:07:44.071114,2022-05-07 16:07:44.071124
+5,1,User_5,user5@example.com,password,User,2023-08-05 16:07:44.071115,2022-03-09 16:07:44.071125
+6,6,User_6,user6@example.com,password,User,2023-09-08 16:07:44.071116,2023-01-31 16:07:44.071126
+7,4,User_7,user7@example.com,password,User,2021-08-07 16:07:44.071117,2022-10-08 16:07:44.071127
+8,3,User_8,user8@example.com,password,User,2022-07-10 16:07:44.071118,2023-02-02 16:07:44.071128
+9,6,User_9,user9@example.com,password,User,2021-05-15 16:07:44.071119,2021-11-02 16:07:44.071129
+10,2,User_10,user10@example.com,password,User,2023-07-29 16:07:44.071120,2023-02-14 16:07:44.071130
