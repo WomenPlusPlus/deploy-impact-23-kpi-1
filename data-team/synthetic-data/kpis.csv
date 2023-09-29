@@ -1,73 +1,73 @@
-kpi_id,name,description,Circle_id,Periodicity,Value_min,Value_max,unit,created_at,updated_at
-1,Number of counseling sessions,Total counseling sessions held in a period.,1,Quarterly,0,,sessions,2022-02-10 16:07:44.072921,2023-09-04 16:07:44.072928
-2,Active volunteers,Number of active volunteers for Pro Juventute.,1,Quarterly,0,,people,2023-03-06 16:07:44.072932,2023-03-20 16:07:44.072933
-3,Workshops conducted,Total number of workshops conducted.,1,Monthly,0,,workshops,2023-01-22 16:07:44.072936,2022-10-21 16:07:44.072937
-4,Funds raised,Total funds raised in a period.,1,Yearly,0,,CHF,2021-05-15 16:07:44.072939,2022-04-25 16:07:44.072940
-5,Children reached,Number of children reached through programs.,1,Weekly,0,,children,2022-01-13 16:07:44.072943,2022-12-10 16:07:44.072944
-6,Digital literacy programs,Number of digital literacy programs conducted.,1,Yearly,0,,programs,2020-12-08 16:07:44.072947,2022-04-27 16:07:44.072948
-7,Community events,Number of community events organized.,1,Quarterly,0,,events,2023-07-18 16:07:44.072950,2022-05-23 16:07:44.072951
-8,Feedback received,Number of feedback entries received from beneficiaries.,1,Weekly,0,,feedbacks,2021-06-21 16:07:44.072958,2022-07-29 16:07:44.072960
-9,Outreach programs,Total outreach programs conducted.,1,Weekly,0,,programs,2021-09-05 16:07:44.072963,2022-03-14 16:07:44.072964
-10,Online safety workshops,Number of online safety workshops held.,1,Monthly,0,,workshops,2023-04-02 16:07:44.072966,2022-07-04 16:07:44.072967
-11,Partnerships formed,Number of new partnerships or collaborations.,1,Yearly,0,,partnerships,2023-02-17 16:07:44.072969,2023-04-12 16:07:44.072970
-12,Awareness campaigns,Total awareness campaigns conducted.,1,Yearly,0,,campaigns,2021-07-13 16:07:44.072972,2022-09-12 16:07:44.072973
-13,Number of counseling sessions,Total counseling sessions held in a period.,2,Quarterly,0,,sessions,2023-07-28 16:07:44.073009,2022-06-03 16:07:44.073011
-14,Active volunteers,Number of active volunteers for Pro Juventute.,2,Daily,0,,people,2022-01-03 16:07:44.073013,2021-10-06 16:07:44.073014
-15,Workshops conducted,Total number of workshops conducted.,2,Yearly,0,,workshops,2021-07-12 16:07:44.073016,2021-12-03 16:07:44.073017
-16,Funds raised,Total funds raised in a period.,2,Weekly,0,,CHF,2022-10-16 16:07:44.073019,2022-04-30 16:07:44.073020
-17,Children reached,Number of children reached through programs.,2,Weekly,0,,children,2023-09-01 16:07:44.073022,2023-03-06 16:07:44.073023
-18,Digital literacy programs,Number of digital literacy programs conducted.,2,Yearly,0,,programs,2022-06-08 16:07:44.073025,2022-08-08 16:07:44.073026
-19,Community events,Number of community events organized.,2,Yearly,0,,events,2021-10-22 16:07:44.073028,2022-02-12 16:07:44.073029
-20,Feedback received,Number of feedback entries received from beneficiaries.,2,Monthly,0,,feedbacks,2021-02-28 16:07:44.073031,2022-12-25 16:07:44.073032
-21,Outreach programs,Total outreach programs conducted.,2,Yearly,0,,programs,2023-09-15 16:07:44.073034,2022-08-30 16:07:44.073035
-22,Online safety workshops,Number of online safety workshops held.,2,Yearly,0,,workshops,2023-01-05 16:07:44.073038,2022-04-13 16:07:44.073039
-23,Partnerships formed,Number of new partnerships or collaborations.,2,Yearly,0,,partnerships,2022-08-02 16:07:44.073041,2022-07-17 16:07:44.073041
-24,Awareness campaigns,Total awareness campaigns conducted.,2,Daily,0,,campaigns,2021-01-14 16:07:44.073043,2022-09-18 16:07:44.073044
-25,Number of counseling sessions,Total counseling sessions held in a period.,3,Yearly,0,,sessions,2022-08-13 16:07:44.073067,2022-04-28 16:07:44.073068
-26,Active volunteers,Number of active volunteers for Pro Juventute.,3,Quarterly,0,,people,2021-01-06 16:07:44.073071,2022-09-26 16:07:44.073071
-27,Workshops conducted,Total number of workshops conducted.,3,Quarterly,0,,workshops,2021-10-18 16:07:44.073073,2023-09-25 16:07:44.073074
-28,Funds raised,Total funds raised in a period.,3,Yearly,0,,CHF,2021-11-17 16:07:44.073076,2022-06-14 16:07:44.073077
-29,Children reached,Number of children reached through programs.,3,Yearly,0,,children,2023-07-31 16:07:44.073079,2023-02-03 16:07:44.073080
-30,Digital literacy programs,Number of digital literacy programs conducted.,3,Weekly,0,,programs,2022-09-21 16:07:44.073082,2023-06-25 16:07:44.073083
-31,Community events,Number of community events organized.,3,Yearly,0,,events,2022-04-22 16:07:44.073085,2023-08-24 16:07:44.073086
-32,Feedback received,Number of feedback entries received from beneficiaries.,3,Daily,0,,feedbacks,2023-04-09 16:07:44.073088,2023-09-09 16:07:44.073089
-33,Outreach programs,Total outreach programs conducted.,3,Quarterly,0,,programs,2023-08-28 16:07:44.073091,2022-12-13 16:07:44.073092
-34,Online safety workshops,Number of online safety workshops held.,3,Weekly,0,,workshops,2022-03-25 16:07:44.073094,2023-06-06 16:07:44.073095
-35,Partnerships formed,Number of new partnerships or collaborations.,3,Yearly,0,,partnerships,2022-09-13 16:07:44.073097,2022-10-09 16:07:44.073098
-36,Awareness campaigns,Total awareness campaigns conducted.,3,Monthly,0,,campaigns,2023-05-07 16:07:44.073100,2023-04-08 16:07:44.073101
-37,Number of counseling sessions,Total counseling sessions held in a period.,4,Weekly,0,,sessions,2022-04-22 16:07:44.073121,2022-04-04 16:07:44.073123
-38,Active volunteers,Number of active volunteers for Pro Juventute.,4,Weekly,0,,people,2022-03-17 16:07:44.073125,2021-12-02 16:07:44.073125
-39,Workshops conducted,Total number of workshops conducted.,4,Monthly,0,,workshops,2021-03-09 16:07:44.073128,2021-10-07 16:07:44.073128
-40,Funds raised,Total funds raised in a period.,4,Monthly,0,,CHF,2020-12-14 16:07:44.073130,2022-05-29 16:07:44.073131
-41,Children reached,Number of children reached through programs.,4,Daily,0,,children,2023-08-09 16:07:44.073133,2022-11-11 16:07:44.073134
-42,Digital literacy programs,Number of digital literacy programs conducted.,4,Quarterly,0,,programs,2021-10-23 16:07:44.073136,2022-07-22 16:07:44.073137
-43,Community events,Number of community events organized.,4,Weekly,0,,events,2022-04-15 16:07:44.073139,2023-06-07 16:07:44.073140
-44,Feedback received,Number of feedback entries received from beneficiaries.,4,Monthly,0,,feedbacks,2020-11-16 16:07:44.073142,2023-02-24 16:07:44.073143
-45,Outreach programs,Total outreach programs conducted.,4,Yearly,0,,programs,2021-04-25 16:07:44.073145,2023-09-05 16:07:44.073145
-46,Online safety workshops,Number of online safety workshops held.,4,Weekly,0,,workshops,2023-08-21 16:07:44.073147,2022-08-16 16:07:44.073148
-47,Partnerships formed,Number of new partnerships or collaborations.,4,Weekly,0,,partnerships,2023-07-16 16:07:44.073150,2023-04-15 16:07:44.073151
-48,Awareness campaigns,Total awareness campaigns conducted.,4,Quarterly,0,,campaigns,2020-11-24 16:07:44.073153,2021-11-01 16:07:44.073154
-49,Number of counseling sessions,Total counseling sessions held in a period.,5,Quarterly,0,,sessions,2022-07-02 16:07:44.073173,2021-12-20 16:07:44.073175
-50,Active volunteers,Number of active volunteers for Pro Juventute.,5,Yearly,0,,people,2021-03-17 16:07:44.073177,2023-02-10 16:07:44.073178
-51,Workshops conducted,Total number of workshops conducted.,5,Yearly,0,,workshops,2023-07-26 16:07:44.073180,2022-08-18 16:07:44.073181
-52,Funds raised,Total funds raised in a period.,5,Yearly,0,,CHF,2021-12-08 16:07:44.073183,2021-11-20 16:07:44.073184
-53,Children reached,Number of children reached through programs.,5,Quarterly,0,,children,2023-05-29 16:07:44.073186,2022-11-25 16:07:44.073186
-54,Digital literacy programs,Number of digital literacy programs conducted.,5,Weekly,0,,programs,2022-07-19 16:07:44.073189,2023-08-09 16:07:44.073189
-55,Community events,Number of community events organized.,5,Monthly,0,,events,2023-05-05 16:07:44.073191,2023-07-10 16:07:44.073192
-56,Feedback received,Number of feedback entries received from beneficiaries.,5,Monthly,0,,feedbacks,2022-01-24 16:07:44.073194,2023-04-17 16:07:44.073195
-57,Outreach programs,Total outreach programs conducted.,5,Quarterly,0,,programs,2022-04-28 16:07:44.073200,2023-05-16 16:07:44.073201
-58,Online safety workshops,Number of online safety workshops held.,5,Daily,0,,workshops,2023-07-11 16:07:44.073203,2022-01-30 16:07:44.073204
-59,Partnerships formed,Number of new partnerships or collaborations.,5,Weekly,0,,partnerships,2021-02-25 16:07:44.073206,2023-04-04 16:07:44.073207
-60,Awareness campaigns,Total awareness campaigns conducted.,5,Yearly,0,,campaigns,2020-11-18 16:07:44.073209,2023-08-19 16:07:44.073210
-61,Number of counseling sessions,Total counseling sessions held in a period.,6,Quarterly,0,,sessions,2022-08-12 16:07:44.073229,2022-10-06 16:07:44.073230
-62,Active volunteers,Number of active volunteers for Pro Juventute.,6,Daily,0,,people,2022-08-01 16:07:44.073232,2022-02-16 16:07:44.073233
-63,Workshops conducted,Total number of workshops conducted.,6,Quarterly,0,,workshops,2022-08-25 16:07:44.073235,2022-05-10 16:07:44.073236
-64,Funds raised,Total funds raised in a period.,6,Daily,0,,CHF,2021-07-20 16:07:44.073238,2022-11-27 16:07:44.073239
-65,Children reached,Number of children reached through programs.,6,Yearly,0,,children,2020-12-07 16:07:44.073241,2023-09-09 16:07:44.073242
-66,Digital literacy programs,Number of digital literacy programs conducted.,6,Monthly,0,,programs,2021-06-25 16:07:44.073244,2022-12-12 16:07:44.073245
-67,Community events,Number of community events organized.,6,Daily,0,,events,2022-11-09 16:07:44.073247,2023-03-05 16:07:44.073248
-68,Feedback received,Number of feedback entries received from beneficiaries.,6,Monthly,0,,feedbacks,2022-12-24 16:07:44.073250,2022-10-14 16:07:44.073251
-69,Outreach programs,Total outreach programs conducted.,6,Quarterly,0,,programs,2022-07-17 16:07:44.073253,2022-12-28 16:07:44.073254
-70,Online safety workshops,Number of online safety workshops held.,6,Daily,0,,workshops,2021-08-11 16:07:44.073255,2022-03-15 16:07:44.073256
-71,Partnerships formed,Number of new partnerships or collaborations.,6,Monthly,0,,partnerships,2020-09-27 16:07:44.073258,2022-05-18 16:07:44.073259
-72,Awareness campaigns,Total awareness campaigns conducted.,6,Yearly,0,,campaigns,2022-06-03 16:07:44.073261,2023-07-22 16:07:44.073262
+kpi_id,name,description,circle_id,Periodicity,Value_min,Value_max,unit,created_at,updated_at
+1,Number of counseling sessions,Total counseling sessions held in a period.,1,Quarterly,0,,sessions,2022-02-12 15:42:24.703569,2023-09-06 15:42:24.703573
+2,Active volunteers,Number of active volunteers for Pro Juventute.,1,Quarterly,0,,people,2023-03-08 15:42:24.703577,2023-03-22 15:42:24.703579
+3,Workshops conducted,Total number of workshops conducted.,1,Monthly,0,,workshops,2023-01-24 15:42:24.703581,2022-10-23 15:42:24.703582
+4,Funds raised,Total funds raised in a period.,1,Yearly,0,,CHF,2021-05-17 15:42:24.703585,2022-04-27 15:42:24.703586
+5,Children reached,Number of children reached through programs.,1,Weekly,0,,children,2022-01-15 15:42:24.703589,2022-12-12 15:42:24.703590
+6,Digital literacy programs,Number of digital literacy programs conducted.,1,Yearly,0,,programs,2020-12-10 15:42:24.703592,2022-04-29 15:42:24.703593
+7,Community events,Number of community events organized.,1,Quarterly,0,,events,2023-07-20 15:42:24.703596,2022-05-25 15:42:24.703597
+8,Feedback received,Number of feedback entries received from beneficiaries.,1,Weekly,0,,feedbacks,2021-06-23 15:42:24.703601,2022-07-31 15:42:24.703602
+9,Outreach programs,Total outreach programs conducted.,1,Weekly,0,,programs,2021-09-07 15:42:24.703605,2022-03-16 15:42:24.703606
+10,Online safety workshops,Number of online safety workshops held.,1,Monthly,0,,workshops,2023-04-04 15:42:24.703608,2022-07-06 15:42:24.703609
+11,Partnerships formed,Number of new partnerships or collaborations.,1,Yearly,0,,partnerships,2023-02-19 15:42:24.703612,2023-04-14 15:42:24.703613
+12,Awareness campaigns,Total awareness campaigns conducted.,1,Yearly,0,,campaigns,2021-07-15 15:42:24.703615,2022-09-14 15:42:24.703616
+13,Number of counseling sessions,Total counseling sessions held in a period.,2,Quarterly,0,,sessions,2023-07-30 15:42:24.703642,2022-06-05 15:42:24.703643
+14,Active volunteers,Number of active volunteers for Pro Juventute.,2,Daily,0,,people,2022-01-05 15:42:24.703646,2021-10-08 15:42:24.703647
+15,Workshops conducted,Total number of workshops conducted.,2,Yearly,0,,workshops,2021-07-14 15:42:24.703649,2021-12-05 15:42:24.703650
+16,Funds raised,Total funds raised in a period.,2,Weekly,0,,CHF,2022-10-18 15:42:24.703652,2022-05-02 15:42:24.703653
+17,Children reached,Number of children reached through programs.,2,Weekly,0,,children,2023-09-03 15:42:24.703655,2023-03-08 15:42:24.703656
+18,Digital literacy programs,Number of digital literacy programs conducted.,2,Yearly,0,,programs,2022-06-10 15:42:24.703658,2022-08-10 15:42:24.703659
+19,Community events,Number of community events organized.,2,Yearly,0,,events,2021-10-24 15:42:24.703661,2022-02-14 15:42:24.703662
+20,Feedback received,Number of feedback entries received from beneficiaries.,2,Monthly,0,,feedbacks,2021-03-02 15:42:24.703665,2022-12-27 15:42:24.703666
+21,Outreach programs,Total outreach programs conducted.,2,Yearly,0,,programs,2023-09-17 15:42:24.703668,2022-09-01 15:42:24.703669
+22,Online safety workshops,Number of online safety workshops held.,2,Yearly,0,,workshops,2023-01-07 15:42:24.703671,2022-04-15 15:42:24.703672
+23,Partnerships formed,Number of new partnerships or collaborations.,2,Yearly,0,,partnerships,2022-08-04 15:42:24.703674,2022-07-19 15:42:24.703675
+24,Awareness campaigns,Total awareness campaigns conducted.,2,Daily,0,,campaigns,2021-01-16 15:42:24.703677,2022-09-20 15:42:24.703678
+25,Number of counseling sessions,Total counseling sessions held in a period.,3,Yearly,0,,sessions,2022-08-15 15:42:24.703698,2022-04-30 15:42:24.703699
+26,Active volunteers,Number of active volunteers for Pro Juventute.,3,Quarterly,0,,people,2021-01-08 15:42:24.703702,2022-09-28 15:42:24.703703
+27,Workshops conducted,Total number of workshops conducted.,3,Quarterly,0,,workshops,2021-10-20 15:42:24.703705,2023-09-27 15:42:24.703706
+28,Funds raised,Total funds raised in a period.,3,Yearly,0,,CHF,2021-11-19 15:42:24.703708,2022-06-16 15:42:24.703709
+29,Children reached,Number of children reached through programs.,3,Yearly,0,,children,2023-08-02 15:42:24.703711,2023-02-05 15:42:24.703712
+30,Digital literacy programs,Number of digital literacy programs conducted.,3,Weekly,0,,programs,2022-09-23 15:42:24.703715,2023-06-27 15:42:24.703716
+31,Community events,Number of community events organized.,3,Yearly,0,,events,2022-04-24 15:42:24.703718,2023-08-26 15:42:24.703719
+32,Feedback received,Number of feedback entries received from beneficiaries.,3,Daily,0,,feedbacks,2023-04-11 15:42:24.703721,2023-09-11 15:42:24.703722
+33,Outreach programs,Total outreach programs conducted.,3,Quarterly,0,,programs,2023-08-30 15:42:24.703724,2022-12-15 15:42:24.703725
+34,Online safety workshops,Number of online safety workshops held.,3,Weekly,0,,workshops,2022-03-27 15:42:24.703727,2023-06-08 15:42:24.703728
+35,Partnerships formed,Number of new partnerships or collaborations.,3,Yearly,0,,partnerships,2022-09-15 15:42:24.703730,2022-10-11 15:42:24.703731
+36,Awareness campaigns,Total awareness campaigns conducted.,3,Monthly,0,,campaigns,2023-05-09 15:42:24.703733,2023-04-10 15:42:24.703734
+37,Number of counseling sessions,Total counseling sessions held in a period.,4,Weekly,0,,sessions,2022-04-24 15:42:24.703752,2022-04-06 15:42:24.703753
+38,Active volunteers,Number of active volunteers for Pro Juventute.,4,Weekly,0,,people,2022-03-19 15:42:24.703755,2021-12-04 15:42:24.703756
+39,Workshops conducted,Total number of workshops conducted.,4,Monthly,0,,workshops,2021-03-11 15:42:24.703758,2021-10-09 15:42:24.703759
+40,Funds raised,Total funds raised in a period.,4,Monthly,0,,CHF,2020-12-16 15:42:24.703762,2022-05-31 15:42:24.703762
+41,Children reached,Number of children reached through programs.,4,Daily,0,,children,2023-08-11 15:42:24.703765,2022-11-13 15:42:24.703765
+42,Digital literacy programs,Number of digital literacy programs conducted.,4,Quarterly,0,,programs,2021-10-25 15:42:24.703768,2022-07-24 15:42:24.703768
+43,Community events,Number of community events organized.,4,Weekly,0,,events,2022-04-17 15:42:24.703771,2023-06-09 15:42:24.703772
+44,Feedback received,Number of feedback entries received from beneficiaries.,4,Monthly,0,,feedbacks,2020-11-18 15:42:24.703774,2023-02-26 15:42:24.703775
+45,Outreach programs,Total outreach programs conducted.,4,Yearly,0,,programs,2021-04-27 15:42:24.703778,2023-09-07 15:42:24.703778
+46,Online safety workshops,Number of online safety workshops held.,4,Weekly,0,,workshops,2023-08-23 15:42:24.703781,2022-08-18 15:42:24.703781
+47,Partnerships formed,Number of new partnerships or collaborations.,4,Weekly,0,,partnerships,2023-07-18 15:42:24.703784,2023-04-17 15:42:24.703784
+48,Awareness campaigns,Total awareness campaigns conducted.,4,Quarterly,0,,campaigns,2020-11-26 15:42:24.703787,2021-11-03 15:42:24.703788
+49,Number of counseling sessions,Total counseling sessions held in a period.,5,Quarterly,0,,sessions,2022-07-04 15:42:24.703805,2021-12-22 15:42:24.703806
+50,Active volunteers,Number of active volunteers for Pro Juventute.,5,Yearly,0,,people,2021-03-19 15:42:24.703808,2023-02-12 15:42:24.703809
+51,Workshops conducted,Total number of workshops conducted.,5,Yearly,0,,workshops,2023-07-28 15:42:24.703811,2022-08-20 15:42:24.703812
+52,Funds raised,Total funds raised in a period.,5,Yearly,0,,CHF,2021-12-10 15:42:24.703815,2021-11-22 15:42:24.703815
+53,Children reached,Number of children reached through programs.,5,Quarterly,0,,children,2023-05-31 15:42:24.703818,2022-11-27 15:42:24.703819
+54,Digital literacy programs,Number of digital literacy programs conducted.,5,Weekly,0,,programs,2022-07-21 15:42:24.703821,2023-08-11 15:42:24.703822
+55,Community events,Number of community events organized.,5,Monthly,0,,events,2023-05-07 15:42:24.703824,2023-07-12 15:42:24.703825
+56,Feedback received,Number of feedback entries received from beneficiaries.,5,Monthly,0,,feedbacks,2022-01-26 15:42:24.703827,2023-04-19 15:42:24.703828
+57,Outreach programs,Total outreach programs conducted.,5,Quarterly,0,,programs,2022-04-30 15:42:24.703830,2023-05-18 15:42:24.703831
+58,Online safety workshops,Number of online safety workshops held.,5,Daily,0,,workshops,2023-07-13 15:42:24.703833,2022-02-01 15:42:24.703834
+59,Partnerships formed,Number of new partnerships or collaborations.,5,Weekly,0,,partnerships,2021-02-27 15:42:24.703836,2023-04-06 15:42:24.703837
+60,Awareness campaigns,Total awareness campaigns conducted.,5,Yearly,0,,campaigns,2020-11-20 15:42:24.703840,2023-08-21 15:42:24.703841
+61,Number of counseling sessions,Total counseling sessions held in a period.,6,Quarterly,0,,sessions,2022-08-14 15:42:24.703858,2022-10-08 15:42:24.703859
+62,Active volunteers,Number of active volunteers for Pro Juventute.,6,Daily,0,,people,2022-08-03 15:42:24.703861,2022-02-18 15:42:24.703862
+63,Workshops conducted,Total number of workshops conducted.,6,Quarterly,0,,workshops,2022-08-27 15:42:24.703864,2022-05-12 15:42:24.703865
+64,Funds raised,Total funds raised in a period.,6,Daily,0,,CHF,2021-07-22 15:42:24.703867,2022-11-29 15:42:24.703868
+65,Children reached,Number of children reached through programs.,6,Yearly,0,,children,2020-12-09 15:42:24.703870,2023-09-11 15:42:24.703871
+66,Digital literacy programs,Number of digital literacy programs conducted.,6,Monthly,0,,programs,2021-06-27 15:42:24.703873,2022-12-14 15:42:24.703874
+67,Community events,Number of community events organized.,6,Daily,0,,events,2022-11-11 15:42:24.703876,2023-03-07 15:42:24.703877
+68,Feedback received,Number of feedback entries received from beneficiaries.,6,Monthly,0,,feedbacks,2022-12-26 15:42:24.703879,2022-10-16 15:42:24.703880
+69,Outreach programs,Total outreach programs conducted.,6,Quarterly,0,,programs,2022-07-19 15:42:24.703882,2022-12-30 15:42:24.703883
+70,Online safety workshops,Number of online safety workshops held.,6,Daily,0,,workshops,2021-08-13 15:42:24.703885,2022-03-17 15:42:24.703886
+71,Partnerships formed,Number of new partnerships or collaborations.,6,Monthly,0,,partnerships,2020-09-29 15:42:24.703889,2022-05-20 15:42:24.703890
+72,Awareness campaigns,Total awareness campaigns conducted.,6,Yearly,0,,campaigns,2022-06-05 15:42:24.703892,2023-07-24 15:42:24.703893
