@@ -5,12 +5,27 @@ import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { HiStar } from "react-icons/hi2";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FiLogIn } from "react-icons/fi";
+import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase";
+import { User } from "../model/user";
 
-export default function Sidebar(): JSX.Element {
+interface SidebarProps {
+  user: User;
+  setUser: any;
+}
+
+export default function Sidebar({ user, setUser }: SidebarProps): JSX.Element {
   const navigate = useNavigate();
+
+  async function handleLogout() {
+    let { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    setUser({});
+    navigate("/");
+  }
   return (
-    <div className="px-6 py-14 flex flex-col gap-16 font-custom">
+    <div className="px-6 py-7 flex flex-col gap-8 font-custom">
       <div className="flex justify-center items-center self-stretch gap-4">
         <img className="w-8 h-8" src={Logo} alt="Pro Juventute logo" />
         <div className="text-2xl">KPI tracking</div>
@@ -32,7 +47,7 @@ export default function Sidebar(): JSX.Element {
         <div className="bg-customGrey2 flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
           <div className="bg-customWhite2 flex py-3 px-4 justify-between items-center rounded-lg border border-customWhite1">
             <input
-              className="text-sm"
+              className="text-sm outline-0"
               type="text"
               placeholder="Search circle"
             />
@@ -61,16 +76,35 @@ export default function Sidebar(): JSX.Element {
             </span>
             <div className="font-medium">Settings</div>
           </div>
-          <div
-            className="text-xl flex items-center gap-2.5 p-4 self-stretch text-customGrey hover:cursor-pointer"
-            onClick={() => navigate("/login")}
-          >
-            <span>
-              <FiLogIn />
-            </span>
-            <div className="font-medium">Log in</div>
-          </div>
+          {user.id ? (
+            <div
+              className="text-xl flex items-center gap-2.5 p-4 self-stretch text-customGrey hover:cursor-pointer"
+              onClick={handleLogout}
+            >
+              <span>
+                <FiLogOut />
+              </span>
+              <div className="font-medium">Log out</div>
+            </div>
+          ) : (
+            <div
+              className="text-xl flex items-center gap-2.5 p-4 self-stretch text-customGrey hover:cursor-pointer"
+              onClick={() => navigate("/login")}
+            >
+              <span>
+                <FiLogIn />
+              </span>
+              <div className="font-medium">Log in</div>
+            </div>
+          )}
         </div>
+        {user.id ? (
+          <div className="mt-10 px-4">
+            <span>Welcome {user.email}</span>{" "}
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
     </div>
   );
