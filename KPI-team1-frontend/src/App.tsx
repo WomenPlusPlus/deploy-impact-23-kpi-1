@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
-import { User } from "./model/user";
+
 
 const initialUser: User = {
   id: "",
@@ -11,6 +11,7 @@ const initialUser: User = {
 
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
+
 
   async function fetchUser() {
     try {
