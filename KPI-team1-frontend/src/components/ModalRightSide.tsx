@@ -9,7 +9,7 @@ interface ModalRightSideProps {
 
 const customStyles = {
   content: {
-    width: '33%',
+    width: '40%',
     padding: '20px',
     border: 'none',
     left: 'auto',
@@ -20,8 +20,8 @@ const customStyles = {
   overlay: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-end', // To position it on the right
-    backgroundColor: 'rgba(0, 0, 0, 0.3)' // Optional overlay background
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)'
   }
 }
 
