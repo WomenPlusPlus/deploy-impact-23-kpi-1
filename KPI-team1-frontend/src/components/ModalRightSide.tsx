@@ -24,6 +24,7 @@ const customStyles = {
     backgroundColor: 'rgba(0, 0, 0, 0.2)'
   }
 }
+ReactModal.setAppElement('#root')
 
 const ModalRightSide = ({
   isOpen,

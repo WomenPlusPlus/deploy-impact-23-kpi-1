@@ -1,5 +1,68 @@
 import { useState } from 'react'
 import ModalRightSide from '../components/ModalRightSide'
+import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid'
+
+const HEADER_KPI_COLUMNS: GridColDef[] = [
+  {
+    headerName: 'KPI Name',
+    field: 'kpi_name',
+    width: 300,
+    sortable: true,
+    hideable: false
+  },
+  {
+    headerName: 'Target',
+    field: 'kpi_target',
+    width: 150,
+    sortable: false
+  },
+  {
+    headerName: 'Latest Value',
+    field: 'kpi_latest_value',
+    width: 150,
+    sortable: true
+  },
+  {
+    headerName: 'Next Due Date',
+    field: 'kpi_next_due_date',
+    width: 150,
+    sortable: true
+  },
+  {
+    headerName: 'Description',
+    field: 'description',
+    width: 150,
+    sortable: false,
+    filterable: false
+  }
+]
+const data: GridRowsProp = [
+  {
+    id: 1,
+    kpi_name: 'share of teams constituted as circles',
+    kpi_target: '80%',
+    kpi_latest_value: '35%',
+    kpi_next_due_date: 'Aug 2023',
+    description: 'to define'
+  },
+  {
+    id: 2,
+    kpi_name: 'count sessions on .projuventute.ch',
+    kpi_target: '100000',
+    kpi_latest_value: '158611',
+    kpi_next_due_date: 'Aug 2023',
+    description: 'to define'
+  },
+  {
+    id: 3,
+    kpi_name: 'private donations',
+    kpi_target: '100000',
+    kpi_latest_value: '1369218',
+    kpi_next_due_date: 'Aug 2023',
+    description: 'to define'
+  }
+]
+const COLUMN_WIDTH = 600
 
 export default function KpiPage(): JSX.Element {
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -19,7 +82,7 @@ export default function KpiPage(): JSX.Element {
         <div className='text-center text-neutral-900 text-3xl font-light'>
           Share Of Teams Constituted As Circles
         </div>
-        <div>Values History</div>
+        <div className='mt-4 text-neutral-900 text-2xl'>Values History</div>
         <div className='bg-gray-100 p-4'>
           <div className='text-neutral-900 text-2xl '>
             Set a new value for involuntary headcount change
@@ -28,7 +91,7 @@ export default function KpiPage(): JSX.Element {
             <label className='text-neutral-900 font-medium w-full mr-2'>
               Due date
               <input
-                className='block w-full rounded-md'
+                className='block w-full p-2 border rounded-md'
                 name='due date'
                 type='date'
               />
@@ -36,7 +99,7 @@ export default function KpiPage(): JSX.Element {
             <label className='text-neutral-900 font-medium w-full'>
               Enter a new value
               <input
-                className='block w-full rounded-md'
+                className='block w-full p-2 border rounded-md'
                 name='new value'
                 type='number'
               />
@@ -60,7 +123,7 @@ export default function KpiPage(): JSX.Element {
           <label className='text-neutral-900 font-medium w-full mr-2'>
             Set a date
             <input
-              className='block w-full font-normal text-neutral-400 rounded-md border-neutral-400'
+              className='block w-full font-normal text-neutral-400 p-2 border rounded-md border-neutral-400'
               name='target date'
               type='date'
             />
@@ -68,7 +131,7 @@ export default function KpiPage(): JSX.Element {
           <label className='text-neutral-900 font-medium w-full'>
             Enter the target value
             <input
-              className='block w-full font-normal text-neutral-400 rounded-md border-neutral-400'
+              className='block w-full font-normal text-neutral-400 p-2 border rounded-md border-neutral-400'
               name='target value'
               type='number'
               placeholder="What's your target"
@@ -92,9 +155,9 @@ export default function KpiPage(): JSX.Element {
             >
               <path
                 stroke='currentColor'
-                stroke-linecap='round'
-                stroke-linejoin='round'
-                stroke-width='2.1'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2.1'
                 d='m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1'
               />
             </svg>
@@ -102,61 +165,7 @@ export default function KpiPage(): JSX.Element {
               Monthly KPIs
             </div>
           </div>
-          <table className='border-collapse table-auto w-full text-sm '>
-            <thead>
-              <tr className='bg-gray-100 border rounded-tl-lg border-b-neutral-300 [&>*]:text-transform: uppercase'>
-                <th className='border-r border-neutral-300 w-80 h-14 text-center font-medium '>
-                  KPI Name
-                </th>
-                <th className='border-r border-neutral-300 w-80 h-14 text-center font-medium'>
-                  Target
-                </th>
-                <th className='border-r border-neutral-300 w-80 h-14 text-center font-medium'>
-                  Latest Value
-                </th>
-                <th className='border-r border-neutral-300 w-80 h-14 text-center font-medium '>
-                  Next Due Date
-                </th>
-                <th className='w-80 h-14 text-center font-medium'>
-                  Description
-                </th>
-              </tr>
-            </thead>
-            <tbody className='bg-white [&>*]:border-b [&>*]:dark:border-neutral-300'>
-              <tr className='[&>*]:border-r [&>*]:dark:border-neutral-300 [&>*:first-child]:text-transform: capitalize [&>*:last-child]:border-none [&>*]:p-4 [&>*]:text-center [&>*:first-child]:text-left'>
-                <td>
-                  share of teams constituted as circles
-                  <button
-                    type='button'
-                    className='ml-4 text-gray-800 dark:text-white'
-                    onClick={e =>
-                      handleClick((e.target as HTMLElement).textContent || '')
-                    }
-                  >
-                    test
-                  </button>
-                </td>
-                <td>80%</td>
-                <td>35%</td>
-                <td>Aug 2023</td>
-                <td>to define</td>
-              </tr>
-              <tr className='[&>*]:border-r [&>*]:dark:border-neutral-300 [&>*:first-child]:text-transform: capitalize [&>*:last-child]:border-none [&>*]:p-4 [&>*]:text-center [&>*:first-child]:text-left'>
-                <td>count sessions on .projuventute.ch</td>
-                <td>100'000</td>
-                <td>158611</td>
-                <td>Aug 2023</td>
-                <td>to define</td>
-              </tr>
-              <tr className='[&>*]:border-r [&>*]:dark:border-neutral-300 [&>*:first-child]:text-transform: capitalize [&>*:last-child]:border-none [&>*]:p-4 [&>*]:text-center [&>*:first-child]:text-left'>
-                <td>private donations</td>
-                <td>100'000</td>
-                <td>1369218</td>
-                <td>Aug 2023</td>
-                <td>to define</td>
-              </tr>
-            </tbody>
-          </table>
+          <DataGrid rows={data} columns={HEADER_KPI_COLUMNS} />
         </div>
       </div>
     </>

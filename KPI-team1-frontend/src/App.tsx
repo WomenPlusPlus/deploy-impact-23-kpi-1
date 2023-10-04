@@ -1,15 +1,15 @@
-import { Outlet } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
+import { Outlet } from 'react-router-dom'
+import Sidebar from './components/Sidebar'
 
 export default function App() {
   return (
-    <div className="grid grid-cols-5 ">
-      <div className="col-span-1">
+    <div className='grid grid-cols-5'>
+      <div className='col-span-1'>
         <Sidebar />
       </div>
-      <div className="col-span-4">
+      <div className='col-span-4' style={{ backgroundColor: '#F9F9FA' }}>
         <Outlet />
       </div>
     </div>
-  );
+  )
 }
