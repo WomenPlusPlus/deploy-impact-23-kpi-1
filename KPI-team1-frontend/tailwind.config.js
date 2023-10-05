@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -9,6 +9,8 @@ export default {
         customGrey: "#7C7E7E",
         customWhite1: "#D0D8DB",
         customBlack1: "#131313",
+        customPurple: "#D1C2ED",
+        customYellow: "#FBBB21",
       },
       fontFamily: {
         custom: ["Inter", "sans"],
@@ -19,6 +21,6 @@ export default {
         customWhite2: "#FFF",
       },
     },
-    plugins: [require('flowbite/plugin')],
+    plugins: [require("flowbite/plugin")],
   },
 };

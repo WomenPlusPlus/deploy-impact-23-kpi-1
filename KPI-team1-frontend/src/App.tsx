@@ -36,9 +36,9 @@ export default function App() {
       <div className="w-min">
         <Sidebar user={user} setUser={setUser} />
       </div>
-      <div className="w-full " style={{ backgroundColor: '#F9F9FA' }}>
+      <div className="w-full bg-customWhite">
         <Outlet context={{ setUser }} />
       </div>
     </div>
-  )
+  );
 }
