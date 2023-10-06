@@ -7,7 +7,14 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { supabase } from "../supabase";
-import { KpiExtended } from "../model/kpi";
+import { Kpi, KpiExtended, KpiValue } from "../model/kpi";
+import { getWeek, getQuarter } from "date-fns";
+
+const other = {
+  // autoHeight: true,
+  showCellVerticalBorder: true,
+  showColumnVerticalBorder: true,
+};
 
 const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
@@ -28,7 +35,7 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
   },
   {
     headerName: "Latest Value",
-    field: "last_value",
+    field: "latest_value",
     width: 150,
     sortable: true,
     headerAlign: "center",
@@ -37,11 +44,35 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
   },
   {
     headerName: "Last Update",
-    field: "last_period_date",
+    field: "latest_standardized_date",
     width: 150,
     sortable: true,
     headerAlign: "center",
     align: "center",
+    renderCell: (params) => {
+      if (params.value === null) return null;
+      const periodicity = params.row.periodicity;
+      const date = new Date(params.value as string);
+      if (periodicity === "daily") {
+        return date.toLocaleDateString("en-CH");
+      } else if (periodicity === "quarterly") {
+        return `Q${getQuarter(date)}`;
+      } else if (periodicity === "yearly") {
+        return date.toLocaleDateString("en-CH", {
+          year: "numeric",
+        } as Intl.DateTimeFormatOptions);
+      } else if (periodicity === "weekly") {
+        return `Week ${getWeek(date, {
+          weekStartsOn: 1,
+          firstWeekContainsDate: 4,
+        })}`;
+      } else {
+        return date.toLocaleDateString("en-CH", {
+          month: "short",
+          year: "numeric",
+        } as Intl.DateTimeFormatOptions);
+      }
+    },
   },
   {
     headerName: "Description",
@@ -53,29 +84,30 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     align: "center",
   },
 ];
+//TO DO : remove this dummy data when demo is done
 const data: GridRowsProp = [
   {
     id: 1,
     kpi_name: "share of teams constituted as circles",
     kpi_target: "80%",
-    last_value: "35%",
-    kpi_next_due_date: "Aug 2023",
+    latest_value: "35%",
+    latest_standardized_date: "Aug 2023",
     description: "to define",
   },
   {
     id: 2,
     kpi_name: "count sessions on .projuventute.ch",
     kpi_target: "100000",
-    last_value: "158611",
-    kpi_next_due_date: "Aug 2023",
+    latest_value: "158611",
+    latest_standardized_date: "2023-07-10",
     description: "to define",
   },
   {
     id: 3,
     kpi_name: "private donations",
     kpi_target: "100000",
-    last_value: "1369218",
-    kpi_next_due_date: "Aug 2023",
+    latest_value: "1369218",
+    latest_standardized_date: "2022-02-19",
     description: "to define",
   },
 ];
@@ -83,13 +115,14 @@ const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedKpi, setSelectedKpi] = useState("");
+  const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
   const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
+  const [currentCircle, setCurrentCircle] = useState<number>(1); //TODO: replace any with the correct type and use the variable from the sidebar
   const handleOpenModal = () => {
     setModalIsOpen(!modalIsOpen);
   };
 
-  const handleClick = (kpi: string) => {
+  const handleClick = (kpi: KpiExtended) => {
     setSelectedKpi(kpi);
     handleOpenModal();
   };
@@ -97,8 +130,9 @@ export default function KpiPage(): JSX.Element {
   const fetchKpiDefinitions = async () => {
     try {
       let { data: kpi_definition, error } = await supabase
-        .from("kpi_definition_with_latest_value")
-        .select("*");
+        .from("kpi_definition_with_latest_values")
+        .select("*")
+        .eq("circle_id", currentCircle);
 
       if (error) {
         throw error;
@@ -117,13 +151,38 @@ export default function KpiPage(): JSX.Element {
     const [selectView, setSelectView] = useState<"values" | "history">(
       "values"
     );
+    const [kpiValues, setKpiValues] = useState<KpiValue[]>([]);
+
+    const fetchKpiValues = async () => {
+      try {
+        if (selectedKpi) {
+          let { data: kpi_values, error } = await supabase
+            .from("kpi_values_period_standardized")
+            .select("*")
+            .eq("kpi_id", selectedKpi.kpi_id)
+            .eq("circle_id", currentCircle);
+
+          if (error) {
+            throw error;
+          }
+          setKpiValues(kpi_values || []);
+          console.log(kpi_values, "kpi_values");
+        }
+      } catch (error: any) {
+        alert(error.message);
+      }
+    };
+
+    useEffect(() => {
+      fetchKpiValues();
+    }, [selectedKpi]);
 
     const renderAddNewValue = () => {
       return (
         <>
           <div className="text-2xl ">
             Set a new value for{" "}
-            <span className="font-medium">{selectedKpi}</span>
+            <span className="font-medium">{selectedKpi?.kpi_name}</span>
           </div>
           <div className="flex justify-between my-2">
             <label className="font-medium w-full mr-2">
@@ -156,10 +215,74 @@ export default function KpiPage(): JSX.Element {
     };
 
     const renderPreviousValues = () => {
+      const PREVIOUS_VALUES_COLUMNS: GridColDef[] = [
+        {
+          headerName: "Date",
+          field: "standardized_date",
+          flex: 1,
+          sortable: true,
+          headerAlign: "center",
+          align: "center",
+          renderCell: (params) => {
+            if (params.value === null) return null;
+            const periodicity = params.row.kpi_periodicity;
+            const date = new Date(params.value as string);
+            if (periodicity === "daily") {
+              return date.toLocaleDateString("en-CH");
+            } else if (periodicity === "quarterly") {
+              return `Q${getQuarter(date)}`;
+            } else if (periodicity === "yearly") {
+              return date.toLocaleDateString("en-CH", {
+                year: "numeric",
+              } as Intl.DateTimeFormatOptions);
+            } else if (periodicity === "weekly") {
+              return `Week ${getWeek(date, {
+                weekStartsOn: 1,
+                firstWeekContainsDate: 4,
+              })}`;
+            } else {
+              return date.toLocaleDateString("en-CH", {
+                month: "short",
+                year: "numeric",
+              } as Intl.DateTimeFormatOptions);
+            }
+          },
+        },
+        {
+          headerName: "Value",
+          field: "value",
+          flex: 1,
+          sortable: true,
+          headerAlign: "center",
+          align: "center",
+        },
+        {
+          headerName: "Status",
+          field: "comment",
+          flex: 1,
+          sortable: false,
+          filterable: false,
+          headerAlign: "center",
+          align: "center",
+        },
+      ];
+
       return (
         <>
           <div className="mt-4 text-2xl">Previous Values</div>
-          {/* Add content for showing previous values here */}
+          <div className="">
+            <DataGrid
+              getRowId={(row) => row.kpi_value_history_id}
+              rows={kpiValues}
+              rowSelection={false}
+              columns={PREVIOUS_VALUES_COLUMNS}
+              classes={{
+                columnHeaders: "bg-customPurple",
+                columnHeader: "uppercase",
+              }}
+              {...other}
+            />
+          </div>
         </>
       );
     };
@@ -193,13 +316,8 @@ export default function KpiPage(): JSX.Element {
     return (
       <>
         <div className="text-center text-2xl font-light">
-          KPI - {selectedKpi}
+          KPI - {selectedKpi?.kpi_name}
         </div>
-        {
-          //if values is selected, render the values component, if not render the history component
-        }
-
-        {/* <div className="mt-4 text-2xl">Values History</div> */}
         <div className="mb-2">
           <button
             className={`${
@@ -231,7 +349,7 @@ export default function KpiPage(): JSX.Element {
 
   const renderDataGrid = (periodicity: string) => {
     const filteredKpiDefinitions = kpiDefinitions.filter(
-      item => item.periodicity === periodicity
+      (item) => item.periodicity === periodicity
     );
     if (filteredKpiDefinitions.length === 0) {
       return null;
@@ -243,12 +361,12 @@ export default function KpiPage(): JSX.Element {
           .toUpperCase()}${periodicity.slice(1)} KPIs`}</div>
         <div className="shadow-md border-0 border-primary-light">
           <DataGrid
-            getRowId={row => row.kpi_id}
+            getRowId={(row) => row.circle_kpidef_id}
             rows={filteredKpiDefinitions}
             rowSelection={false}
             columns={HEADER_KPI_COLUMNS}
-            onRowClick={params => {
-              handleClick(params.row.kpi_name);
+            onRowClick={(params) => {
+              handleClick(params.row);
             }}
             classes={{
               columnHeaders: "bg-customPurple",
@@ -259,6 +377,7 @@ export default function KpiPage(): JSX.Element {
                 paginationModel: { pageSize: 10 },
               },
             }}
+            {...other}
           />
         </div>
       </div>
@@ -271,9 +390,9 @@ export default function KpiPage(): JSX.Element {
         {renderModalContent()}
       </ModalRightSide>
 
-      <div className="flex m-12">
-        <div className="w-11/12 md:w-3/4  xl:w-800">
-          <div className="text-2xl py-4 my-2 border-b border-gray-300">
+      <div className="flex">
+        <div className="w-11/12 xl:w-800">
+          <div className="text-2xl pb-4 border-b border-gray-300">
             KPIs - Marketing Zürich
           </div>
           <div className=" text-xl font-medium">Monthly KPIs (test)</div>
@@ -283,16 +402,14 @@ export default function KpiPage(): JSX.Element {
               rowSelection={false}
               columns={HEADER_KPI_COLUMNS}
               slots={{ toolbar: GridToolbar }}
-              onRowClick={params => {
-                handleClick(params.row.kpi_name);
-              }}
               classes={{
                 columnHeaders: "bg-customPurple ",
                 columnHeader: "uppercase",
               }}
+              {...other}
             />
           </div>
-          {periodicityOrder.map(periodicity => renderDataGrid(periodicity))}
+          {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}
         </div>
       </div>
     </>

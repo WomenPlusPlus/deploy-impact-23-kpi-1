@@ -1,4 +1,4 @@
-import Logo from "../assets/images/layer1.svg";
+import Logo from "../assets/images/logo .png";
 import { HiOutlineTableCells } from "react-icons/hi2";
 import { HiOutlinePresentationChartLine } from "react-icons/hi2";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
@@ -60,7 +60,7 @@ export default function Sidebar({ user, setUser }: SidebarProps): JSX.Element {
               to={"/"}
               className="flex justify-center items-center self-stretch gap-4"
             >
-              <img className="w-8 h-8" src={Logo} alt="Pro Juventute logo" />
+              <img className="w-14 h-14" src={Logo} alt="Pro Juventute logo" />
               <div className="text-2xl">KPI tracking</div>
             </NavLink>
             <div>
@@ -155,7 +155,7 @@ export default function Sidebar({ user, setUser }: SidebarProps): JSX.Element {
                 )}
               </div>
               {user.id ? (
-                <div className="mt-10 px-4">
+                <div className="mt-16 px-4">
                   <span>Welcome {user.email}</span>{" "}
                 </div>
               ) : (

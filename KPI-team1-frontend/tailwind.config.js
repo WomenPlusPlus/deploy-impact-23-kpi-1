@@ -7,6 +7,10 @@ export default {
         widescreen: { raw: "(min-aspect-ratio: 3/2)" },
         tallscreen: { raw: "(min-aspect-ratio: 13/20)" },
       },
+      colors: {
+        customPurple: "#D1C2ED",
+        customYellow: "#FBBB21",
+      },
       fontFamily: {
         custom: ["Inter", "sans"],
       },

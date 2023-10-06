@@ -11,18 +11,34 @@ export interface Kpi {
   kpi_name: string;
   description: string;
   periodicity: KpiPeriodicity;
-  value_min: string;
-  value_max: string;
+  value_min: Number;
+  value_max: Number;
   unit: string;
   created_at: string;
   updated_at: string;
 }
 
-//extended kpi interface
+//kpi_definition_with_latest_values
 export interface KpiExtended extends Kpi {
-  last_value: string;
-  last_period_year: string;
-  last_period_month: string;
-  last_action: string;
-  last_created_at: string;
+  circle_kpidef_id: number;
+  circle_id: number;
+  kpi_created_at: string;
+  kpi_updated_at: string;
+  latest_value: Number;
+  latest_standardized_date: string;
+  latest_user_id: string;
+}
+
+//kpi_values_period_standardized
+export interface KpiValue {
+  kpi_id: number;
+  circle_id: number;
+  kpi_value_history_id: number;
+  user_id: number;
+  value: number;
+  period_date: string;
+  action: string;
+  created_at: string;
+  periodicity: KpiPeriodicity;
+  standardized_date: string;
 }

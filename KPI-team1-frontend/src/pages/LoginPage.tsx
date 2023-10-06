@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../supabase";
 import { AuthError } from "@supabase/supabase-js";
-import Logo from "../assets/images/layer1.svg";
+import Logo from "../assets/images/logo .png";
 
 interface OutletContext {
   setUser: any;
@@ -41,7 +41,7 @@ export default function LoginPage(): JSX.Element {
     <div className="flex flex-col items-center h-full">
       <div className="flex flex-col items-center justify-center w-2/3 md:w-2/6 min-w-fit px-9 pb-16 pt-20 shadow-lg rounded-lg bg-white">
         <div className="flex justify-center items-center self-stretch gap-4">
-          <img src={Logo} alt="Pro Juventute logo" />
+          <img className="w-14 h-14" src={Logo} alt="Pro Juventute logo" />
           <div className="text-2xl">KPI tracking</div>
         </div>
         <form
