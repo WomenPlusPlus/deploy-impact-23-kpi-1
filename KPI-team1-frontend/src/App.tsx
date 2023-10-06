@@ -38,10 +38,6 @@ export default function App() {
       <div className="w-min shadow-lg">
         <Sidebar user={user} setUser={setUser} />
       </div>
-<<<<<<< HEAD
-      <div className="w-full bg-customWhite">
-        <Outlet context={{ setUser }} />
-=======
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between py-4 px-8 border-b border-[#D0D8DB] ">
           <div className="bg-[#FFF] flex py-3 px-4 justify-between items-center rounded-lg border border-[#D0D8DB] w-1/2">
@@ -64,7 +60,6 @@ export default function App() {
         <div className="w-full bg-[#F9F9FA] h-full p-8">
           <Outlet context={{ setUser }} />
         </div>
->>>>>>> login-page
       </div>
     </div>
   );
