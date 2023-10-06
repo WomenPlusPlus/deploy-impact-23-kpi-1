@@ -7,7 +7,7 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { supabase } from "../supabase";
-import { KpiExtended } from "../model/kpi";
+import { Kpi, KpiExtended } from "../model/kpi";
 
 const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
@@ -28,7 +28,7 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
   },
   {
     headerName: "Latest Value",
-    field: "last_value",
+    field: "latest_value",
     width: 150,
     sortable: true,
     headerAlign: "center",
@@ -37,7 +37,7 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
   },
   {
     headerName: "Last Update",
-    field: "last_period_date",
+    field: "latest_standardized_date",
     width: 150,
     sortable: true,
     headerAlign: "center",
@@ -53,13 +53,14 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     align: "center",
   },
 ];
+//TO DO : remove this dummy data
 const data: GridRowsProp = [
   {
     id: 1,
     kpi_name: "share of teams constituted as circles",
     kpi_target: "80%",
     last_value: "35%",
-    kpi_next_due_date: "Aug 2023",
+    latest_standardized_date: "Aug 2023",
     description: "to define",
   },
   {
@@ -67,7 +68,7 @@ const data: GridRowsProp = [
     kpi_name: "count sessions on .projuventute.ch",
     kpi_target: "100000",
     last_value: "158611",
-    kpi_next_due_date: "Aug 2023",
+    latest_standardized_date: "Aug 2023",
     description: "to define",
   },
   {
@@ -75,7 +76,7 @@ const data: GridRowsProp = [
     kpi_name: "private donations",
     kpi_target: "100000",
     last_value: "1369218",
-    kpi_next_due_date: "Aug 2023",
+    latest_standardized_date: "Aug 2023",
     description: "to define",
   },
 ];
@@ -83,13 +84,14 @@ const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedKpi, setSelectedKpi] = useState("");
+  const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
   const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
+  const [currentCircle, setCurrentCircle] = useState<number>(1); //TODO: replace any with the correct type and use the one from the sidebar
   const handleOpenModal = () => {
     setModalIsOpen(!modalIsOpen);
   };
 
-  const handleClick = (kpi: string) => {
+  const handleClick = (kpi: KpiExtended) => {
     setSelectedKpi(kpi);
     handleOpenModal();
   };
@@ -97,8 +99,9 @@ export default function KpiPage(): JSX.Element {
   const fetchKpiDefinitions = async () => {
     try {
       let { data: kpi_definition, error } = await supabase
-        .from("kpi_definition_with_latest_value")
-        .select("*");
+        .from("kpi_definition_with_latest_values")
+        .select("*")
+        .eq("circle_id", currentCircle);
 
       if (error) {
         throw error;
@@ -117,13 +120,32 @@ export default function KpiPage(): JSX.Element {
     const [selectView, setSelectView] = useState<"values" | "history">(
       "values"
     );
+    const [kpiValues, setKpiValues] = useState<any[]>([]); //TODO: replace any with the correct type
+
+    const fetchKpiValues = async () => {
+      try {
+        if (selectedKpi) {
+          let { data: kpi_values, error } = await supabase
+            .from("kpi_values")
+            .select("*")
+            .eq("kpi_id", selectedKpi.kpi_id);
+
+          if (error) {
+            throw error;
+          }
+          setKpiValues(kpi_values || []);
+        }
+      } catch (error: any) {
+        alert(error.message);
+      }
+    };
 
     const renderAddNewValue = () => {
       return (
         <>
           <div className="text-2xl ">
             Set a new value for{" "}
-            <span className="font-medium">{selectedKpi}</span>
+            <span className="font-medium">{selectedKpi?.kpi_name}</span>
           </div>
           <div className="flex justify-between my-2">
             <label className="font-medium w-full mr-2">
@@ -193,7 +215,7 @@ export default function KpiPage(): JSX.Element {
     return (
       <>
         <div className="text-center text-2xl font-light">
-          KPI - {selectedKpi}
+          KPI - {selectedKpi?.kpi_name}
         </div>
         {
           //if values is selected, render the values component, if not render the history component
@@ -243,12 +265,12 @@ export default function KpiPage(): JSX.Element {
           .toUpperCase()}${periodicity.slice(1)} KPIs`}</div>
         <div className="shadow-md border-0 border-primary-light">
           <DataGrid
-            getRowId={row => row.kpi_id}
+            getRowId={row => row.circle_kpidef_id}
             rows={filteredKpiDefinitions}
             rowSelection={false}
             columns={HEADER_KPI_COLUMNS}
             onRowClick={params => {
-              handleClick(params.row.kpi_name);
+              handleClick(params.row);
             }}
             classes={{
               columnHeaders: "bg-customPurple",
@@ -284,7 +306,7 @@ export default function KpiPage(): JSX.Element {
               columns={HEADER_KPI_COLUMNS}
               slots={{ toolbar: GridToolbar }}
               onRowClick={params => {
-                handleClick(params.row.kpi_name);
+                handleClick(params.row);
               }}
               classes={{
                 columnHeaders: "bg-customPurple ",
