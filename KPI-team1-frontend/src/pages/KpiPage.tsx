@@ -8,6 +8,7 @@ import {
 } from "@mui/x-data-grid";
 import { supabase } from "../supabase";
 import { Kpi, KpiExtended } from "../model/kpi";
+import { getWeek, getQuarter } from "date-fns";
 
 const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
@@ -42,6 +43,30 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     sortable: true,
     headerAlign: "center",
     align: "center",
+    renderCell: params => {
+      if (params.value === null) return null;
+      const periodicity = params.row.periodicity;
+      const date = new Date(params.value as string);
+      if (periodicity === "daily") {
+        return date.toLocaleDateString("en-CH");
+      } else if (periodicity === "quarterly") {
+        return `Q${getQuarter(date)}`;
+      } else if (periodicity === "yearly") {
+        return date.toLocaleDateString("en-CH", {
+          year: "numeric",
+        } as Intl.DateTimeFormatOptions);
+      } else if (periodicity === "weekly") {
+        return `Week ${getWeek(date, {
+          weekStartsOn: 1,
+          firstWeekContainsDate: 4,
+        })}`;
+      } else {
+        return date.toLocaleDateString("en-CH", {
+          month: "short",
+          year: "numeric",
+        } as Intl.DateTimeFormatOptions);
+      }
+    },
   },
   {
     headerName: "Description",
@@ -59,7 +84,7 @@ const data: GridRowsProp = [
     id: 1,
     kpi_name: "share of teams constituted as circles",
     kpi_target: "80%",
-    last_value: "35%",
+    latest_value: "35%",
     latest_standardized_date: "Aug 2023",
     description: "to define",
   },
@@ -67,16 +92,16 @@ const data: GridRowsProp = [
     id: 2,
     kpi_name: "count sessions on .projuventute.ch",
     kpi_target: "100000",
-    last_value: "158611",
-    latest_standardized_date: "Aug 2023",
+    latest_value: "158611",
+    latest_standardized_date: "2023-07-10",
     description: "to define",
   },
   {
     id: 3,
     kpi_name: "private donations",
     kpi_target: "100000",
-    last_value: "1369218",
-    latest_standardized_date: "Aug 2023",
+    latest_value: "1369218",
+    latest_standardized_date: "2022-02-19",
     description: "to define",
   },
 ];
@@ -126,19 +151,25 @@ export default function KpiPage(): JSX.Element {
       try {
         if (selectedKpi) {
           let { data: kpi_values, error } = await supabase
-            .from("kpi_values")
+            .from("kpi_values_period_standardized")
             .select("*")
-            .eq("kpi_id", selectedKpi.kpi_id);
+            .eq("kpi_id", selectedKpi.kpi_id)
+            .eq("circle_id", currentCircle);
 
           if (error) {
             throw error;
           }
           setKpiValues(kpi_values || []);
+          console.log(kpi_values, "kpi_values");
         }
       } catch (error: any) {
         alert(error.message);
       }
     };
+
+    useEffect(() => {
+      fetchKpiValues();
+    }, [selectedKpi]);
 
     const renderAddNewValue = () => {
       return (
@@ -178,10 +209,73 @@ export default function KpiPage(): JSX.Element {
     };
 
     const renderPreviousValues = () => {
+      const PREVIOUS_VALUES_COLUMNS: GridColDef[] = [
+        {
+          headerName: "Date",
+          field: "standardized_date",
+          flex: 1,
+          sortable: true,
+          headerAlign: "center",
+          align: "center",
+          renderCell: params => {
+            if (params.value === null) return null;
+            const periodicity = params.row.kpi_periodicity;
+            const date = new Date(params.value as string);
+            if (periodicity === "daily") {
+              return date.toLocaleDateString("en-CH");
+            } else if (periodicity === "quarterly") {
+              return `Q${getQuarter(date)}`;
+            } else if (periodicity === "yearly") {
+              return date.toLocaleDateString("en-CH", {
+                year: "numeric",
+              } as Intl.DateTimeFormatOptions);
+            } else if (periodicity === "weekly") {
+              return `Week ${getWeek(date, {
+                weekStartsOn: 1,
+                firstWeekContainsDate: 4,
+              })}`;
+            } else {
+              return date.toLocaleDateString("en-CH", {
+                month: "short",
+                year: "numeric",
+              } as Intl.DateTimeFormatOptions);
+            }
+          },
+        },
+        {
+          headerName: "Value",
+          field: "value",
+          flex: 1,
+          sortable: true,
+          headerAlign: "center",
+          align: "center",
+        },
+        {
+          headerName: "Status",
+          field: "comment",
+          flex: 1,
+          sortable: false,
+          filterable: false,
+          headerAlign: "center",
+          align: "center",
+        },
+      ];
+
       return (
         <>
           <div className="mt-4 text-2xl">Previous Values</div>
-          {/* Add content for showing previous values here */}
+          <div className="">
+            <DataGrid
+              getRowId={row => row.kpi_value_history_id}
+              rows={kpiValues}
+              rowSelection={false}
+              columns={PREVIOUS_VALUES_COLUMNS}
+              classes={{
+                columnHeaders: "bg-customPurple",
+                columnHeader: "uppercase",
+              }}
+            />
+          </div>
         </>
       );
     };
@@ -217,11 +311,6 @@ export default function KpiPage(): JSX.Element {
         <div className="text-center text-2xl font-light">
           KPI - {selectedKpi?.kpi_name}
         </div>
-        {
-          //if values is selected, render the values component, if not render the history component
-        }
-
-        {/* <div className="mt-4 text-2xl">Values History</div> */}
         <div className="mb-2">
           <button
             className={`${
@@ -305,9 +394,6 @@ export default function KpiPage(): JSX.Element {
               rowSelection={false}
               columns={HEADER_KPI_COLUMNS}
               slots={{ toolbar: GridToolbar }}
-              onRowClick={params => {
-                handleClick(params.row);
-              }}
               classes={{
                 columnHeaders: "bg-customPurple ",
                 columnHeader: "uppercase",
