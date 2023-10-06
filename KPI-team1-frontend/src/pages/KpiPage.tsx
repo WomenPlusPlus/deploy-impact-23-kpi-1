@@ -7,7 +7,7 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { supabase } from "../supabase";
-import { Kpi, KpiExtended } from "../model/kpi";
+import { Kpi, KpiExtended, KpiValue } from "../model/kpi";
 import { getWeek, getQuarter } from "date-fns";
 
 const HEADER_KPI_COLUMNS: GridColDef[] = [
@@ -78,7 +78,7 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     align: "center",
   },
 ];
-//TO DO : remove this dummy data
+//TO DO : remove this dummy data when demo is done
 const data: GridRowsProp = [
   {
     id: 1,
@@ -111,7 +111,7 @@ export default function KpiPage(): JSX.Element {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
   const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
-  const [currentCircle, setCurrentCircle] = useState<number>(1); //TODO: replace any with the correct type and use the one from the sidebar
+  const [currentCircle, setCurrentCircle] = useState<number>(1); //TODO: replace any with the correct type and use the variable from the sidebar
   const handleOpenModal = () => {
     setModalIsOpen(!modalIsOpen);
   };
@@ -145,7 +145,7 @@ export default function KpiPage(): JSX.Element {
     const [selectView, setSelectView] = useState<"values" | "history">(
       "values"
     );
-    const [kpiValues, setKpiValues] = useState<any[]>([]); //TODO: replace any with the correct type
+    const [kpiValues, setKpiValues] = useState<KpiValue[]>([]);
 
     const fetchKpiValues = async () => {
       try {

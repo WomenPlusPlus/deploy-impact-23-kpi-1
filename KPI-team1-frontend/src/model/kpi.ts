@@ -28,3 +28,17 @@ export interface KpiExtended extends Kpi {
   latest_standardized_date: string;
   latest_user_id: string;
 }
+
+//kpi_values_period_standardized
+export interface KpiValue {
+  kpi_id: number;
+  circle_id: number;
+  kpi_value_history_id: number;
+  user_id: number;
+  value: number;
+  period_date: string;
+  action: string;
+  created_at: string;
+  periodicity: KpiPeriodicity;
+  standardized_date: string;
+}
