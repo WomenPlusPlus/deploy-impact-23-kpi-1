@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
 import KpiPage from "./pages/KpiPage.tsx";
+import EachCircleKpi from "./pages/EachCircleKpi.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +17,8 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/admin", element: <AdminPage /> },
       { path: "/kpi", element: <KpiPage /> },
+      { path: "/kpi/:circlename", element: <EachCircleKpi /> },
+      { path: "/dashboard", element: <Dashboard /> },
     ],
   },
 ]);
