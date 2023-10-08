@@ -15,7 +15,10 @@ const initialUser: User = {
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
-  const [userDetails, setUserDetails] = useState<UserDetails>();
+  const [userDetails, setUserDetails] = useState<UserDetails>({
+    username: null,
+    defaultCircleId: null
+  });
 
   // TODO maybe move this functionality to LoginPage ?
   async function fetchUser() {
@@ -45,8 +48,19 @@ export default function App() {
   }
 
   async function fetchUserDetails() {
-    // TODO hardcoded for now - until DB is in order
-    setUserDetails({username: "I'm a user", defaultCircleId: "someId"})
+    try {
+      const { data, error } = await supabase
+        .from("username_with_default_circle")
+        .select("user_name, circle_id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error) throw error;
+      console.log(data);
+      setUserDetails({ username: data.user_name, defaultCircleId: data.circle_id });
+    } catch (error) {
+      console.log("Error getting data:", error);
+    }
   }
 
   useEffect(() => {
@@ -63,6 +77,8 @@ export default function App() {
           setUser={setUser}
           circles={circles}
           setCircles={setCircles}
+          userDetails={userDetails}
+          setUserDetails={setUserDetails}
         />
       </div>
       <div className="flex flex-col w-full">
