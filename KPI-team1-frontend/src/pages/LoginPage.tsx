@@ -12,25 +12,29 @@ export default function LoginPage(): JSX.Element {
   const { setUser }: OutletContext = useOutletContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<AuthError>();
+  const [error, setError] = useState<string | null>(null);
+
+  console.log("check error", error);
 
   const navigate = useNavigate();
 
   async function handleLogin(e: React.SyntheticEvent) {
     try {
       e.preventDefault();
-      let { data, error } = await supabase.auth.signInWithPassword({
+      let { data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      if (error) setError(error);
       if (data) {
-        const userData = {
-          id: data.user?.id || "",
-          email: data.user?.email || "",
-        };
-        setUser(userData); // Update the user state in the App component
-        navigate("/kpi");
+        if (data.user) {
+          const userData = {
+            id: data.user.id,
+            email: data.user.email,
+          };
+          setUser(userData); // Update the user state in the App component
+          navigate("/kpi");
+        }
+        setError("Incorrect email or password. Please retry!");
       }
     } catch (error) {
       console.error(error);
@@ -58,8 +62,7 @@ export default function LoginPage(): JSX.Element {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="error">{error?.message}</div>
-          <div className="flex flex-col text-sm mb-7">
+          <div className="flex flex-col text-sm mb-5">
             <input
               className="appearance-none shadow-sm border border-gray-200 p-2 focus:outline-none focus:border-[#ADBCF2] focus:border-2 rounded-lg"
               name="password"
@@ -69,6 +72,7 @@ export default function LoginPage(): JSX.Element {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          <div className="text-sm text-red-600 mb-3">{error}</div>
           <button className="w-full shadow-sm rounded-lg bg-[#FBBB21] hover:bg-yellow-600 py-2 px-4">
             Login
           </button>

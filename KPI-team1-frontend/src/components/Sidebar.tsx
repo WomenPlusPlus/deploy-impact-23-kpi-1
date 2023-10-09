@@ -38,7 +38,7 @@ export default function Sidebar({ user, setUser }: SidebarProps): JSX.Element {
       setCircles(getCircles);
       // console.log("check data", data);
     } catch (error) {
-      console.error("Error getting data:", error);
+      console.log("Error getting data:", error);
     }
   }
   useEffect(() => {

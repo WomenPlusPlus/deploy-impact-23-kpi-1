@@ -21,8 +21,6 @@ export default function App() {
       } = await supabase.auth.getUser();
       if (user) {
         setUser({ id: user.id, email: user.email || "" });
-      } else {
-        console.error("User data not available");
       }
     } catch (error) {
       console.error("Error getting user data:", error);
