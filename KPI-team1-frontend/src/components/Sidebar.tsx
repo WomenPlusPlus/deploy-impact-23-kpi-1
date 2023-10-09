@@ -9,45 +9,53 @@ import { FiLogOut } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import { supabase } from "../supabase";
 import { User } from "../model/user";
-import { useEffect, useState } from "react";
+import { Circles } from "../model/circle";
 
 interface SidebarProps {
   user: User;
   setUser: any;
+  circles: Circles[];
+  setCircles: (circles: Circles[]) => void;
 }
 
-export default function Sidebar({ user, setUser }: SidebarProps): JSX.Element {
-  const [circles, setCircles] = useState([""]);
-  console.log(circles);
-
+export default function Sidebar({
+  user,
+  setUser,
+  circles,
+  setCircles,
+}: SidebarProps): JSX.Element {
   async function handleLogout() {
     let { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser({});
-    setCircles([""]);
+    setCircles([]);
   }
 
-  async function getCircleName() {
-    try {
-      const { data, error } = await supabase
-        .from("circle")
-        .select("circle_name, circle_user!inner(*)")
-        .eq("circle_user.user_id", user.id);
-      if (error) throw error;
-      const getCircles = data.map((circle) => circle.circle_name);
-      setCircles(getCircles);
-      // console.log("check data", data);
-    } catch (error) {
-      console.log("Error getting data:", error);
-    }
-  }
-  useEffect(() => {
-    getCircleName();
-  }, [user.id]);
+  // async function getCircleName() {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from("circle")
+  //       .select("circle_name, circle_user!inner(*)")
+  //       .eq("circle_user.user_id", user.id);
+  //     if (error) throw error;
+  //     const circles = data;
+  // if (circles) {
+  //   const getCircles = circles.map((circle) => circle.circle_name);
+  //   setCircleNames(getCircles);
+  // }
+
+  // console.log("check data", data);
+  //   } catch (error) {
+  //     console.log("Error getting data:", error);
+  //   }
+  // }
+  // useEffect(() => {
+  //   getCircleName();
+  // }, [user.id]);
 
   return (
     <>
-      <section className="max-h-screen my-auto">
+      <section className="max-h-full my-auto">
         <button
           id="hamburger-button"
           className="text-3xl md:hidden cursor-pointer px-4"
@@ -86,7 +94,6 @@ export default function Sidebar({ user, setUser }: SidebarProps): JSX.Element {
                     ? " bg-[#FBBB21] rounded-lg"
                     : "  hover:bg-customGrey1 hover:rounded-lg")
                 }
-                // className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]"
               >
                 <span>
                   <HiOutlinePresentationChartLine />
@@ -105,11 +112,10 @@ export default function Sidebar({ user, setUser }: SidebarProps): JSX.Element {
                     <HiOutlineMagnifyingGlass />
                   </span>
                 </div>
-                {circles[0] &&
+                {circles &&
                   circles.map((circle, index) => (
                     <NavLink
-                      to={`/kpi/${circle}`}
-                      // className="bg-customGrey1 rounded-lg flex items-center p-4 gap-4 self-stretch"
+                      to={`/kpi/${circle.circle_user[0].circle_id}`}
                       className={({ isActive }) =>
                         " rounded-lg flex items-center p-4 gap-4 self-stretch  text-black" +
                         (isActive ? " bg-[#FBBB21]" : "  hover:bg-gray-300")
@@ -119,7 +125,7 @@ export default function Sidebar({ user, setUser }: SidebarProps): JSX.Element {
                       <span className="text-xl">
                         <HiStar />
                       </span>
-                      <div>{circle}</div>
+                      <div>{circle.circle_name}</div>
                     </NavLink>
                   ))}
               </div>

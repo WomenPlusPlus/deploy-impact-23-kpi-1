@@ -5,14 +5,28 @@ import { useEffect, useState } from "react";
 import { User } from "./model/user";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { PiBell } from "react-icons/pi";
+import { Circles } from "./model/circle";
 
 const initialUser: User = {
   id: "",
   email: "",
 };
 
+// const initialCircles: Circles = {
+//   circle_name: "",
+//   circle_user:
+// }
+
+// const initialCircleUser: CircleUser = {
+//   circle_user_id: ;
+//   circle_id: number;
+//   user_id: string;
+// }
+
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
+  const [circles, setCircles] = useState<Circles[]>([]);
+  // console.log(circles);
 
   async function fetchUser() {
     try {
@@ -27,14 +41,32 @@ export default function App() {
     }
   }
 
+  async function getCircles() {
+    try {
+      const { data, error } = await supabase
+        .from("circle")
+        .select("circle_name, circle_user!inner(*)")
+        .eq("circle_user.user_id", user.id);
+      if (error) throw error;
+      setCircles(data);
+    } catch (error) {
+      console.log("Error getting data:", error);
+    }
+  }
   useEffect(() => {
     fetchUser();
+    getCircles();
   }, [user.id]);
 
   return (
     <div className="flex min-h-screen">
       <div className="w-min shadow-lg">
-        <Sidebar user={user} setUser={setUser} />
+        <Sidebar
+          user={user}
+          setUser={setUser}
+          circles={circles}
+          setCircles={setCircles}
+        />
       </div>
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between py-4 px-8 border-b border-[#D0D8DB] ">
@@ -56,7 +88,7 @@ export default function App() {
           </div>
         </div>
         <div className="w-full bg-[#F9F9FA] h-full p-8">
-          <Outlet context={{ setUser }} />
+          <Outlet context={{ setUser, circles }} />
         </div>
       </div>
     </div>

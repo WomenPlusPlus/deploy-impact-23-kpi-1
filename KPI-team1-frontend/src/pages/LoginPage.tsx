@@ -1,20 +1,19 @@
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../supabase";
-import { AuthError } from "@supabase/supabase-js";
 import Logo from "../assets/images/logo .png";
+import { Circles } from "../model/circle";
 
 interface OutletContext {
   setUser: any;
+  circles: Circles[];
 }
 
 export default function LoginPage(): JSX.Element {
-  const { setUser }: OutletContext = useOutletContext();
+  const { setUser, circles }: OutletContext = useOutletContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-
-  console.log("check error", error);
 
   const navigate = useNavigate();
 
@@ -32,7 +31,7 @@ export default function LoginPage(): JSX.Element {
             email: data.user.email,
           };
           setUser(userData); // Update the user state in the App component
-          navigate("/kpi");
+          navigate(`/kpi/${circles[0]?.circle_user[0]?.circle_id}`);
         }
         setError("Incorrect email or password. Please retry!");
       }

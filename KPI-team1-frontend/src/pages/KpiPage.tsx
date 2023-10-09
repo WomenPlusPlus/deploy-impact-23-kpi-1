@@ -9,9 +9,14 @@ import {
 import { supabase } from "../supabase";
 import { Kpi, KpiExtended, KpiValue } from "../model/kpi";
 import { getWeek, getQuarter } from "date-fns";
+import { useOutletContext, useParams } from "react-router-dom";
+import { Circles } from "../model/circle";
+
+interface OutletContext {
+  circles: Circles[];
+}
 
 const other = {
-  // autoHeight: true,
   showCellVerticalBorder: true,
   showColumnVerticalBorder: true,
 };
@@ -114,10 +119,24 @@ const data: GridRowsProp = [
 const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
+  const { circleId } = useParams();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
   const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
-  const [currentCircle, setCurrentCircle] = useState<number>(1); //TODO: replace any with the correct type and use the variable from the sidebar
+  const [circleName, setCircleName] = useState("");
+  const { circles }: OutletContext = useOutletContext();
+
+  const findCircleName = () => {
+    const foundCircleName = circles.find(
+      (circle) => circle.circle_user[0].circle_id === Number(circleId)
+    );
+    if (foundCircleName) {
+      setCircleName(foundCircleName?.circle_name);
+    }
+  };
+
+  // const [currentCircle, setCurrentCircle] = useState<number>(1); //TODO: replace any with the correct type and use the variable from the sidebar
+
   const handleOpenModal = () => {
     setModalIsOpen(!modalIsOpen);
   };
@@ -132,20 +151,21 @@ export default function KpiPage(): JSX.Element {
       let { data: kpi_definition, error } = await supabase
         .from("kpi_definition_with_latest_values")
         .select("*")
-        .eq("circle_id", currentCircle);
+        .eq("circle_id", Number(circleId));
 
       if (error) {
         throw error;
       }
       setKpiDefinitions(kpi_definition || []);
+      findCircleName();
     } catch (error: any) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 
   useEffect(() => {
     fetchKpiDefinitions();
-  }, []);
+  }, [circleId]);
 
   const renderModalContent = () => {
     const [selectView, setSelectView] = useState<"values" | "history">(
@@ -160,7 +180,7 @@ export default function KpiPage(): JSX.Element {
             .from("kpi_values_period_standardized")
             .select("*")
             .eq("kpi_id", selectedKpi.kpi_id)
-            .eq("circle_id", currentCircle);
+            .eq("circle_id", Number(circleId));
 
           if (error) {
             throw error;
@@ -169,7 +189,7 @@ export default function KpiPage(): JSX.Element {
           console.log(kpi_values, "kpi_values");
         }
       } catch (error: any) {
-        alert(error.message);
+        console.log(error.message);
       }
     };
 
@@ -393,7 +413,7 @@ export default function KpiPage(): JSX.Element {
       <div className="flex">
         <div className="w-11/12 xl:w-800">
           <div className="text-2xl pb-4 border-b border-gray-300">
-            KPIs - Marketing Zürich
+            KPIs - {circleName}
           </div>
           <div className=" text-xl font-medium">Monthly KPIs (test)</div>
           <div className="shadow-md border-0 border-primary-light ">
