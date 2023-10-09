@@ -12,21 +12,9 @@ const initialUser: User = {
   email: "",
 };
 
-// const initialCircles: Circles = {
-//   circle_name: "",
-//   circle_user:
-// }
-
-// const initialCircleUser: CircleUser = {
-//   circle_user_id: ;
-//   circle_id: number;
-//   user_id: string;
-// }
-
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
-  // console.log(circles);
 
   async function fetchUser() {
     try {

@@ -135,8 +135,6 @@ export default function KpiPage(): JSX.Element {
     }
   };
 
-  // const [currentCircle, setCurrentCircle] = useState<number>(1); //TODO: replace any with the correct type and use the variable from the sidebar
-
   const handleOpenModal = () => {
     setModalIsOpen(!modalIsOpen);
   };

@@ -31,28 +31,6 @@ export default function Sidebar({
     setCircles([]);
   }
 
-  // async function getCircleName() {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("circle")
-  //       .select("circle_name, circle_user!inner(*)")
-  //       .eq("circle_user.user_id", user.id);
-  //     if (error) throw error;
-  //     const circles = data;
-  // if (circles) {
-  //   const getCircles = circles.map((circle) => circle.circle_name);
-  //   setCircleNames(getCircles);
-  // }
-
-  // console.log("check data", data);
-  //   } catch (error) {
-  //     console.log("Error getting data:", error);
-  //   }
-  // }
-  // useEffect(() => {
-  //   getCircleName();
-  // }, [user.id]);
-
   return (
     <>
       <section className="max-h-full my-auto">
@@ -73,7 +51,7 @@ export default function Sidebar({
             </NavLink>
             <div>
               <NavLink
-                to={"/kpi"}
+                to={"/kpi/1"}
                 className={({ isActive }) =>
                   "text-xl flex items-center gap-3 p-4 self-stretch" +
                   (isActive
