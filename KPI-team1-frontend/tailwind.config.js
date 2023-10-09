@@ -8,6 +8,11 @@ export default {
         tallscreen: { raw: "(min-aspect-ratio: 13/20)" },
       },
       colors: {
+        customBlack: "#202020",
+        customWhite: "#F9F9FA",
+        customGrey: "#7C7E7E",
+        customWhite1: "#D0D8DB",
+        customBlack1: "#131313",
         customPurple: "#D1C2ED",
         customYellow: "#FBBB21",
       },
