@@ -1,0 +1,1 @@
+UPDATE public.kpi_values_history SET period_date = CURRENT_DATE WHERE period_date > CURRENT_DATE;
