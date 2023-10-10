@@ -3,6 +3,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      screens: {
+        widescreen: { raw: "(min-aspect-ratio: 3/2)" },
+        tallscreen: { raw: "(min-aspect-ratio: 13/20)" },
+      },
       colors: {
         customBlack: "#202020",
         customWhite: "#F9F9FA",
@@ -17,8 +21,6 @@ export default {
       },
       backgroundColor: {
         customGrey1: "rgba(208, 216, 219, 0.50)",
-        customGrey2: "#F0F0F6",
-        customWhite2: "#FFF",
       },
     },
     plugins: [require("flowbite/plugin")],
