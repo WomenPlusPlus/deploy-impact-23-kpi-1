@@ -6,6 +6,11 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { getQuarter, getWeek } from "date-fns";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
 
+const other = {
+  showCellVerticalBorder: true,
+  showColumnVerticalBorder: true,
+};
+
 const KpiDetailModalPage = ({
   isOpen,
   onRequestClose,
@@ -92,7 +97,7 @@ const KpiDetailModalPage = ({
           sortable: true,
           headerAlign: "center",
           align: "center",
-          renderCell: params => {
+          renderCell: (params) => {
             const periodicity = params.row.kpi_periodicity;
             const date = params.value ? new Date(params.value as string) : null;
             if (date === null || periodicity === undefined) {
@@ -135,7 +140,7 @@ const KpiDetailModalPage = ({
           <div className="mt-4 text-2xl">Previous Values</div>
           <div className="">
             <DataGrid
-              getRowId={row => row.kpi_value_history_id}
+              getRowId={(row) => row.kpi_value_history_id}
               rows={kpiValues}
               rowSelection={false}
               columns={PREVIOUS_VALUES_COLUMNS}
@@ -143,6 +148,7 @@ const KpiDetailModalPage = ({
                 columnHeaders: "bg-customPurple",
                 columnHeader: "uppercase",
               }}
+              {...other}
             />
           </div>
         </>

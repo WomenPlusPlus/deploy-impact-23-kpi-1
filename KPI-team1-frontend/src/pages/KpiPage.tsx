@@ -11,6 +11,17 @@ import { Kpi, KpiExtended, KpiValue } from "../model/kpi";
 import { getWeek, getQuarter } from "date-fns";
 import KpiDetailModalPage from "./KpiDetailModalPage";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
+import { useOutletContext, useParams } from "react-router-dom";
+import { Circles } from "../model/circle";
+
+interface OutletContext {
+  circles: Circles[];
+}
+
+const other = {
+  showCellVerticalBorder: true,
+  showColumnVerticalBorder: true,
+};
 
 const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
@@ -45,7 +56,7 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     sortable: true,
     headerAlign: "center",
     align: "center",
-    renderCell: params => {
+    renderCell: (params) => {
       const periodicity = params.row.periodicity;
       const date = params.value ? new Date(params.value as string) : null;
       if (date === null || periodicity === undefined) {
@@ -95,10 +106,22 @@ const data: GridRowsProp = [
 const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
+  const { circleId } = useParams();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
   const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
-  const [currentCircle, setCurrentCircle] = useState<number>(1); //TODO: replace any with the correct type and use the variable from the sidebar
+  const [circleName, setCircleName] = useState("");
+  const { circles }: OutletContext = useOutletContext();
+
+  const findCircleName = () => {
+    const foundCircleName = circles.find(
+      (circle) => circle.circle_user[0].circle_id === Number(circleId)
+    );
+    if (foundCircleName) {
+      setCircleName(foundCircleName?.circle_name);
+    }
+  };
+
   const handleOpenModal = () => {
     setModalIsOpen(!modalIsOpen);
   };
@@ -113,24 +136,25 @@ export default function KpiPage(): JSX.Element {
       let { data: kpi_definition, error } = await supabase
         .from("kpi_definition_with_latest_values")
         .select("*")
-        .eq("circle_id", currentCircle);
+        .eq("circle_id", Number(circleId));
 
       if (error) {
         throw error;
       }
       setKpiDefinitions(kpi_definition || []);
+      findCircleName();
     } catch (error: any) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 
   useEffect(() => {
     fetchKpiDefinitions();
-  }, []);
+  }, [circleId]);
 
   const renderDataGrid = (periodicity: string) => {
     const filteredKpiDefinitions = kpiDefinitions.filter(
-      item => item.periodicity === periodicity
+      (item) => item.periodicity === periodicity
     );
     if (filteredKpiDefinitions.length === 0) {
       return null;
@@ -142,11 +166,11 @@ export default function KpiPage(): JSX.Element {
           .toUpperCase()}${periodicity.slice(1)} KPIs`}</div>
         <div className="shadow-md border-0 border-primary-light">
           <DataGrid
-            getRowId={row => row.circle_kpidef_id}
+            getRowId={(row) => row.circle_kpidef_id}
             rows={filteredKpiDefinitions}
             rowSelection={false}
             columns={HEADER_KPI_COLUMNS}
-            onRowClick={params => {
+            onRowClick={(params) => {
               handleClick(params.row);
             }}
             classes={{
@@ -158,6 +182,7 @@ export default function KpiPage(): JSX.Element {
                 paginationModel: { pageSize: 10 },
               },
             }}
+            {...other}
           />
         </div>
       </div>
@@ -171,13 +196,14 @@ export default function KpiPage(): JSX.Element {
           isOpen={modalIsOpen}
           onRequestClose={handleOpenModal}
           kpi={selectedKpi}
-          circleId={currentCircle}
+          circleId={Number(circleId)}
         />
       )}
-      <div className="flex m-12">
-        <div className="w-11/12 md:w-3/4  xl:w-800">
-          <div className="text-2xl py-4 my-2 border-b border-gray-300">
-            KPIs - Marketing Zürich
+
+      <div className="flex">
+        <div className="w-11/12 xl:w-800">
+          <div className="text-2xl pb-4 border-b border-gray-300">
+            KPIs - {circleName}
           </div>
           <div className=" text-xl font-medium">Monthly KPIs (test)</div>
           <div className="shadow-md border-0 border-primary-light ">
@@ -190,9 +216,10 @@ export default function KpiPage(): JSX.Element {
                 columnHeaders: "bg-customPurple ",
                 columnHeader: "uppercase",
               }}
+              {...other}
             />
           </div>
-          {periodicityOrder.map(periodicity => renderDataGrid(periodicity))}
+          {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}
         </div>
       </div>
     </>
