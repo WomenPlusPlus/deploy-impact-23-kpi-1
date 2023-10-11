@@ -3,9 +3,12 @@ import Sidebar from "./components/Sidebar";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
 import { User } from "./model/user";
-import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { PiBell } from "react-icons/pi";
 import { Circles } from "./model/circle";
+import Searchbar from "./components/Searchbar";
+import { Kpi } from "./model/kpi";
+import SearchResultsList from "./components/SearchResultsList";
+// import { EachKpi } from "./model/kpi";
 
 const initialUser: User = {
   id: "",
@@ -15,6 +18,51 @@ const initialUser: User = {
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
+  const [results, setResults] = useState<Kpi[]>([]);
+  // const periodicityOrder = [
+  //   "daily",
+  //   "weekly",
+  //   "monthly",
+  //   "quarterly",
+  //   "yearly",
+  // ];
+  // const [kpiDefinitions, setKpiDefinitions] = useState<EachKpi[]>([]);
+
+  // const fetchKpi = async () => {
+  //   try {
+  //     let { data: kpi_definition, error } = await supabase
+  //       .from("circle")
+  //       .select("circle_name, kpi_definition_with_latest_values!inner(*)")
+  //       .eq("kpi_definition_with_latest_values.kpi_id", 1);
+
+  //     if (error) {
+  //       throw error;
+  //     }
+  //     setKpiDefinitions(kpi_definition || []);
+  //     // findCircleName();
+
+  //     console.log("check data for each kpi", kpi_definition);
+  //   } catch (error: any) {
+  //     console.log(error.message);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchKpi();
+  // }, []);
+
+  // const filteredKpiDefinitions = periodicityOrder.map((periodicity) =>
+  //   kpiDefinitions.filter(
+  //     (item) =>
+  //       item.kpi_definition_with_latest_values[0].periodicity === periodicity
+  //   )
+  // );
+
+  // if (filteredKpiDefinitions.length === 0) {
+  //   return null;
+  // }
+  // const renderKpis = filteredKpiDefinitions.filter((kpi) => kpi.length !== 0);
+
+  // console.log("check filter", renderKpis);
 
   async function fetchUser() {
     try {
@@ -56,18 +104,13 @@ export default function App() {
           setCircles={setCircles}
         />
       </div>
-      <div className="flex flex-col w-full">
-        <div className="flex items-center justify-between py-4 px-8 border-b border-[#D0D8DB] ">
-          <div className="bg-[#FFF] flex py-3 px-4 justify-between items-center rounded-lg border border-[#D0D8DB] w-1/2">
-            <input
-              className="text-sm outline-0"
-              type="text"
-              placeholder="Type to search for KPI's"
-            />
-            <span className="text-xl text-[#7C7E7E]">
-              <HiOutlineMagnifyingGlass />
-            </span>
+      <div className="flex flex-col grow">
+        <div className="flex items-start justify-between py-4 px-8 border-b border-[#D0D8DB] ">
+          <div className="flex flex-col w-1/2">
+            <Searchbar setResults={setResults} />
+            <SearchResultsList results={results} setResults={setResults} />
           </div>
+
           <div className="flex justify-end items-center gap-20 border-l border-[#D0D8DB] w-1/3 py-1.5">
             <span className="text-xl">
               <PiBell />

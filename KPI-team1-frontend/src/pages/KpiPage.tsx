@@ -127,11 +127,14 @@ export default function KpiPage(): JSX.Element {
   const { circles }: OutletContext = useOutletContext();
 
   const findCircleName = () => {
-    const foundCircleName = circles.find(
-      (circle) => circle.circle_user[0].circle_id === Number(circleId)
-    );
-    if (foundCircleName) {
-      setCircleName(foundCircleName?.circle_name);
+    if (circles) {
+      const foundCircleName = circles.find(
+        (circle) => circle.circle_user[0].circle_id === Number(circleId)
+      );
+      console.log("check circleName", foundCircleName);
+      if (foundCircleName) {
+        setCircleName(foundCircleName?.circle_name);
+      }
     }
   };
 
@@ -156,6 +159,8 @@ export default function KpiPage(): JSX.Element {
       }
       setKpiDefinitions(kpi_definition || []);
       findCircleName();
+
+      console.log("check data", kpiDefinitions);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -413,8 +418,8 @@ export default function KpiPage(): JSX.Element {
           <div className="text-2xl pb-4 border-b border-gray-300">
             KPIs - {circleName}
           </div>
-          <div className=" text-xl font-medium">Monthly KPIs (test)</div>
-          <div className="shadow-md border-0 border-primary-light ">
+          {/* <div className=" text-xl font-medium">Monthly KPIs (test)</div> */}
+          {/* <div className="shadow-md border-0 border-primary-light ">
             <DataGrid
               rows={data}
               rowSelection={false}
@@ -426,7 +431,7 @@ export default function KpiPage(): JSX.Element {
               }}
               {...other}
             />
-          </div>
+          </div> */}
           {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}
         </div>
       </div>

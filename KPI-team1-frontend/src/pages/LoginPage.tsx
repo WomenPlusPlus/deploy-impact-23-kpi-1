@@ -15,6 +15,8 @@ export default function LoginPage(): JSX.Element {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  console.log("check circles in login", circles);
+
   const navigate = useNavigate();
 
   async function handleLogin(e: React.SyntheticEvent) {
@@ -31,7 +33,7 @@ export default function LoginPage(): JSX.Element {
             email: data.user.email,
           };
           setUser(userData); // Update the user state in the App component
-          navigate("/kpi/1"); // todo: will update this route after getting favorite circle (`/kpi/${circles[0]?.circle_user[0]?.circle_id}`)
+          navigate("/"); // todo: will update this route after getting favorite circle (`/kpi/${circles[0]?.circle_user[0]?.circle_id}`)
         }
         setError("Incorrect email or password. Please retry!");
       }
