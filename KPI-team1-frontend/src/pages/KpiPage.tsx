@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
-import ModalRightSide from "../components/ModalRightSide";
-import {
-  DataGrid,
-  GridRowsProp,
-  GridColDef,
-  GridToolbar,
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { supabase } from "../supabase";
-import { Kpi, KpiExtended, KpiValue } from "../model/kpi";
-import { getWeek, getQuarter } from "date-fns";
+import { KpiExtended } from "../model/kpi";
 import KpiDetailModalPage from "./KpiDetailModalPage";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -76,33 +69,7 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     align: "center",
   },
 ];
-//TO DO : remove this dummy data when demo is done
-const data: GridRowsProp = [
-  {
-    id: 1,
-    kpi_name: "share of teams constituted as circles",
-    kpi_target: "80%",
-    latest_value: "35%",
-    latest_standardized_date: "Aug 2023",
-    description: "to define",
-  },
-  {
-    id: 2,
-    kpi_name: "count sessions on .projuventute.ch",
-    kpi_target: "100000",
-    latest_value: "158611",
-    latest_standardized_date: "2023-07-10",
-    description: "to define",
-  },
-  {
-    id: 3,
-    kpi_name: "private donations",
-    kpi_target: "100000",
-    latest_value: "1369218",
-    latest_standardized_date: "2022-02-19",
-    description: "to define",
-  },
-];
+
 const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
@@ -142,15 +109,18 @@ export default function KpiPage(): JSX.Element {
         throw error;
       }
       setKpiDefinitions(kpi_definition || []);
-      findCircleName();
     } catch (error: any) {
-      console.log(error.message);
+      console.log("Error getting kpi definitions:", error.message);
     }
   };
 
   useEffect(() => {
     fetchKpiDefinitions();
   }, [circleId]);
+
+  useEffect(() => {
+    findCircleName();
+  }, [circles, circleId]);
 
   const renderDataGrid = (periodicity: string) => {
     const filteredKpiDefinitions = kpiDefinitions.filter(
@@ -179,7 +149,9 @@ export default function KpiPage(): JSX.Element {
             }}
             initialState={{
               pagination: {
-                paginationModel: { pageSize: 10 },
+                paginationModel: {
+                  pageSize: 10,
+                },
               },
             }}
             {...other}
@@ -204,20 +176,6 @@ export default function KpiPage(): JSX.Element {
         <div className="w-11/12 xl:w-800">
           <div className="text-2xl pb-4 border-b border-gray-300">
             KPIs - {circleName}
-          </div>
-          <div className=" text-xl font-medium">Monthly KPIs (test)</div>
-          <div className="shadow-md border-0 border-primary-light ">
-            <DataGrid
-              rows={data}
-              rowSelection={false}
-              columns={HEADER_KPI_COLUMNS}
-              slots={{ toolbar: GridToolbar }}
-              classes={{
-                columnHeaders: "bg-customPurple ",
-                columnHeader: "uppercase",
-              }}
-              {...other}
-            />
           </div>
           {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}
         </div>

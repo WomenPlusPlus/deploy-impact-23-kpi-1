@@ -3,8 +3,8 @@ import ModalRightSide from "../components/ModalRightSide";
 import { KpiExtended, KpiValue } from "../model/kpi";
 import { supabase } from "../supabase";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { getQuarter, getWeek } from "date-fns";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
+import { LinearProgress } from "@mui/material";
 
 const other = {
   showCellVerticalBorder: true,
@@ -22,36 +22,66 @@ const KpiDetailModalPage = ({
   kpi: KpiExtended;
   circleId: number;
 }): JSX.Element => {
-  const renderModalContent = () => {
-    const [selectView, setSelectView] = useState<"values" | "history">(
-      "values"
-    );
-    const [kpiValues, setKpiValues] = useState<KpiValue[]>([]);
+  const [selectView, setSelectView] = useState<"values" | "history">("values");
+  const [kpiValues, setKpiValues] = useState<KpiValue[]>([]);
+  const [comment, setComment] = useState<string>(""); //TODO: add comment to the database
+  const [newDate, setNewDate] = useState<Date | null>(null);
+  const [newValue, setNewValue] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const fetchKpiValues = async () => {
-      try {
-        if (kpi) {
-          let { data: kpi_values, error } = await supabase
-            .from("kpi_values_period_standardized")
-            .select("*")
-            .eq("kpi_id", kpi.kpi_id)
-            .eq("circle_id", circleId);
+  const fetchKpiValues = async () => {
+    try {
+      setIsLoading(true);
+      if (kpi) {
+        let { data: kpi_values, error } = await supabase
+          .from("kpi_values_period_standardized")
+          .select("*")
+          .eq("kpi_id", kpi.kpi_id)
+          .eq("circle_id", circleId);
+
+        if (error) {
+          throw error;
+        }
+        setKpiValues(kpi_values || []);
+        setIsLoading(false);
+      }
+    } catch (error: any) {
+      alert(error.message);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchKpiValues();
+  }, [kpi]);
+
+  const renderModalContent = () => {
+    const renderAddNewValue = () => {
+      const handleSave = async (value: number | null, date: Date | null) => {
+        try {
+          const { data, error } = await supabase
+            .from("kpi_values_history")
+            .insert([
+              {
+                kpi_id: kpi?.kpi_id,
+                value: value,
+                circle_id: circleId,
+                period_date: date,
+                action: "CREATE",
+              },
+            ])
+            .select("*");
 
           if (error) {
             throw error;
           }
-          setKpiValues(kpi_values || []);
+          if (data) {
+            fetchKpiValues();
+          }
+        } catch (error: any) {
+          alert(error.message);
         }
-      } catch (error: any) {
-        alert(error.message);
-      }
-    };
-
-    useEffect(() => {
-      fetchKpiValues();
-    }, [kpi]);
-
-    const renderAddNewValue = () => {
+      };
       return (
         <>
           <div className="text-2xl ">
@@ -60,34 +90,55 @@ const KpiDetailModalPage = ({
           </div>
           <div className="flex justify-between my-2">
             <label className="font-medium w-full mr-2">
-              Set a date
+              Set a date*
               <input
                 className="block w-full p-2 border rounded-md"
                 name="set date"
                 type="date"
+                onChange={(e) => {
+                  setNewDate(new Date(e.target.value));
+                }}
               />
             </label>
             <label className="font-medium w-full">
-              Enter a new value
+              Enter a new value*
               <input
                 className="block w-full p-2 border rounded-md"
                 name="new value"
                 type="number"
+                placeholder="What's your value"
+                onChange={(e) => {
+                  setNewValue(parseInt(e.target.value));
+                }}
               />
             </label>
           </div>
+          <label className="font-medium w-full">
+            Comment
+            <textarea
+              className="block w-full p-2 border rounded-md"
+              name="comment"
+              rows={3}
+              placeholder="Optional: add comment to your changes"
+              onChange={(e) => {
+                setNewValue(parseInt(e.target.value));
+              }}
+            />
+          </label>
           <div className="pt-4 flex justify-end">
             <button className="w-28 h-10 mr-4 bg-white rounded border border-customYellow justify-center items-center gap-2 inline-flex text-zinc-700 text-base font-medium">
               Cancel
             </button>
-            <button className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium">
+            <button
+              className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium"
+              onClick={() => handleSave(newValue, newDate)}
+            >
               Save
             </button>
           </div>
         </>
       );
     };
-
     const renderPreviousValues = () => {
       const PREVIOUS_VALUES_COLUMNS: GridColDef[] = [
         {
@@ -126,12 +177,20 @@ const KpiDetailModalPage = ({
         },
         {
           headerName: "Updated at",
-          field: "updated_at",
+          field: "created_at",
           flex: 1,
           sortable: false,
           filterable: false,
           headerAlign: "center",
           align: "center",
+          renderCell: (params) => {
+            const date = params.value ? new Date(params.value as string) : null;
+            if (date === null) {
+              return null;
+            } else {
+              return date.toLocaleDateString("en-CH");
+            }
+          },
         },
       ];
 
@@ -140,6 +199,10 @@ const KpiDetailModalPage = ({
           <div className="mt-4 text-2xl">Previous Values</div>
           <div className="">
             <DataGrid
+              slots={{
+                loadingOverlay: LinearProgress,
+              }}
+              loading={isLoading}
               getRowId={(row) => row.kpi_value_history_id}
               rows={kpiValues}
               rowSelection={false}
@@ -154,7 +217,6 @@ const KpiDetailModalPage = ({
         </>
       );
     };
-
     const renderSetTargetValue = () => {
       return (
         <>
@@ -210,10 +272,13 @@ const KpiDetailModalPage = ({
             {renderPreviousValues()}
             {renderSetTargetValue()}
           </>
-        ) : null}
+        ) : (
+          <>history</>
+        )}
       </>
     );
   };
+
   return (
     <ModalRightSide isOpen={isOpen} onRequestClose={onRequestClose}>
       {renderModalContent()}
