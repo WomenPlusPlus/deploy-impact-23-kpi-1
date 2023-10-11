@@ -8,6 +8,7 @@ import AdminPage from "./pages/AdminPage.tsx";
 import KpiPage from "./pages/KpiPage.tsx";
 // import EachCircleKpi from "./pages/EachCircleKpi.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import UserDetailsPage from "./pages/UserDetailsPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { path: "/kpi/:circleId", element: <KpiPage /> },
       // { path: "/kpi/:circlename", element: <EachCircleKpi /> },
       { path: "/dashboard", element: <Dashboard /> },
+      { path: "/settings", element: <UserDetailsPage /> },
     ],
   },
 ]);
