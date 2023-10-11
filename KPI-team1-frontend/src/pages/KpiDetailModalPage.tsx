@@ -73,7 +73,7 @@ const KpiDetailModalPage = ({
             .select("*");
 
           if (error) {
-            throw error;
+            console.log("Error inserting new value:", error.message);
           }
           if (data) {
             fetchKpiValues();
