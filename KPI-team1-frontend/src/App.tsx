@@ -3,9 +3,11 @@ import Sidebar from "./components/Sidebar";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
 import { User, UserDetails } from "./model/user";
-import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { PiBell } from "react-icons/pi";
 import { Circles } from "./model/circle";
+import { KpiExtended } from "./model/kpi";
+import Searchbar from "./components/Searchbar";
+import SearchResultsList from "./components/SearchResultsList";
 
 const initialUser: User = {
   id: "",
@@ -15,7 +17,11 @@ const initialUser: User = {
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
+  const [results, setResults] = useState<any[]>([]);
   const [userDetails, setUserDetails] = useState<UserDetails>();
+  const isSearchKpi: boolean = true;
+  const [input, setInput] = useState<string>("");
+  const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
 
   // TODO maybe move this functionality to LoginPage ?
   async function fetchUser() {
@@ -35,8 +41,7 @@ export default function App() {
     try {
       const { data, error } = await supabase
         .from("circle")
-        .select("circle_name, circle_user!inner(*)")
-        .eq("circle_user.user_id", user.id);
+        .select("circle_name, circle_user!inner(*)");
       if (error) throw error;
       setCircles(data);
     } catch (error) {
@@ -46,12 +51,27 @@ export default function App() {
 
   async function fetchUserDetails() {
     // TODO hardcoded for now - until DB is in order
-    setUserDetails({username: "I'm a user", defaultCircleId: "someId"})
+    setUserDetails({ username: "I'm a user", defaultCircleId: "someId" });
   }
+
+  const fetchKpiDefinitions = async () => {
+    try {
+      let { data: kpi_definition, error } = await supabase
+        .from("kpi_definition_with_latest_values")
+        .select("*");
+      if (error) {
+        throw error;
+      }
+      setKpiDefinitions(kpi_definition || []);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
     fetchUser();
     getCircles();
+    fetchKpiDefinitions();
     fetchUserDetails();
   }, [user.id]);
 
@@ -65,18 +85,22 @@ export default function App() {
           setCircles={setCircles}
         />
       </div>
-      <div className="flex flex-col w-full">
-        <div className="flex items-center justify-between py-4 px-8 border-b border-[#D0D8DB] ">
-          <div className="bg-[#FFF] flex py-3 px-4 justify-between items-center rounded-lg border border-[#D0D8DB] w-1/2">
-            <input
-              className="text-sm outline-0"
-              type="text"
-              placeholder="Type to search for KPI's"
+      <div className="flex flex-col grow">
+        <div className="flex items-start justify-between py-4 px-8 border-b border-[#D0D8DB] ">
+          <div className="flex flex-col w-1/2">
+            <Searchbar
+              setResults={setResults}
+              isSearchKpi={isSearchKpi}
+              input={input}
+              setInput={setInput}
             />
-            <span className="text-xl text-[#7C7E7E]">
-              <HiOutlineMagnifyingGlass />
-            </span>
+            <SearchResultsList
+              results={results}
+              setResults={setResults}
+              setInput={setInput}
+            />
           </div>
+
           <div className="flex justify-end items-center gap-20 border-l border-[#D0D8DB] w-1/3 py-1.5">
             <span className="text-xl">
               <PiBell />
@@ -85,7 +109,16 @@ export default function App() {
           </div>
         </div>
         <div className="w-full bg-[#F9F9FA] h-full p-8">
-          <Outlet context={{ setUser, circles, user, userDetails, setUserDetails }} />
+          <Outlet
+            context={{
+              setUser,
+              circles,
+              user,
+              userDetails,
+              setUserDetails,
+              kpiDefinitions,
+            }}
+          />
         </div>
       </div>
     </div>

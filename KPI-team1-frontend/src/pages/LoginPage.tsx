@@ -31,7 +31,7 @@ export default function LoginPage(): JSX.Element {
             email: data.user.email,
           };
           setUser(userData); // Update the user state in the App component
-          navigate("/kpi/1"); // todo: will update this route after getting favorite circle (`/kpi/${circles[0]?.circle_user[0]?.circle_id}`)
+          navigate("/kpi/circles/1"); // todo: will update this route after getting favorite circle (`/kpi/${circles[0]?.circle_user[0]?.circle_id}`)
         }
         setError("Incorrect email or password. Please retry!");
       }
