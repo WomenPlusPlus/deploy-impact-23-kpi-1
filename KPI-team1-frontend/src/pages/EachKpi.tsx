@@ -1,7 +1,6 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { getWeek, getQuarter } from "date-fns";
 import { supabase } from "../supabase";
-import { KpiExtended } from "../model/kpi";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -119,23 +118,6 @@ export default function EachKpi(): JSX.Element {
   useEffect(() => {
     fetchKpi();
   }, [kpiId]);
-
-  // const fetchCircleName = async (circleId: number) => {
-  //   try {
-  //     let { data: circleName, error } = await supabase
-  //       .from("circle")
-  //       .select("circle_name")
-  //       .eq("circle_id", circleId);
-  //     if (error) {
-  //       throw error;
-  //     }
-  //     return circleName && circleName[0].circle_name;
-
-  //     console.log("check circleName", circleName);
-  //   } catch (error: any) {
-  //     console.log(error.message);
-  //   }
-  // };
 
   const filteredKpiDefinitions = periodicityOrder.map((periodicity) =>
     kpiDefinitions.filter((item) => item.periodicity === periodicity)

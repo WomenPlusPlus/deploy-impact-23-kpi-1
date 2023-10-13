@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { supabase } from "../supabase";
-// import { Kpi, KpiExtended, KpiValue } from "../model/kpi";
-// import { getWeek, getQuarter } from "date-fns";
 import { KpiExtended } from "../model/kpi";
 import KpiDetailModalPage from "./KpiDetailModalPage";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
@@ -11,7 +9,6 @@ import { Circles } from "../model/circle";
 
 interface OutletContext {
   circles: Circles[];
-  // kpiDefinitions: KpiExtended[];
 }
 
 const other = {
@@ -79,37 +76,6 @@ const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 export default function KpiPage(): JSX.Element {
   const { circleId } = useParams();
   const [selectedCircleId, setSelectedCircleId] = useState("");
-  // const [modalIsOpen, setModalIsOpen] = useState(false);
-  // const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
-  // const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
-  // const [circleName, setCircleName] = useState("");
-  // const { circles, kpiDefinitions }: OutletContext = useOutletContext();
-
-  useEffect(() => {
-    if (circleId) {
-      setSelectedCircleId(circleId);
-    } else {
-      setSelectedCircleId("1");
-    }
-  }, [circleId]);
-
-  // const circleKpis =
-  //   kpiDefinitions &&
-  //   kpiDefinitions.filter(
-  //     (kpiDefinition) => kpiDefinition.circle_id === Number(selectedCircleId)
-  //   );
-
-  // const findCircleName = () => {
-  //   if (circles) {
-  //     const foundCircleName = circles.find(
-  //       (circle) => circle.circle_user[0].circle_id === Number(circleId)
-  //     );
-  //     console.log("check circleName", foundCircleName);
-  //     if (foundCircleName) {
-  //       setCircleName(foundCircleName?.circle_name);
-  //     }
-  //   }
-  // };
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
   const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
@@ -139,7 +105,7 @@ export default function KpiPage(): JSX.Element {
       let { data: kpi_definition, error } = await supabase
         .from("kpi_definition_with_latest_values")
         .select("*")
-        .eq("circle_id", Number(selectedCircleId));
+        .eq("circle_id", Number(circleId));
 
       if (error) {
         throw error;
@@ -152,7 +118,7 @@ export default function KpiPage(): JSX.Element {
 
   useEffect(() => {
     fetchKpiDefinitions();
-  }, [selectedCircleId]);
+  }, [circleId]);
 
   useEffect(() => {
     findCircleName();
@@ -211,22 +177,6 @@ export default function KpiPage(): JSX.Element {
       <div className="flex">
         <div className="w-11/12 xl:w-800">
           <div className="text-2xl pb-4 border-b border-gray-300">
-            {/* KPIs - {circleKpis[0]?.circle_name}
-          </div> */}
-            {/* <div className=" text-xl font-medium">Monthly KPIs (test)</div> */}
-            {/* <div className="shadow-md border-0 border-primary-light ">
-            <DataGrid
-              rows={data}
-              rowSelection={false}
-              columns={HEADER_KPI_COLUMNS}
-              slots={{ toolbar: GridToolbar }}
-              classes={{
-                columnHeaders: "bg-customPurple ",
-                columnHeader: "uppercase",
-              }}
-              {...other}
-            />
-          </div> */}
             KPIs - {circleName}
           </div>
           {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}

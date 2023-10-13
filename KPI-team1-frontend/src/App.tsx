@@ -2,15 +2,10 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
-// import { User } from "./model/user";
-// import { PiBell } from "react-icons/pi";
-// import { Circles } from "./model/circle";
 import Searchbar from "./components/Searchbar";
-import { Kpi, KpiExtended } from "./model/kpi";
+import { Kpi } from "./model/kpi";
 import SearchResultsList from "./components/SearchResultsList";
-// import { EachKpi } from "./model/kpi";
 import { User, UserDetails } from "./model/user";
-// import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { PiBell } from "react-icons/pi";
 import { Circles } from "./model/circle";
 
@@ -22,53 +17,7 @@ const initialUser: User = {
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
-  // const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
-
   const [results, setResults] = useState<Kpi[]>([]);
-  // const periodicityOrder = [
-  //   "daily",
-  //   "weekly",
-  //   "monthly",
-  //   "quarterly",
-  //   "yearly",
-  // ];
-  // const [kpiDefinitions, setKpiDefinitions] = useState<EachKpi[]>([]);
-
-  // const fetchKpi = async () => {
-  //   try {
-  //     let { data: kpi_definition, error } = await supabase
-  //       .from("circle")
-  //       .select("circle_name, kpi_definition_with_latest_values!inner(*)")
-  //       .eq("kpi_definition_with_latest_values.kpi_id", 1);
-
-  //     if (error) {
-  //       throw error;
-  //     }
-  //     setKpiDefinitions(kpi_definition || []);
-  //     // findCircleName();
-
-  //     console.log("check data for each kpi", kpi_definition);
-  //   } catch (error: any) {
-  //     console.log(error.message);
-  //   }
-  // };
-  // useEffect(() => {
-  //   fetchKpi();
-  // }, []);
-
-  // const filteredKpiDefinitions = periodicityOrder.map((periodicity) =>
-  //   kpiDefinitions.filter(
-  //     (item) =>
-  //       item.kpi_definition_with_latest_values[0].periodicity === periodicity
-  //   )
-  // );
-
-  // if (filteredKpiDefinitions.length === 0) {
-  //   return null;
-  // }
-  // const renderKpis = filteredKpiDefinitions.filter((kpi) => kpi.length !== 0);
-
-  // console.log("check filter", renderKpis);
   const [userDetails, setUserDetails] = useState<UserDetails>();
 
   // TODO maybe move this functionality to LoginPage ?
@@ -90,11 +39,6 @@ export default function App() {
       const { data, error } = await supabase
         .from("circle")
         .select("circle_name, circle_user!inner(*)");
-      // .eq("circle_user.user_id", user.id);
-      // .from("circle")
-      // .select("*");
-      // .select("circle_name, circle_user!inner(*)")
-      // .eq("circle_user.user_id", user.id);
       if (error) throw error;
       setCircles(data);
     } catch (error) {
@@ -102,24 +46,6 @@ export default function App() {
     }
   }
 
-  // const fetchKpiDefinitions = async () => {
-  //   try {
-  //     let { data: kpi_definition, error } = await supabase
-  //       .from("kpi_definition_with_latest_values")
-  //       .select("*");
-  //     // .eq("circle_id", Number(selectedCircleId));
-
-  //     if (error) {
-  //       throw error;
-  //     }
-  //     setKpiDefinitions(kpi_definition || []);
-  //     // findCircleName();
-
-  //     console.log("check data", kpiDefinitions);
-  //   } catch (error: any) {
-  //     console.log(error.message);
-  //   }
-  // };
   async function fetchUserDetails() {
     // TODO hardcoded for now - until DB is in order
     setUserDetails({ username: "I'm a user", defaultCircleId: "someId" });
@@ -128,7 +54,6 @@ export default function App() {
   useEffect(() => {
     fetchUser();
     getCircles();
-    // fetchKpiDefinitions();
     fetchUserDetails();
   }, [user.id]);
   console.log("check all circles", circles);

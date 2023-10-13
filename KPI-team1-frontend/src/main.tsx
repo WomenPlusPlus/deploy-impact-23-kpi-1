@@ -7,7 +7,6 @@ import LoginPage from "./pages/LoginPage.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
 import KpiPage from "./pages/KpiPage.tsx";
 import EachKpi from "./pages/EachKpi.tsx";
-// import EachCircleKpi from "./pages/EachCircleKpi.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import UserDetailsPage from "./pages/UserDetailsPage.tsx";
 
