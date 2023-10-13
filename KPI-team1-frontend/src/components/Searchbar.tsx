@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
-import { Kpi } from "../model/kpi";
 
 interface SearchbarProps {
-  setResults: (results: Kpi[]) => void;
+  setResults: (results: any) => void;
+  isSearchKpi: boolean;
+  input: string;
+  setInput: (input: string) => void;
 }
 
-export default function Searchbar({ setResults }: SearchbarProps): JSX.Element {
-  const [input, setInput] = useState<string>("");
-
+export default function Searchbar({
+  setResults,
+  isSearchKpi,
+  input,
+  setInput,
+}: SearchbarProps): JSX.Element {
   async function fetchAllKpis(value: string) {
     try {
       let { data: kpi_definition, error } = await supabase
@@ -34,9 +39,33 @@ export default function Searchbar({ setResults }: SearchbarProps): JSX.Element {
     }
   }
 
+  async function fetchAllCircles(value: string) {
+    try {
+      const { data, error } = await supabase.from("circle").select("*");
+      if (error) throw error;
+      const results =
+        data &&
+        data.filter((circle) => {
+          return (
+            value &&
+            circle &&
+            circle.circle_name &&
+            circle.circle_name.toLowerCase().includes(value.toLocaleLowerCase())
+          );
+        });
+      if (results) setResults(results);
+    } catch (error) {
+      console.log("Error getting data:", error);
+    }
+  }
+
   const handleChange = (value: string) => {
     setInput(value);
-    fetchAllKpis(value);
+    if (isSearchKpi) {
+      fetchAllKpis(value);
+    } else {
+      fetchAllCircles(value);
+    }
   };
 
   return (
@@ -44,7 +73,7 @@ export default function Searchbar({ setResults }: SearchbarProps): JSX.Element {
       <input
         className="text-sm outline-0"
         type="text"
-        placeholder="Type to search for KPI's"
+        placeholder={isSearchKpi ? "Type to search for KPI's" : "Search circle"}
         value={input}
         onChange={(e) => handleChange(e.target.value)}
       />

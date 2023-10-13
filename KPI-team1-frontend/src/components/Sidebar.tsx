@@ -1,7 +1,6 @@
 import Logo from "../assets/images/logo .png";
 import { HiOutlineTableCells } from "react-icons/hi2";
 import { HiOutlinePresentationChartLine } from "react-icons/hi2";
-import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { HiStar } from "react-icons/hi2";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FiLogIn } from "react-icons/fi";
@@ -10,6 +9,9 @@ import { NavLink } from "react-router-dom";
 import { supabase } from "../supabase";
 import { User } from "../model/user";
 import { Circles } from "../model/circle";
+import Searchbar from "./Searchbar";
+import { useState } from "react";
+import SearchResultsList from "./SearchResultsList";
 
 interface SidebarProps {
   user: User;
@@ -24,6 +26,10 @@ export default function Sidebar({
   circles,
   setCircles,
 }: SidebarProps): JSX.Element {
+  const [results, setResults] = useState<any[]>([]);
+  const isSearchKpi: boolean = false;
+  const [input, setInput] = useState<string>("");
+
   const userCircles =
     circles &&
     circles.filter((circle) =>
@@ -57,8 +63,7 @@ export default function Sidebar({
             </NavLink>
             <div>
               <NavLink
-                to={"/kpi/circles"} //${circles[0]?.circle_user[0]?.circle_id
-                // to={"/kpi/1"}
+                to={"/kpi/circles"}
                 className={({ isActive }) =>
                   "text-xl flex items-center gap-3 p-4 self-stretch" +
                   (isActive
@@ -87,24 +92,21 @@ export default function Sidebar({
               </NavLink>
 
               <div className="bg-[#F0F0F6] flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
-                <div className="bg-[#FFF] flex py-3 px-4 justify-between items-center rounded-lg border border-[#D0D8DB]">
-                  <input
-                    className="text-sm outline-0"
-                    type="text"
-                    placeholder="Search circle"
-                  />
-                  <span className="text-xl text-[#7C7E7E]">
-                    <HiOutlineMagnifyingGlass />
-                  </span>
-                </div>
+                <Searchbar
+                  setResults={setResults}
+                  isSearchKpi={isSearchKpi}
+                  input={input}
+                  setInput={setInput}
+                />
+                <SearchResultsList
+                  results={results}
+                  setResults={setResults}
+                  setInput={setInput}
+                />
                 {userCircles &&
                   userCircles.map((circle, index) => (
                     <NavLink
                       to={`/kpi/circles/${circle.circle_user[0].circle_id}`}
-                      // {circles &&
-                      //   circles.map((circle, index) => (
-                      //     <NavLink
-                      //       to={`/kpi/${circle.circle_user[0].circle_id}`}
                       className={({ isActive }) =>
                         " rounded-lg flex items-center p-4 gap-4 self-stretch  text-black" +
                         (isActive ? " bg-[#FBBB21]" : "  hover:bg-gray-300")
