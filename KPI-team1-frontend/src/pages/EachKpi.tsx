@@ -17,27 +17,29 @@ export default function EachKpi(): JSX.Element {
     {
       headerName: "KPI Name",
       field: "kpi_name",
-      width: 300,
+      width: 200,
       sortable: true,
       hideable: false,
       headerAlign: "center",
+      align: "center",
     },
     {
       headerName: "Circle Name",
       field: "circle_name",
-      width: 300,
+      width: 150,
       sortable: true,
       hideable: false,
       headerAlign: "center",
+      align: "center",
     },
-    // {
-    //   headerName: "Target",
-    //   field: "kpi_target",
-    //   width: 150,
-    //   sortable: false,
-    //   headerAlign: "center",
-    //   align: "center",
-    // },
+    {
+      headerName: "Target",
+      field: "kpi_target",
+      width: 150,
+      sortable: false,
+      headerAlign: "center",
+      align: "center",
+    },
     {
       headerName: "Latest Value",
       field: "latest_value",
@@ -118,22 +120,22 @@ export default function EachKpi(): JSX.Element {
     fetchKpi();
   }, [kpiId]);
 
-  const fetchCircleName = async (circleId: number) => {
-    try {
-      let { data: circleName, error } = await supabase
-        .from("circle")
-        .select("circle_name")
-        .eq("circle_id", circleId);
-      if (error) {
-        throw error;
-      }
-      return circleName && circleName[0].circle_name;
+  // const fetchCircleName = async (circleId: number) => {
+  //   try {
+  //     let { data: circleName, error } = await supabase
+  //       .from("circle")
+  //       .select("circle_name")
+  //       .eq("circle_id", circleId);
+  //     if (error) {
+  //       throw error;
+  //     }
+  //     return circleName && circleName[0].circle_name;
 
-      console.log("check circleName", circleName);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  //     console.log("check circleName", circleName);
+  //   } catch (error: any) {
+  //     console.log(error.message);
+  //   }
+  // };
 
   const filteredKpiDefinitions = periodicityOrder.map((periodicity) =>
     kpiDefinitions.filter((item) => item.periodicity === periodicity)

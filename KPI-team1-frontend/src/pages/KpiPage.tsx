@@ -14,6 +14,7 @@ import { Circles } from "../model/circle";
 
 interface OutletContext {
   circles: Circles[];
+  kpiDefinitions: KpiExtended[];
 }
 
 const other = {
@@ -120,23 +121,38 @@ const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
   const { circleId } = useParams();
+  const [selectedCircleId, setSelectedCircleId] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
-  const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
-  const [circleName, setCircleName] = useState("");
-  const { circles }: OutletContext = useOutletContext();
+  // const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
+  // const [circleName, setCircleName] = useState("");
+  const { circles, kpiDefinitions }: OutletContext = useOutletContext();
 
-  const findCircleName = () => {
-    if (circles) {
-      const foundCircleName = circles.find(
-        (circle) => circle.circle_user[0].circle_id === Number(circleId)
-      );
-      console.log("check circleName", foundCircleName);
-      if (foundCircleName) {
-        setCircleName(foundCircleName?.circle_name);
-      }
+  useEffect(() => {
+    if (circleId) {
+      setSelectedCircleId(circleId);
+    } else {
+      setSelectedCircleId("1");
     }
-  };
+  }, [circleId]);
+
+  const circleKpis =
+    kpiDefinitions &&
+    kpiDefinitions.filter(
+      (kpiDefinition) => kpiDefinition.circle_id === Number(selectedCircleId)
+    );
+
+  // const findCircleName = () => {
+  //   if (circles) {
+  //     const foundCircleName = circles.find(
+  //       (circle) => circle.circle_user[0].circle_id === Number(circleId)
+  //     );
+  //     console.log("check circleName", foundCircleName);
+  //     if (foundCircleName) {
+  //       setCircleName(foundCircleName?.circle_name);
+  //     }
+  //   }
+  // };
 
   const handleOpenModal = () => {
     setModalIsOpen(!modalIsOpen);
@@ -147,28 +163,28 @@ export default function KpiPage(): JSX.Element {
     handleOpenModal();
   };
 
-  const fetchKpiDefinitions = async () => {
-    try {
-      let { data: kpi_definition, error } = await supabase
-        .from("kpi_definition_with_latest_values")
-        .select("*")
-        .eq("circle_id", Number(circleId));
+  // const fetchKpiDefinitions = async () => {
+  //   try {
+  //     let { data: kpi_definition, error } = await supabase
+  //       .from("kpi_definition_with_latest_values")
+  //       .select("*")
+  //       .eq("circle_id", Number(selectedCircleId));
 
-      if (error) {
-        throw error;
-      }
-      setKpiDefinitions(kpi_definition || []);
-      findCircleName();
+  //     if (error) {
+  //       throw error;
+  //     }
+  //     setKpiDefinitions(kpi_definition || []);
+  //     // findCircleName();
 
-      console.log("check data", kpiDefinitions);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  //     console.log("check data", kpiDefinitions);
+  //   } catch (error: any) {
+  //     console.log(error.message);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchKpiDefinitions();
-  }, [circleId]);
+  // useEffect(() => {
+  //   fetchKpiDefinitions();
+  // }, [selectedCircleId]);
 
   const renderModalContent = () => {
     const [selectView, setSelectView] = useState<"values" | "history">(
@@ -371,7 +387,7 @@ export default function KpiPage(): JSX.Element {
   };
 
   const renderDataGrid = (periodicity: string) => {
-    const filteredKpiDefinitions = kpiDefinitions.filter(
+    const filteredKpiDefinitions = circleKpis.filter(
       (item) => item.periodicity === periodicity
     );
     if (filteredKpiDefinitions.length === 0) {
@@ -416,7 +432,7 @@ export default function KpiPage(): JSX.Element {
       <div className="flex">
         <div className="w-11/12 xl:w-800">
           <div className="text-2xl pb-4 border-b border-gray-300">
-            KPIs - {circleName}
+            KPIs - {circleKpis[0]?.circle_name}
           </div>
           {/* <div className=" text-xl font-medium">Monthly KPIs (test)</div> */}
           {/* <div className="shadow-md border-0 border-primary-light ">

@@ -24,6 +24,12 @@ export default function Sidebar({
   circles,
   setCircles,
 }: SidebarProps): JSX.Element {
+  const userCircles =
+    circles &&
+    circles.filter((circle) =>
+      circle.circle_user.find((c) => c.user_id === user.id)
+    );
+
   async function handleLogout() {
     let { error } = await supabase.auth.signOut();
     if (error) throw error;
@@ -51,7 +57,7 @@ export default function Sidebar({
             </NavLink>
             <div>
               <NavLink
-                to={`/kpi/circles/${circles[0]?.circle_user[0]?.circle_id}`}
+                to={"/kpi/circles"} //${circles[0]?.circle_user[0]?.circle_id
                 className={({ isActive }) =>
                   "text-xl flex items-center gap-3 p-4 self-stretch" +
                   (isActive
@@ -90,8 +96,8 @@ export default function Sidebar({
                     <HiOutlineMagnifyingGlass />
                   </span>
                 </div>
-                {circles &&
-                  circles.map((circle, index) => (
+                {userCircles &&
+                  userCircles.map((circle, index) => (
                     <NavLink
                       to={`/kpi/circles/${circle.circle_user[0].circle_id}`}
                       className={({ isActive }) =>

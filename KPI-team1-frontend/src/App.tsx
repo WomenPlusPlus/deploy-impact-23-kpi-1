@@ -6,7 +6,7 @@ import { User } from "./model/user";
 import { PiBell } from "react-icons/pi";
 import { Circles } from "./model/circle";
 import Searchbar from "./components/Searchbar";
-import { Kpi } from "./model/kpi";
+import { Kpi, KpiExtended } from "./model/kpi";
 import SearchResultsList from "./components/SearchResultsList";
 // import { EachKpi } from "./model/kpi";
 
@@ -18,6 +18,8 @@ const initialUser: User = {
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
+  const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
+
   const [results, setResults] = useState<Kpi[]>([]);
   // const periodicityOrder = [
   //   "daily",
@@ -81,18 +83,42 @@ export default function App() {
     try {
       const { data, error } = await supabase
         .from("circle")
-        .select("circle_name, circle_user!inner(*)")
-        .eq("circle_user.user_id", user.id);
+        .select("circle_name, circle_user!inner(*)");
+      // .eq("circle_user.user_id", user.id);
+      // .from("circle")
+      // .select("*");
       if (error) throw error;
       setCircles(data);
     } catch (error) {
       console.log("Error getting data:", error);
     }
   }
+
+  const fetchKpiDefinitions = async () => {
+    try {
+      let { data: kpi_definition, error } = await supabase
+        .from("kpi_definition_with_latest_values")
+        .select("*");
+      // .eq("circle_id", Number(selectedCircleId));
+
+      if (error) {
+        throw error;
+      }
+      setKpiDefinitions(kpi_definition || []);
+      // findCircleName();
+
+      console.log("check data", kpiDefinitions);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   useEffect(() => {
     fetchUser();
     getCircles();
+    fetchKpiDefinitions();
   }, [user.id]);
+  console.log("check all circles", circles);
 
   return (
     <div className="flex min-h-screen">
@@ -119,7 +145,7 @@ export default function App() {
           </div>
         </div>
         <div className="w-full bg-[#F9F9FA] h-full p-8">
-          <Outlet context={{ setUser, circles }} />
+          <Outlet context={{ setUser, circles, kpiDefinitions }} />
         </div>
       </div>
     </div>
