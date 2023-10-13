@@ -15,8 +15,6 @@ export default function LoginPage(): JSX.Element {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  console.log("check circles in login", circles);
-
   const navigate = useNavigate();
 
   async function handleLogin(e: React.SyntheticEvent) {

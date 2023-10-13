@@ -58,6 +58,7 @@ export default function Sidebar({
             <div>
               <NavLink
                 to={"/kpi/circles"} //${circles[0]?.circle_user[0]?.circle_id
+                // to={"/kpi/1"}
                 className={({ isActive }) =>
                   "text-xl flex items-center gap-3 p-4 self-stretch" +
                   (isActive
@@ -100,6 +101,10 @@ export default function Sidebar({
                   userCircles.map((circle, index) => (
                     <NavLink
                       to={`/kpi/circles/${circle.circle_user[0].circle_id}`}
+                      // {circles &&
+                      //   circles.map((circle, index) => (
+                      //     <NavLink
+                      //       to={`/kpi/${circle.circle_user[0].circle_id}`}
                       className={({ isActive }) =>
                         " rounded-lg flex items-center p-4 gap-4 self-stretch  text-black" +
                         (isActive ? " bg-[#FBBB21]" : "  hover:bg-gray-300")
@@ -115,13 +120,20 @@ export default function Sidebar({
               </div>
               <hr />
               <div>
-                <div className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]">
-                  <span>
-                    <AiOutlineSetting />
-                  </span>
-                  <div className="font-medium">Settings</div>
-                </div>
-                {user.id ? (
+                {user?.id ? (
+                  <NavLink
+                    to="/settings"
+                    className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]"
+                  >
+                    <span>
+                      <AiOutlineSetting />
+                    </span>
+                    <div className="font-medium">Settings</div>
+                  </NavLink>
+                ) : (
+                  <></>
+                )}
+                {user?.id ? (
                   <NavLink
                     to={"/"}
                     className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]"

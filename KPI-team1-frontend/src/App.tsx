@@ -2,13 +2,17 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
-import { User } from "./model/user";
-import { PiBell } from "react-icons/pi";
-import { Circles } from "./model/circle";
+// import { User } from "./model/user";
+// import { PiBell } from "react-icons/pi";
+// import { Circles } from "./model/circle";
 import Searchbar from "./components/Searchbar";
 import { Kpi, KpiExtended } from "./model/kpi";
 import SearchResultsList from "./components/SearchResultsList";
 // import { EachKpi } from "./model/kpi";
+import { User, UserDetails } from "./model/user";
+// import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
+import { PiBell } from "react-icons/pi";
+import { Circles } from "./model/circle";
 
 const initialUser: User = {
   id: "",
@@ -18,7 +22,7 @@ const initialUser: User = {
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
-  const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
+  // const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
 
   const [results, setResults] = useState<Kpi[]>([]);
   // const periodicityOrder = [
@@ -65,7 +69,9 @@ export default function App() {
   // const renderKpis = filteredKpiDefinitions.filter((kpi) => kpi.length !== 0);
 
   // console.log("check filter", renderKpis);
+  const [userDetails, setUserDetails] = useState<UserDetails>();
 
+  // TODO maybe move this functionality to LoginPage ?
   async function fetchUser() {
     try {
       const {
@@ -87,6 +93,8 @@ export default function App() {
       // .eq("circle_user.user_id", user.id);
       // .from("circle")
       // .select("*");
+      // .select("circle_name, circle_user!inner(*)")
+      // .eq("circle_user.user_id", user.id);
       if (error) throw error;
       setCircles(data);
     } catch (error) {
@@ -94,29 +102,34 @@ export default function App() {
     }
   }
 
-  const fetchKpiDefinitions = async () => {
-    try {
-      let { data: kpi_definition, error } = await supabase
-        .from("kpi_definition_with_latest_values")
-        .select("*");
-      // .eq("circle_id", Number(selectedCircleId));
+  // const fetchKpiDefinitions = async () => {
+  //   try {
+  //     let { data: kpi_definition, error } = await supabase
+  //       .from("kpi_definition_with_latest_values")
+  //       .select("*");
+  //     // .eq("circle_id", Number(selectedCircleId));
 
-      if (error) {
-        throw error;
-      }
-      setKpiDefinitions(kpi_definition || []);
-      // findCircleName();
+  //     if (error) {
+  //       throw error;
+  //     }
+  //     setKpiDefinitions(kpi_definition || []);
+  //     // findCircleName();
 
-      console.log("check data", kpiDefinitions);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  //     console.log("check data", kpiDefinitions);
+  //   } catch (error: any) {
+  //     console.log(error.message);
+  //   }
+  // };
+  async function fetchUserDetails() {
+    // TODO hardcoded for now - until DB is in order
+    setUserDetails({ username: "I'm a user", defaultCircleId: "someId" });
+  }
 
   useEffect(() => {
     fetchUser();
     getCircles();
-    fetchKpiDefinitions();
+    // fetchKpiDefinitions();
+    fetchUserDetails();
   }, [user.id]);
   console.log("check all circles", circles);
 
@@ -145,7 +158,9 @@ export default function App() {
           </div>
         </div>
         <div className="w-full bg-[#F9F9FA] h-full p-8">
-          <Outlet context={{ setUser, circles, kpiDefinitions }} />
+          <Outlet
+            context={{ setUser, circles, user, userDetails, setUserDetails }}
+          />
         </div>
       </div>
     </div>
