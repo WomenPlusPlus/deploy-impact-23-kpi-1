@@ -109,13 +109,17 @@ export default function Sidebar({
               </div>
               <hr />
               <div>
-                <div className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]">
-                  <span>
-                    <AiOutlineSetting />
-                  </span>
-                  <div className="font-medium">Settings</div>
-                </div>
-                {user.id ? (
+                {user?.id ? (
+                  <NavLink
+                    to="/settings"
+                    className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]"
+                  >
+                    <span>
+                      <AiOutlineSetting />
+                    </span>
+                    <div className="font-medium">Settings</div>
+                  </NavLink>) : <></>}
+                {user?.id ? (
                   <NavLink
                     to={"/"}
                     className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]"

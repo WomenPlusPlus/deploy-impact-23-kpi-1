@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
-import { User } from "./model/user";
+import { User, UserDetails } from "./model/user";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { PiBell } from "react-icons/pi";
 import { Circles } from "./model/circle";
@@ -15,7 +15,9 @@ const initialUser: User = {
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
+  const [userDetails, setUserDetails] = useState<UserDetails>();
 
+  // TODO maybe move this functionality to LoginPage ?
   async function fetchUser() {
     try {
       const {
@@ -41,9 +43,16 @@ export default function App() {
       console.log("Error getting data:", error);
     }
   }
+
+  async function fetchUserDetails() {
+    // TODO hardcoded for now - until DB is in order
+    setUserDetails({username: "I'm a user", defaultCircleId: "someId"})
+  }
+
   useEffect(() => {
     fetchUser();
     getCircles();
+    fetchUserDetails();
   }, [user.id]);
 
   return (
@@ -76,7 +85,7 @@ export default function App() {
           </div>
         </div>
         <div className="w-full bg-[#F9F9FA] h-full p-8">
-          <Outlet context={{ setUser, circles }} />
+          <Outlet context={{ setUser, circles, user, userDetails, setUserDetails }} />
         </div>
       </div>
     </div>
