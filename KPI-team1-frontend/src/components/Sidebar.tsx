@@ -8,7 +8,7 @@ import { FiLogIn } from "react-icons/fi";
 import { FiLogOut } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import { supabase } from "../supabase";
-import { User } from "../model/user";
+import { User, UserDetails } from "../model/user";
 import { Circles } from "../model/circle";
 
 interface SidebarProps {
@@ -16,6 +16,8 @@ interface SidebarProps {
   setUser: any;
   circles: Circles[];
   setCircles: (circles: Circles[]) => void;
+  userDetails: UserDetails,
+  setUserDetails: (userDetails: UserDetails) => void;
 }
 
 export default function Sidebar({
@@ -23,12 +25,15 @@ export default function Sidebar({
   setUser,
   circles,
   setCircles,
+  userDetails,
+  setUserDetails
 }: SidebarProps): JSX.Element {
   async function handleLogout() {
     let { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser({});
     setCircles([]);
+    setUserDetails({username: null, defaultCircleId: null});
   }
 
   return (
@@ -144,7 +149,7 @@ export default function Sidebar({
               </div>
               {user.id ? (
                 <div className="mt-16 px-4">
-                  <span>Welcome {user.email}</span>{" "}
+                  <span>Welcome {userDetails.username}</span>{" "}
                 </div>
               ) : (
                 <div></div>
