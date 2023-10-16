@@ -8,7 +8,7 @@ import AdminPage from "./pages/AdminPage.tsx";
 import KpiPage from "./pages/KpiPage.tsx";
 import EachKpi from "./pages/EachKpi.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
-import UserDetailsPage from "./pages/UserDetailsPage.tsx";
+import UserDetailsPage from "./pages/SettingsPage.tsx";
 
 const router = createBrowserRouter([
   {
