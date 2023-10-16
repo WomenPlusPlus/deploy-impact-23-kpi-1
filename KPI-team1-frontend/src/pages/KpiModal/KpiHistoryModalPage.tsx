@@ -7,20 +7,34 @@ const LOGS_HEADERS: GridColDef[] = [
   {
     headerName: "User",
     field: "user_name",
-    flex: 1,
+    flex: 3,
     sortable: true,
     headerAlign: "center",
     align: "center",
+    renderCell: (params) => {
+      const circleName = params.row.user_circle_name || null;
+      return (
+        <div className="text-center">
+          <span className="text-center">{params.value}</span>
+
+          {circleName && (
+            <div className="text-xs text-gray-400 text-center">
+              {circleName}
+            </div>
+          )}
+        </div>
+      );
+    },
   },
   //todo: update data base view
   {
     headerName: "Period",
     field: "standardized_date",
-    flex: 1,
+    flex: 2,
     sortable: true,
     headerAlign: "center",
     align: "center",
-    //to do update with helper
+    //todo update with helper function to get the right date format
     // renderCell: (params) => {
     //   return <>{params.value}</>;
     // }
@@ -28,19 +42,15 @@ const LOGS_HEADERS: GridColDef[] = [
   {
     headerName: "Date Entered",
     field: "period_date",
-    flex: 1,
+    flex: 2,
     sortable: true,
     headerAlign: "center",
     align: "center",
-    //to do update with helper
-    // renderCell: (params) => {
-    //   return <>{params.value}</>;
-    // }
   },
   {
     headerName: "Value entered",
     field: "value",
-    flex: 1,
+    flex: 2,
     sortable: true,
     headerAlign: "center",
     align: "center",
@@ -48,12 +58,12 @@ const LOGS_HEADERS: GridColDef[] = [
   {
     headerName: "Added on",
     field: "created_at",
-    flex: 1,
+    flex: 2,
     sortable: true,
     headerAlign: "center",
-    align: "center",
+    align: "left",
     renderCell: (params) => {
-      //todo: update with timezone
+      //todo: update with timezone as it seemt to show the utc time
       return <>{format(new Date(params.value), "yyyy-MM-dd HH'h'mm")}</>;
     },
   },
@@ -70,7 +80,8 @@ export default function KpiHistoryModalPage(): JSX.Element {
       let { data: kpi_logs, error } = await supabase
         .from("kpi_logs")
         .select("*");
-      //.eq("kpi_id", kpi_id);
+      //todo:filter by kpi_id and circle_id
+
       if (error) {
         console.log("Error getting kpi logs:", error);
       }

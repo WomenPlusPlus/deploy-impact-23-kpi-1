@@ -45,4 +45,6 @@ export interface KpiValue {
 
 export interface KpiLogs extends KpiValue {
   user_name: string;
+  user_circle_id: number;
+  user_circle_name: string;
 }

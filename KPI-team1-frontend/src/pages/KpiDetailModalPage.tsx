@@ -5,6 +5,7 @@ import { supabase } from "../supabase";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
 import { LinearProgress } from "@mui/material";
+import KpiHistoryModalPage from "./KpiModal/KpiHistoryModalPage";
 
 const other = {
   showCellVerticalBorder: true,
@@ -273,7 +274,7 @@ const KpiDetailModalPage = ({
             {renderSetTargetValue()}
           </>
         ) : (
-          <>history</>
+          <KpiHistoryModalPage />
         )}
       </>
     );
