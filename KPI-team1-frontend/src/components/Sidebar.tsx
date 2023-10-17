@@ -11,14 +11,13 @@ import { User, UserDetails } from "../model/user";
 import { Circles } from "../model/circle";
 import Searchbar from "./Searchbar";
 import { useState } from "react";
-import SearchResultsList from "./SearchResultsList";
 
 interface SidebarProps {
   user: User;
   setUser: any;
   circles: Circles[];
   setCircles: (circles: Circles[]) => void;
-  userDetails: UserDetails,
+  userDetails: UserDetails;
   setUserDetails: (userDetails: UserDetails) => void;
 }
 
@@ -28,24 +27,16 @@ export default function Sidebar({
   circles,
   setCircles,
   userDetails,
-  setUserDetails
+  setUserDetails,
 }: SidebarProps): JSX.Element {
-  const [results, setResults] = useState<any[]>([]);
   const isSearchKpi: boolean = false;
-  const [input, setInput] = useState<string>("");
-
-  const userCircles =
-    circles &&
-    circles.filter((circle) =>
-      circle.circle_user.find((c) => c.user_id === user.id)
-    );
 
   async function handleLogout() {
     let { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser({});
     setCircles([]);
-    setUserDetails({username: null, defaultCircleId: null});
+    setUserDetails({ username: null, defaultCircleId: null });
   }
 
   return (
@@ -97,19 +88,9 @@ export default function Sidebar({
               </NavLink>
 
               <div className="bg-[#F0F0F6] flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
-                <Searchbar
-                  setResults={setResults}
-                  isSearchKpi={isSearchKpi}
-                  input={input}
-                  setInput={setInput}
-                />
-                <SearchResultsList
-                  results={results}
-                  setResults={setResults}
-                  setInput={setInput}
-                />
-                {userCircles &&
-                  userCircles.map((circle, index) => (
+                <Searchbar isSearchKpi={isSearchKpi} />
+                {circles &&
+                  circles.map((circle, index) => (
                     <NavLink
                       to={`/kpi/circles/${circle.circle_user[0].circle_id}`}
                       className={({ isActive }) =>

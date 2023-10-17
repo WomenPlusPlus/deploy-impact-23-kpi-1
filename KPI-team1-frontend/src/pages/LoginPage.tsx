@@ -1,16 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../supabase";
 import Logo from "../assets/images/logo .png";
 import { Circles } from "../model/circle";
+import { UserDetails } from "../model/user";
 
 interface OutletContext {
   setUser: any;
   circles: Circles[];
+  userDetails: UserDetails;
+  setUserDetails: (UserDetails: UserDetails) => void;
 }
 
 export default function LoginPage(): JSX.Element {
-  const { setUser, circles }: OutletContext = useOutletContext();
+  const { setUser, circles, userDetails, setUserDetails }: OutletContext =
+    useOutletContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -30,8 +34,12 @@ export default function LoginPage(): JSX.Element {
             id: data.user.id,
             email: data.user.email,
           };
-          setUser(userData); // Update the user state in the App component
-          navigate("/kpi/circles/1"); // todo: will update this route after getting favorite circle (`/kpi/${circles[0]?.circle_user[0]?.circle_id}`)
+          setUser(userData);
+          if (userDetails) {
+            navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
+          } else {
+            navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
+          }
         }
         setError("Incorrect email or password. Please retry!");
       }
@@ -39,6 +47,7 @@ export default function LoginPage(): JSX.Element {
       console.error(error);
     }
   }
+  console.log("check userDetails", userDetails);
 
   return (
     <div className="flex flex-col items-center h-full">

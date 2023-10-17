@@ -6,10 +6,12 @@ import KpiDetailModalPage from "./KpiDetailModalPage";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
 import { useOutletContext, useParams } from "react-router-dom";
 import { Circles } from "../model/circle";
+import { UserDetails } from "../model/user";
 
 interface OutletContext {
   circles: Circles[];
   kpiDefinitions: KpiExtended[];
+  userDetails: UserDetails;
 }
 
 const other = {
@@ -76,17 +78,18 @@ const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
   const { circleId } = useParams();
-  const [selectedCircleId, setSelectedCircleId] = useState("");
+  const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
-  const [circleName, setCircleName] = useState("");
-  const { circles, kpiDefinitions }: OutletContext = useOutletContext();
+  // const [circleName, setCircleName] = useState("");
+  const { circles, kpiDefinitions, userDetails }: OutletContext =
+    useOutletContext();
 
   useEffect(() => {
     if (circleId) {
       setSelectedCircleId(circleId);
     } else {
-      setSelectedCircleId("1");
+      setSelectedCircleId(userDetails.defaultCircleId);
     }
   }, [circleId]);
 
