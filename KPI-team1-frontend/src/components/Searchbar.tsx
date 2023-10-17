@@ -6,13 +6,13 @@ import { Kpi } from "../model/kpi";
 import { GenericList } from "../generics/GenericList";
 import { useNavigate } from "react-router-dom";
 
-interface SearchbarProps {
+interface SearchBarProps {
   isSearchKpi: boolean;
 }
 
-export default function Searchbar({
+export default function SearchBar({
   isSearchKpi,
-}: SearchbarProps): JSX.Element {
+}: SearchBarProps): JSX.Element {
   const [input, setInput] = useState<string>("");
   const [circleResult, setCircleResult] = useState<CircleName[]>([]);
   const [kpiResult, setKpiResult] = useState<Kpi[]>([]);

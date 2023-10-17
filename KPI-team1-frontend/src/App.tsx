@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
 import { User, UserDetails } from "./model/user";
 import { PiBell } from "react-icons/pi";
 import { Circles } from "./model/circle";
 import { KpiExtended } from "./model/kpi";
-import Searchbar from "./components/Searchbar";
+import SideBar from "./components/Sidebar";
+import SearchBar from "./components/Searchbar";
 
 const initialUser: User = {
   id: "",
@@ -92,7 +92,7 @@ export default function App() {
   return (
     <div className="flex min-h-screen">
       <div className="w-min shadow-lg">
-        <Sidebar
+        <SideBar
           user={user}
           setUser={setUser}
           circles={circles}
@@ -104,7 +104,7 @@ export default function App() {
       <div className="flex flex-col grow">
         <div className="flex items-start justify-between py-4 px-8 border-b border-[#D0D8DB] ">
           <div className="flex flex-col w-1/2">
-            <Searchbar isSearchKpi={isSearchKpi} />
+            <SearchBar isSearchKpi={isSearchKpi} />
           </div>
 
           <div className="flex justify-end items-center gap-20 border-l border-[#D0D8DB] w-1/3 py-1.5">

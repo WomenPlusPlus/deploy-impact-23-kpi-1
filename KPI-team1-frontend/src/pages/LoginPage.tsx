@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../supabase";
 import Logo from "../assets/images/logo .png";
@@ -47,7 +47,6 @@ export default function LoginPage(): JSX.Element {
       console.error(error);
     }
   }
-  console.log("check userDetails", userDetails);
 
   return (
     <div className="flex flex-col items-center h-full">

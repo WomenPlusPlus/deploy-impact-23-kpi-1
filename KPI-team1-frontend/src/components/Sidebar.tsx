@@ -9,10 +9,9 @@ import { NavLink } from "react-router-dom";
 import { supabase } from "../supabase";
 import { User, UserDetails } from "../model/user";
 import { Circles } from "../model/circle";
-import Searchbar from "./Searchbar";
-import { useState } from "react";
+import SearchBar from "./Searchbar";
 
-interface SidebarProps {
+interface SideBarProps {
   user: User;
   setUser: any;
   circles: Circles[];
@@ -21,14 +20,14 @@ interface SidebarProps {
   setUserDetails: (userDetails: UserDetails) => void;
 }
 
-export default function Sidebar({
+export default function SideBar({
   user,
   setUser,
   circles,
   setCircles,
   userDetails,
   setUserDetails,
-}: SidebarProps): JSX.Element {
+}: SideBarProps): JSX.Element {
   const isSearchKpi: boolean = false;
 
   async function handleLogout() {
@@ -88,7 +87,7 @@ export default function Sidebar({
               </NavLink>
 
               <div className="bg-[#F0F0F6] flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
-                <Searchbar isSearchKpi={isSearchKpi} />
+                <SearchBar isSearchKpi={isSearchKpi} />
                 {circles &&
                   circles.map((circle, index) => (
                     <NavLink
