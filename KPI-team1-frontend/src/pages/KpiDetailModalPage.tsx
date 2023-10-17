@@ -24,10 +24,12 @@ const KpiDetailModalPage = ({
 }): JSX.Element => {
   const [selectView, setSelectView] = useState<"values" | "history">("values");
   const [kpiValues, setKpiValues] = useState<KpiValue[]>([]);
-  const [comment, setComment] = useState<string>(""); //TODO: add comment to the database
+  const [comment, setComment] = useState<string>("");
   const [newDate, setNewDate] = useState<Date | null>(null);
   const [newValue, setNewValue] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [targetValue, setTargetValue] = useState<number | null>(null);
+  const [targetDate, setTargetDate] = useState<Date | null>(null);
 
   const fetchKpiValues = async () => {
     try {
@@ -57,7 +59,11 @@ const KpiDetailModalPage = ({
 
   const renderModalContent = () => {
     const renderAddNewValue = () => {
-      const handleSave = async (value: number | null, date: Date | null) => {
+      const handleSave = async (
+        value: number | null,
+        date: Date | null,
+        comment: string | null
+      ) => {
         try {
           const { data, error } = await supabase
             .from("kpi_values_history")
@@ -67,13 +73,14 @@ const KpiDetailModalPage = ({
                 value: value,
                 circle_id: circleId,
                 period_date: date,
+                comment: comment,
                 action: "CREATE",
               },
             ])
             .select("*");
 
           if (error) {
-            console.log("Error inserting new value:", error.message);
+            alert(`Error inserting new value \nDetails: ${error.message}`);
           }
           if (data) {
             fetchKpiValues();
@@ -121,7 +128,7 @@ const KpiDetailModalPage = ({
               rows={3}
               placeholder="Optional: add comment to your changes"
               onChange={(e) => {
-                setNewValue(parseInt(e.target.value));
+                setComment(e.target.value);
               }}
             />
           </label>
@@ -131,7 +138,7 @@ const KpiDetailModalPage = ({
             </button>
             <button
               className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium"
-              onClick={() => handleSave(newValue, newDate)}
+              onClick={() => handleSave(newValue, newDate, comment)}
             >
               Save
             </button>
@@ -166,6 +173,16 @@ const KpiDetailModalPage = ({
           headerAlign: "center",
           align: "center",
         },
+
+        {
+          headerName: "Comment",
+          field: "comment",
+          flex: 1,
+          sortable: false,
+          filterable: false,
+          headerAlign: "center",
+          align: "center",
+        },
         {
           headerName: "Updated by",
           field: "user_name",
@@ -174,22 +191,20 @@ const KpiDetailModalPage = ({
           filterable: false,
           headerAlign: "center",
           align: "center",
-        },
-        {
-          headerName: "Updated at",
-          field: "created_at",
-          flex: 1,
-          sortable: false,
-          filterable: false,
-          headerAlign: "center",
-          align: "center",
           renderCell: (params) => {
-            const date = params.value ? new Date(params.value as string) : null;
-            if (date === null) {
-              return null;
-            } else {
-              return date.toLocaleDateString("en-CH");
-            }
+            const date = params.row.created_at
+              ? new Date(params.row.created_at as string)
+              : null;
+            return (
+              <div>
+                <div className="text-center">{params.value}</div>
+                {date ? (
+                  <div className="text-center">
+                    {date.toLocaleDateString("en-CH")}
+                  </div>
+                ) : null}
+              </div>
+            );
           },
         },
       ];
