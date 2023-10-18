@@ -22,6 +22,7 @@ export interface Kpi {
 export interface KpiExtended extends Kpi {
   circle_kpidef_id: number;
   circle_id: number;
+  circle_name: string;
   kpi_created_at: string | null;
   kpi_updated_at: string | null;
   latest_value: Number;
