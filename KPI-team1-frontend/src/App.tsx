@@ -1,11 +1,12 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
 import { User, UserDetails } from "./model/user";
-import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { PiBell } from "react-icons/pi";
 import { Circles } from "./model/circle";
+import { KpiExtended } from "./model/kpi";
+import SideBar from "./components/Sidebar";
+import SearchBar from "./components/Searchbar";
 
 const initialUser: User = {
   id: "",
@@ -15,7 +16,12 @@ const initialUser: User = {
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
   const [circles, setCircles] = useState<Circles[]>([]);
-  const [userDetails, setUserDetails] = useState<UserDetails>();
+  const isSearchKpi: boolean = true;
+  const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
+  const [userDetails, setUserDetails] = useState<UserDetails>({
+    username: null,
+    defaultCircleId: null,
+  });
 
   // TODO maybe move this functionality to LoginPage ?
   async function fetchUser() {
@@ -45,38 +51,62 @@ export default function App() {
   }
 
   async function fetchUserDetails() {
-    // TODO hardcoded for now - until DB is in order
-    setUserDetails({username: "I'm a user", defaultCircleId: "someId"})
+    try {
+      const { data, error } = await supabase
+        .from("username_with_default_circle")
+        .select("user_name, circle_id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error) throw error;
+      setUserDetails({
+        username: data.user_name,
+        defaultCircleId: data.circle_id,
+      });
+    } catch (error) {
+      console.log("Error getting data:", error);
+    }
   }
+
+  const fetchKpiDefinitions = async () => {
+    try {
+      let { data: kpi_definition, error } = await supabase
+        .from("kpi_definition_with_latest_values")
+        .select("*");
+      if (error) {
+        throw error;
+      }
+      setKpiDefinitions(kpi_definition || []);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
     fetchUser();
     getCircles();
+    fetchKpiDefinitions();
     fetchUserDetails();
   }, [user.id]);
 
   return (
     <div className="flex min-h-screen">
       <div className="w-min shadow-lg">
-        <Sidebar
+        <SideBar
           user={user}
           setUser={setUser}
           circles={circles}
           setCircles={setCircles}
+          userDetails={userDetails}
+          setUserDetails={setUserDetails}
         />
       </div>
-      <div className="flex flex-col w-full">
-        <div className="flex items-center justify-between py-4 px-8 border-b border-[#D0D8DB] ">
-          <div className="bg-[#FFF] flex py-3 px-4 justify-between items-center rounded-lg border border-[#D0D8DB] w-1/2">
-            <input
-              className="text-sm outline-0"
-              type="text"
-              placeholder="Type to search for KPI's"
-            />
-            <span className="text-xl text-[#7C7E7E]">
-              <HiOutlineMagnifyingGlass />
-            </span>
+      <div className="flex flex-col grow">
+        <div className="flex items-start justify-between py-4 px-8 border-b border-[#D0D8DB] ">
+          <div className="flex flex-col w-1/2">
+            <SearchBar isSearchKpi={isSearchKpi} />
           </div>
+
           <div className="flex justify-end items-center gap-20 border-l border-[#D0D8DB] w-1/3 py-1.5">
             <span className="text-xl">
               <PiBell />
@@ -85,7 +115,16 @@ export default function App() {
           </div>
         </div>
         <div className="w-full bg-[#F9F9FA] h-full p-8">
-          <Outlet context={{ setUser, circles, user, userDetails, setUserDetails }} />
+          <Outlet
+            context={{
+              setUser,
+              circles,
+              user,
+              userDetails,
+              setUserDetails,
+              kpiDefinitions,
+            }}
+          />
         </div>
       </div>
     </div>
