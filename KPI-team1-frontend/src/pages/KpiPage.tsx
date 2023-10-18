@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { supabase } from "../supabase";
 import { KpiExtended } from "../model/kpi";
 import KpiDetailModalPage from "./KpiDetailModalPage";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
@@ -81,8 +80,7 @@ export default function KpiPage(): JSX.Element {
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
-  // const [circleName, setCircleName] = useState("");
-  const { circles, kpiDefinitions, userDetails }: OutletContext =
+  const { kpiDefinitions, userDetails }: OutletContext =
     useOutletContext();
 
   useEffect(() => {
