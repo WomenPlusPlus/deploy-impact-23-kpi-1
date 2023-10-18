@@ -6,11 +6,15 @@ import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
 import { useOutletContext, useParams } from "react-router-dom";
 import { Circles } from "../model/circle";
 import { UserDetails } from "../model/user";
+import { TbCirclePlus } from "react-icons/tb";
+import AddKpiModalPage from "./AddKpiModalPage";
 
 interface OutletContext {
   circles: Circles[];
   kpiDefinitions: KpiExtended[];
   userDetails: UserDetails;
+  // fetchKpiDefinitions: () => void;
+  fetchKpiDefinitions: () => Promise<void>;
 }
 
 const other = {
@@ -80,8 +84,10 @@ export default function KpiPage(): JSX.Element {
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
-  const { kpiDefinitions, userDetails }: OutletContext =
+  const { kpiDefinitions, userDetails, fetchKpiDefinitions }: OutletContext =
     useOutletContext();
+
+  console.log("fetchKpiDefinitions in KpiPage:", fetchKpiDefinitions); // Log it here
 
   useEffect(() => {
     if (circleId) {
@@ -158,12 +164,27 @@ export default function KpiPage(): JSX.Element {
 
       <div className="flex">
         <div className="w-11/12 xl:w-800">
-          <div className="text-2xl pb-4 border-b border-gray-300">
+          <div className="flex justify-between text-2xl pb-4 border-b border-gray-300">
             KPIs - {circleKpis[0]?.circle_name}
+            <button
+              className="flex justify-center items-center py-2 px-6 gap-2.5 rounded-md bg-[#FBBB21] text-[#131313] text-base font-semibold cursor-pointer hover:bg-yellow-600"
+              onClick={handleOpenModal}
+            >
+              <span>
+                <TbCirclePlus />
+              </span>
+              <div>KPI</div>
+            </button>
           </div>
           {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}
         </div>
       </div>
+      <AddKpiModalPage
+        isOpen={modalIsOpen}
+        onRequestClose={handleOpenModal}
+        circleId={Number(selectedCircleId)}
+        fetchKpiDefinitions={fetchKpiDefinitions}
+      />
     </>
   );
 }

@@ -23,6 +23,8 @@ export default function App() {
     defaultCircleId: null,
   });
 
+  console.log("check kpiDefinition", kpiDefinitions);
+
   // TODO maybe move this functionality to LoginPage ?
   async function fetchUser() {
     try {
@@ -68,7 +70,7 @@ export default function App() {
     }
   }
 
-  const fetchKpiDefinitions = async () => {
+  async function fetchKpiDefinitions() {
     try {
       let { data: kpi_definition, error } = await supabase
         .from("kpi_definition_with_latest_values")
@@ -80,7 +82,7 @@ export default function App() {
     } catch (error: any) {
       console.log(error.message);
     }
-  };
+  }
 
   useEffect(() => {
     fetchUser();
@@ -123,6 +125,8 @@ export default function App() {
               userDetails,
               setUserDetails,
               kpiDefinitions,
+              fetchKpiDefinitions,
+              // fetchKpiDefinitions,
             }}
           />
         </div>
