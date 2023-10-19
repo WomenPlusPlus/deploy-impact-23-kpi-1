@@ -15,6 +15,7 @@ select
   t1.latest_user_id,
   t1.latest_standardized_date,
   c.circle_name,
+  t.target_id,
   t.target_value
 from
   circle_kpi_definition ckd
