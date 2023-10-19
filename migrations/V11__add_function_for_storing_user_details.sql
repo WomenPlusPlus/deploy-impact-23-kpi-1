@@ -3,7 +3,8 @@ or replace function update_username_and_default_circle (
     p_user_id uuid,
     p_username text,
     p_default_circle_id int
-) returns void as $ $ DECLARE v_default_circle_exists boolean;
+) returns void as $$
+DECLARE v_default_circle_exists boolean;
 
 BEGIN -- Update username in kpi_user table
 UPDATE
@@ -54,4 +55,4 @@ where
 
 end;
 
-$ $ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
