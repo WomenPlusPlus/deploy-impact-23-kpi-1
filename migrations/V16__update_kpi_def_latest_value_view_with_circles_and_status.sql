@@ -1,4 +1,6 @@
-CREATE OR REPLACE VIEW public.kpi_definition_with_latest_values AS
+DROP VIEW IF EXISTS public.kpi_definition_with_latest_values;
+
+CREATE VIEW public.kpi_definition_with_latest_values AS
 select
   ckd.circle_kpidef_id,
   ckd.circle_id,
@@ -11,8 +13,8 @@ select
   kd.unit,
   kd.created_at as kpi_created_at,
   kd.updated_at as kpi_updated_at,
-  kd.is_approved,
   kd.active,
+  kd.is_approved,
   t1.latest_value,
   t1.latest_user_id,
   t1.latest_standardized_date,
@@ -48,4 +50,4 @@ from
   join circle c on t1.circle_id = c.circle_id
   and ckd.circle_id = t1.circle_id
   left join target t on kd.kpi_id = t.kpi_id and ckd.circle_id =t.circle_id
-  order by 1
+  order by 1;
