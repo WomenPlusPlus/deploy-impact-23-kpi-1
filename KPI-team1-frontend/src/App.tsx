@@ -113,7 +113,13 @@ export default function App() {
             <span className="text-xl">
               <PiBell />
             </span>
-            <div className="text-xl">{user.email}</div>
+            {user && (
+              <div className="text-xl">
+                {userDetails && userDetails.username
+                  ? userDetails.username
+                  : user.email}
+              </div>
+            )}
           </div>
         </div>
         <div className="w-full bg-[#F9F9FA] h-full p-8">
@@ -125,8 +131,8 @@ export default function App() {
               userDetails,
               setUserDetails,
               kpiDefinitions,
+              setKpiDefinitions,
               fetchKpiDefinitions,
-              // fetchKpiDefinitions,
             }}
           />
         </div>

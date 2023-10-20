@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowParams } from "@mui/x-data-grid";
 import { KpiExtended } from "../model/kpi";
 import KpiDetailModalPage from "./KpiDetailModalPage";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
@@ -8,12 +8,14 @@ import { Circles } from "../model/circle";
 import { UserDetails } from "../model/user";
 import { TbCirclePlus } from "react-icons/tb";
 import AddKpiModalPage from "./AddKpiModalPage";
+import { HiMiniInformationCircle } from "react-icons/hi2";
+import { Tooltip } from "@mui/material";
 
 interface OutletContext {
   circles: Circles[];
   kpiDefinitions: KpiExtended[];
+  setKpiDefinitions: React.Dispatch<React.SetStateAction<KpiExtended[]>>;
   userDetails: UserDetails;
-  // fetchKpiDefinitions: () => void;
   fetchKpiDefinitions: () => Promise<void>;
 }
 
@@ -69,7 +71,34 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
     headerName: "Description",
     field: "description",
-    width: 300,
+    width: 150,
+    sortable: false,
+    filterable: false,
+    headerAlign: "center",
+    align: "center",
+  },
+  {
+    headerName: "",
+    field: "",
+    renderCell: (cellValues) => {
+      return cellValues.row.is_approved === false ? (
+        <Tooltip
+          title={<span>You can add values once the KPI is approved</span>}
+        >
+          <div className="flex py-1.5 px-3 justify-center items-center gap-2 rounded-3xl border-[#FBBB21] border-2 hover:bg-gray-300">
+            <div className="text-sm font-medium leading-5 text-[#131313]">
+              pending
+            </div>
+            <span className="text-[#7C7E7E] text-base">
+              <HiMiniInformationCircle />
+            </span>
+          </div>
+        </Tooltip>
+      ) : (
+        <div></div>
+      );
+    },
+    width: 150,
     sortable: false,
     filterable: false,
     headerAlign: "center",
@@ -83,11 +112,14 @@ export default function KpiPage(): JSX.Element {
   const { circleId } = useParams();
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [addKpiModalIsOpen, setAddKpiModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
-  const { kpiDefinitions, userDetails, fetchKpiDefinitions }: OutletContext =
-    useOutletContext();
-
-  console.log("fetchKpiDefinitions in KpiPage:", fetchKpiDefinitions); // Log it here
+  const {
+    kpiDefinitions,
+    setKpiDefinitions,
+    userDetails,
+    fetchKpiDefinitions,
+  }: OutletContext = useOutletContext();
 
   useEffect(() => {
     if (circleId) {
@@ -107,6 +139,10 @@ export default function KpiPage(): JSX.Element {
     setModalIsOpen(!modalIsOpen);
   };
 
+  const handleOpenAddKpiModal = () => {
+    setAddKpiModalIsOpen(!addKpiModalIsOpen);
+  };
+
   const handleClick = (kpi: KpiExtended) => {
     setSelectedKpi(kpi);
     handleOpenModal();
@@ -119,19 +155,27 @@ export default function KpiPage(): JSX.Element {
     if (filteredKpiDefinitions.length === 0) {
       return null;
     }
+
+    const getRowClassName = (params: any) => {
+      if (params.row.is_approved === false) {
+        return "bg-orange-200";
+      }
+      return "";
+    };
+
     return (
       <div key={periodicity}>
         <div className="text-xl font-medium">{`${periodicity
           .charAt(0)
           .toUpperCase()}${periodicity.slice(1)} KPIs`}</div>
-        <div className="shadow-md border-0 border-primary-light">
+        <div className="shadow-md border-0 border-primary-light mb-8 cursor-pointer">
           <DataGrid
             getRowId={(row) => row.circle_kpidef_id}
             rows={filteredKpiDefinitions}
             rowSelection={false}
             columns={HEADER_KPI_COLUMNS}
             onRowClick={(params) => {
-              handleClick(params.row);
+              params.row.is_approved === true && handleClick(params.row);
             }}
             classes={{
               columnHeaders: "bg-customPurple",
@@ -145,6 +189,7 @@ export default function KpiPage(): JSX.Element {
               },
             }}
             {...other}
+            getRowClassName={getRowClassName}
           />
         </div>
       </div>
@@ -168,7 +213,7 @@ export default function KpiPage(): JSX.Element {
             KPIs - {circleKpis[0]?.circle_name}
             <button
               className="flex justify-center items-center py-2 px-6 gap-2.5 rounded-md bg-[#FBBB21] text-[#131313] text-base font-semibold cursor-pointer hover:bg-yellow-600"
-              onClick={handleOpenModal}
+              onClick={handleOpenAddKpiModal}
             >
               <span>
                 <TbCirclePlus />
@@ -180,10 +225,12 @@ export default function KpiPage(): JSX.Element {
         </div>
       </div>
       <AddKpiModalPage
-        isOpen={modalIsOpen}
-        onRequestClose={handleOpenModal}
+        isOpen={addKpiModalIsOpen}
+        onRequestClose={handleOpenAddKpiModal}
         circleId={Number(selectedCircleId)}
         fetchKpiDefinitions={fetchKpiDefinitions}
+        kpiDefinitions={kpiDefinitions}
+        setKpiDefinitions={setKpiDefinitions}
       />
     </>
   );
