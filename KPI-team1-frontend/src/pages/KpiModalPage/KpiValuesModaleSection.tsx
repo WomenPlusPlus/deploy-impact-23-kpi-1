@@ -1,25 +1,28 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { getDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 import { supabase } from "../../supabase";
-import { useState } from "react";
-import { LinearProgress } from "@mui/material";
+import { useState, useEffect } from "react";
+import { LinearProgress, TextField } from "@mui/material";
 import { KpiExtended, KpiValue } from "../../model/kpi";
+import { format, set } from "date-fns";
 
 const other = {
   showCellVerticalBorder: true,
   showColumnVerticalBorder: true,
 };
 
-const KpiValuesModalPage = ({
+const KpiValuesModalSection = ({
   kpi,
   circleId,
   fetchKpiValues,
+  fetchKpiDefinition,
   isLoading,
   kpiValues,
 }: {
   kpi: KpiExtended;
   circleId: number;
   fetchKpiValues: () => void;
+  fetchKpiDefinition: () => void;
   isLoading: boolean;
   kpiValues: KpiValue[];
 }): JSX.Element => {
@@ -27,7 +30,6 @@ const KpiValuesModalPage = ({
   const [newDate, setNewDate] = useState<Date | null>(null);
   const [newValue, setNewValue] = useState<number | null>(null);
   const [targetValue, setTargetValue] = useState<number | null>(null);
-  const [targetDate, setTargetDate] = useState<Date | null>(null);
 
   const PREVIOUS_VALUES_COLUMNS: GridColDef[] = [
     {
@@ -91,15 +93,17 @@ const KpiValuesModalPage = ({
           <div>
             <div className="text-center">{params.value}</div>
             {date ? (
-              <div className="text-center">
-                {date.toLocaleDateString("en-CH")}
-              </div>
+              <div className="text-center">{format(date, "yyyy-MM-dd")}</div>
             ) : null}
           </div>
         );
       },
     },
   ];
+
+  useEffect(() => {
+    setTargetValue(kpi.target_value);
+  }, [kpi]);
 
   const renderAddNewValue = () => {
     const handleSave = async (
@@ -214,25 +218,53 @@ const KpiValuesModalPage = ({
     );
   };
   const renderSetTargetValue = () => {
+    const handleSaveTarget = async (value: string | null) => {
+      if (!value) return;
+      const numberedValue = Number(value);
+      if (numberedValue === kpi.target_value) return;
+      try {
+        const { data, error } = await supabase
+          .from("target")
+          .upsert({
+            target_id: kpi.target_id ? kpi.target_id : undefined,
+            kpi_id: kpi.kpi_id,
+            circle_id: circleId,
+            target_value: numberedValue,
+          })
+          .select("target_value");
+        if (data) {
+          const result = data[0].target_value;
+          alert(`Target value successfully updated to ${result}`);
+          setTargetValue(result);
+        }
+        if (error) {
+          alert(`Error updating the target \nDetails: ${error.message}`);
+          return;
+        }
+        fetchKpiDefinition();
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    };
+
     return (
       <>
         <div className="mt-4 text-2xl">Set a target value for this year</div>
         <div className="flex justify-between my-2">
-          <label className="font-medium w-full mr-2">
-            Due Date
-            <input
-              className="block w-full font-normal text-neutral-400 p-2 border rounded-md border-neutral-400"
-              name="target date"
-              type="date"
-            />
-          </label>
           <label className="font-medium w-full">
-            Enter the target value
+            Enter a target value
             <input
-              className="block w-full font-normal text-neutral-400 p-2 border rounded-md border-neutral-400"
+              className="block w-full font-normal text-neutral-800 p-2 border rounded-md border-neutral-400"
               name="target value"
               type="number"
               placeholder="What's your target"
+              onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
+                handleSaveTarget(event.target.value);
+              }}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setTargetValue(Number(event.target.value));
+              }}
+              value={targetValue || undefined}
             />
           </label>
         </div>
@@ -249,4 +281,4 @@ const KpiValuesModalPage = ({
   );
 };
 
-export default KpiValuesModalPage;
+export default KpiValuesModalSection;

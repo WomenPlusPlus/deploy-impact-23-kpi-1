@@ -88,7 +88,7 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
   },
   {
     headerName: "Target",
-    field: "kpi_target",
+    field: "target_value",
     width: 150,
     sortable: false,
     headerAlign: "center",
@@ -102,9 +102,8 @@ export default function KpiPage(): JSX.Element {
   const { circleId } = useParams();
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
-  const { kpiDefinitions, userDetails }: OutletContext =
-    useOutletContext();
+  const [selectedKpiId, setSelectedKpiId] = useState<number | null>(null);
+  const { kpiDefinitions, userDetails }: OutletContext = useOutletContext();
 
   useEffect(() => {
     if (circleId) {
@@ -124,8 +123,8 @@ export default function KpiPage(): JSX.Element {
     setModalIsOpen(!modalIsOpen);
   };
 
-  const handleClick = (kpi: KpiExtended) => {
-    setSelectedKpi(kpi);
+  const handleClick = (kpi: number) => {
+    setSelectedKpiId(kpi);
     handleOpenModal();
   };
 
@@ -148,7 +147,7 @@ export default function KpiPage(): JSX.Element {
             rowSelection={false}
             columns={HEADER_KPI_COLUMNS}
             onRowClick={(params) => {
-              handleClick(params.row);
+              handleClick(params.row.kpi_id);
             }}
             classes={{
               columnHeaders: "bg-customPurple",
@@ -170,11 +169,11 @@ export default function KpiPage(): JSX.Element {
 
   return (
     <>
-      {selectedKpi && (
+      {selectedKpiId && (
         <KpiDetailModalPage
           isOpen={modalIsOpen}
           onRequestClose={handleOpenModal}
-          kpi={selectedKpi}
+          kpiId={selectedKpiId}
           circleId={Number(circleId)}
         />
       )}

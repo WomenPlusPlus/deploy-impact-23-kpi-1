@@ -28,6 +28,8 @@ export interface KpiExtended extends Kpi {
   latest_value: Number;
   latest_standardized_date: string;
   latest_user_id: string;
+  target_id: number | null;
+  target_value: number | null;
 }
 
 //kpi_values_period_standardized

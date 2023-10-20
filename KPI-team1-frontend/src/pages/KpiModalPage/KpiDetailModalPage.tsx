@@ -2,31 +2,32 @@ import { useEffect, useState } from "react";
 import ModalRightSide from "../../components/ModalRightSide";
 import { KpiExtended, KpiValue } from "../../model/kpi";
 import { supabase } from "../../supabase";
-import KpiValuesModalPage from "./KpiValuesModalPage";
+import KpiValuesModalSection from "./KpiValuesModaleSection";
 
 const KpiDetailModalPage = ({
   isOpen,
   onRequestClose,
-  kpi,
+  kpiId,
   circleId,
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
-  kpi: KpiExtended;
+  kpiId: number;
   circleId: number;
 }): JSX.Element => {
   const [selectView, setSelectView] = useState<"values" | "history">("values");
+  const [kpiDefinition, setKpiDefinition] = useState<KpiExtended | null>(null);
   const [kpiValues, setKpiValues] = useState<KpiValue[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchKpiValues = async () => {
     try {
       setIsLoading(true);
-      if (kpi) {
+      if (kpiId) {
         let { data: kpi_values, error } = await supabase
           .from("kpi_values_period_standardized")
           .select("*")
-          .eq("kpi_id", kpi.kpi_id)
+          .eq("kpi_id", kpiId)
           .eq("circle_id", circleId);
 
         if (error) {
@@ -41,15 +42,38 @@ const KpiDetailModalPage = ({
     }
   };
 
+  const fetchKpiDefinition = async () => {
+    try {
+      let { data: kpi, error } = await supabase
+        .from("kpi_definition_with_latest_values")
+        .select("*")
+        .eq("kpi_id", kpiId)
+        .eq("circle_id", circleId);
+
+      if (error) {
+        alert(error.message);
+      }
+      if (kpi) {
+        setKpiDefinition(kpi[0]);
+      }
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
   useEffect(() => {
+    fetchKpiDefinition();
     fetchKpiValues();
-  }, [kpi]);
+  }, [kpiId]);
 
   const renderModalContent = () => {
+    if (!kpiDefinition) {
+      return null;
+    }
     return (
       <>
         <div className="text-center text-2xl font-light">
-          KPI - {kpi?.kpi_name}
+          KPI - {kpiDefinition?.kpi_name}
         </div>
         <div className="mb-2">
           <button
@@ -70,10 +94,11 @@ const KpiDetailModalPage = ({
           </button>
         </div>
         {selectView === "values" ? (
-          <KpiValuesModalPage
-            kpi={kpi}
+          <KpiValuesModalSection
+            kpi={kpiDefinition}
             circleId={circleId}
             fetchKpiValues={fetchKpiValues}
+            fetchKpiDefinition={fetchKpiDefinition}
             isLoading={isLoading}
             kpiValues={kpiValues}
           />
