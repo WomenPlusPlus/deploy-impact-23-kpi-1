@@ -73,7 +73,7 @@ const other = {
   showColumnVerticalBorder: true,
 };
 
-export default function KpiHistoryModalPage(): JSX.Element {
+export default function KpiHistoryModalSection(): JSX.Element {
   const [kpiLogs, setKpiLogs] = useState<KpiLogs[]>([]);
   const fetchKpiHistory = async () => {
     try {
