@@ -3,6 +3,8 @@ import { getWeek, getQuarter } from "date-fns";
 import { supabase } from "../supabase";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { KpiExtended } from "../model/kpi";
+import KpiDetailModalPage from "./KpiDetailModalPage";
 
 export default function EachKpi(): JSX.Element {
   const periodicityOrder = [
@@ -96,6 +98,18 @@ export default function EachKpi(): JSX.Element {
 
   const [kpiDefinitions, setKpiDefinitions] = useState<any[]>([]);
   const { kpiId } = useParams();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
+
+  const handleOpenModal = () => {
+    setModalIsOpen(!modalIsOpen);
+  };
+
+  const handleClick = (kpi: KpiExtended) => {
+    setSelectedKpi(kpi);
+    handleOpenModal();
+  };
+  console.log("check modal open", modalIsOpen);
 
   const fetchKpi = async () => {
     try {
@@ -109,8 +123,6 @@ export default function EachKpi(): JSX.Element {
       if (kpi_definition) {
         setKpiDefinitions(kpi_definition || []);
       }
-
-      console.log("check data", kpi_definition);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -134,15 +146,15 @@ export default function EachKpi(): JSX.Element {
             <div className="text-xl font-medium">{`${renderKpi[0].periodicity
               .charAt(0)
               .toUpperCase()}${renderKpi[0].periodicity.slice(1)} KPIs`}</div>
-            <div className="shadow-md border-0 border-primary-light">
+            <div className="shadow-md border-0 border-primary-light cursor-pointer">
               <DataGrid
                 getRowId={(row) => row.circle_kpidef_id}
                 rows={renderKpi}
                 rowSelection={false}
                 columns={HEADER_KPI_COLUMNS}
-                // onRowClick={(params) => {
-                //   handleClick(params.row);
-                // }}
+                onRowClick={(params) => {
+                  handleClick(params.row);
+                }}
                 classes={{
                   columnHeaders: "bg-customPurple",
                   columnHeader: "uppercase",
@@ -157,6 +169,14 @@ export default function EachKpi(): JSX.Element {
             </div>
           </div>
         ))}
+      {selectedKpi && (
+        <KpiDetailModalPage
+          isOpen={modalIsOpen}
+          onRequestClose={handleOpenModal}
+          kpi={selectedKpi}
+          circleId={selectedKpi.circle_id}
+        />
+      )}
     </>
   );
 }

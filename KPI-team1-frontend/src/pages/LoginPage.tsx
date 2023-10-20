@@ -35,11 +35,12 @@ export default function LoginPage(): JSX.Element {
             email: data.user.email,
           };
           setUser(userData);
-          if (userDetails) {
-            navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
-          } else {
-            navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
-          }
+          // if (userDetails) {
+          navigate("/kpi/circles/3");
+          // ${userDetails.defaultCircleId}`);
+          // } else {
+          //   navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
+          // }
         }
         setError("Incorrect email or password. Please retry!");
       }

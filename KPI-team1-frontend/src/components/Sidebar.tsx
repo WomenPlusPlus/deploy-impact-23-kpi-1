@@ -86,14 +86,14 @@ export default function SideBar({
                 <div className="font-medium">Dashboard</div>
               </NavLink>
 
-              <div className="bg-[#F0F0F6] flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
+              <div className="w-56 bg-[#F0F0F6] flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
                 <SearchBar isSearchKpi={isSearchKpi} />
                 {circles &&
                   circles.map((circle, index) => (
                     <NavLink
                       to={`/kpi/circles/${circle.circle_user[0].circle_id}`}
                       className={({ isActive }) =>
-                        " rounded-lg flex items-center p-4 gap-4 self-stretch  text-black" +
+                        "rounded-lg flex items-center p-4 gap-4 self-stretch  text-black" +
                         (isActive ? " bg-[#FBBB21]" : "  hover:bg-gray-300")
                       }
                       key={index}
@@ -145,7 +145,14 @@ export default function SideBar({
               </div>
               {user.id ? (
                 <div className="mt-16 px-4">
-                  <span>Welcome {userDetails.username}</span>{" "}
+                  {user && (
+                    <span>
+                      Welcome{" "}
+                      {userDetails && userDetails.username
+                        ? userDetails.username
+                        : user.email}
+                    </span>
+                  )}
                 </div>
               ) : (
                 <div></div>
