@@ -11,6 +11,8 @@ select
   kd.unit,
   kd.created_at as kpi_created_at,
   kd.updated_at as kpi_updated_at,
+  kd.is_approved,
+  kd.active,
   t1.latest_value,
   t1.latest_user_id,
   t1.latest_standardized_date,
