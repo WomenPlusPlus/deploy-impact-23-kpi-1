@@ -3,6 +3,7 @@ import { supabase } from "../../supabase";
 import { KpiLogs } from "../../model/kpi";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
+import { getDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 const LOGS_HEADERS: GridColDef[] = [
   {
     headerName: "User",
@@ -26,18 +27,17 @@ const LOGS_HEADERS: GridColDef[] = [
       );
     },
   },
-  //todo: update data base view
+
   {
     headerName: "Period",
-    field: "standardized_date",
+    field: "historical_standardized_date",
     flex: 2,
     sortable: true,
     headerAlign: "center",
     align: "center",
-    //todo update with helper function to get the right date format
-    // renderCell: (params) => {
-    //   return <>{params.value}</>;
-    // }
+    renderCell: (params) => {
+      return getDisplayValueByPeriodicity(params.row.periodicity, params.value);
+    },
   },
   {
     headerName: "Date Entered",
@@ -63,7 +63,7 @@ const LOGS_HEADERS: GridColDef[] = [
     headerAlign: "center",
     align: "left",
     renderCell: (params) => {
-      //todo: update with timezone as it seemt to show the utc time
+      //todo: update with timezone as it seems to show the utc time
       return <>{format(new Date(params.value), "yyyy-MM-dd HH'h'mm")}</>;
     },
   },
@@ -79,7 +79,8 @@ export default function KpiHistoryModalPage(): JSX.Element {
     try {
       let { data: kpi_logs, error } = await supabase
         .from("kpi_logs")
-        .select("*");
+        .select("*")
+        .order("created_at", { ascending: false });
       //todo:filter by kpi_id and circle_id
 
       if (error) {
