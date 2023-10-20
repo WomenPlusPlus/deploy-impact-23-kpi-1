@@ -122,6 +122,7 @@ const KpiValuesModalSection = ({
               period_date: date,
               comment: comment,
               action: "CREATE",
+              periodicity: kpi?.periodicity,
             },
           ])
           .select("*");

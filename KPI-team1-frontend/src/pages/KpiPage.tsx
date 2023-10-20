@@ -152,6 +152,7 @@ export default function KpiPage(): JSX.Element {
             classes={{
               columnHeaders: "bg-customPurple",
               columnHeader: "uppercase",
+              row: "cursor-pointer",
             }}
             initialState={{
               pagination: {
