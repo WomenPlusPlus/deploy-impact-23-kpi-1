@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ModalRightSide from "../../components/ModalRightSide";
 import { KpiExtended, KpiValue } from "../../model/kpi";
 import { supabase } from "../../supabase";
-import KpiValuesModalSection from "./KpiValuesModaleSection";
+import KpiValuesModalSection from "./KpiValuesModalSection";
 
 const KpiDetailModalPage = ({
   isOpen,
