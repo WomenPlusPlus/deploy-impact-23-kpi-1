@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { KpiExtended } from "../model/kpi";
-import KpiDetailModalPage from "./KpiDetailModalPage";
+import KpiDetailModalPage from "./KpiModalPage/KpiDetailModalPage";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
 import { useOutletContext, useParams } from "react-router-dom";
 import { Circles } from "../model/circle";
@@ -26,14 +26,20 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     sortable: true,
     hideable: false,
     headerAlign: "center",
-  },
-  {
-    headerName: "Target",
-    field: "kpi_target",
-    width: 150,
-    sortable: false,
-    headerAlign: "center",
-    align: "center",
+    renderCell: (params) => {
+      if (params.row.unit === "%") {
+        return (
+          <>
+            <span>{params.value}</span>
+            <div className="ml-4 w-6 h-6 bg-amber-400 rounded-[100px] flex-col justify-center items-center gap-2 inline-flex">
+              <div className="w-[19px] text-center text-zinc-700 text-base font-medium font-['Inter']">
+                %
+              </div>
+            </div>
+          </>
+        );
+      }
+    },
   },
   {
     headerName: "Latest Value",
@@ -41,8 +47,17 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     width: 150,
     sortable: true,
     headerAlign: "center",
-
     align: "center",
+    renderCell: (params) => {
+      const value = params.value as number;
+      if (value === null) {
+        return null;
+      } else if (params.row.unit === "%") {
+        return value.toFixed(2) + "%";
+      } else {
+        return value.toLocaleString("fr-ch");
+      }
+    },
   },
   {
     headerName: "Last Update",
@@ -71,6 +86,14 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
     headerAlign: "center",
     align: "center",
   },
+  {
+    headerName: "Target",
+    field: "target_value",
+    width: 150,
+    sortable: false,
+    headerAlign: "center",
+    align: "center",
+  },
 ];
 
 const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
@@ -79,9 +102,8 @@ export default function KpiPage(): JSX.Element {
   const { circleId } = useParams();
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
-  const { kpiDefinitions, userDetails }: OutletContext =
-    useOutletContext();
+  const [selectedKpiId, setSelectedKpiId] = useState<number | null>(null);
+  const { kpiDefinitions, userDetails }: OutletContext = useOutletContext();
 
   useEffect(() => {
     if (circleId) {
@@ -101,8 +123,8 @@ export default function KpiPage(): JSX.Element {
     setModalIsOpen(!modalIsOpen);
   };
 
-  const handleClick = (kpi: KpiExtended) => {
-    setSelectedKpi(kpi);
+  const handleClick = (kpi: number) => {
+    setSelectedKpiId(kpi);
     handleOpenModal();
   };
 
@@ -125,11 +147,12 @@ export default function KpiPage(): JSX.Element {
             rowSelection={false}
             columns={HEADER_KPI_COLUMNS}
             onRowClick={(params) => {
-              handleClick(params.row);
+              handleClick(params.row.kpi_id);
             }}
             classes={{
               columnHeaders: "bg-customPurple",
               columnHeader: "uppercase",
+              row: "cursor-pointer",
             }}
             initialState={{
               pagination: {
@@ -147,11 +170,11 @@ export default function KpiPage(): JSX.Element {
 
   return (
     <>
-      {selectedKpi && (
+      {selectedKpiId && (
         <KpiDetailModalPage
           isOpen={modalIsOpen}
           onRequestClose={handleOpenModal}
-          kpi={selectedKpi}
+          kpiId={selectedKpiId}
           circleId={Number(circleId)}
         />
       )}
