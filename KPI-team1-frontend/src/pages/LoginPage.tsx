@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../supabase";
@@ -35,18 +36,22 @@ export default function LoginPage(): JSX.Element {
             email: data.user.email,
           };
           setUser(userData);
-          if (userDetails) {
-            navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
-          } else {
-            navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
-          }
+        } else {
+          setError("Incorrect email or password. Please retry!");
         }
-        setError("Incorrect email or password. Please retry!");
       }
     } catch (error) {
       console.error(error);
     }
   }
+
+  useEffect(() => {
+    if (userDetails && userDetails.defaultCircleId) {
+      navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
+    } else if (circles.length > 0) {
+      navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
+    }
+  }, [userDetails, circles]);
 
   return (
     <div className="flex flex-col items-center h-full">

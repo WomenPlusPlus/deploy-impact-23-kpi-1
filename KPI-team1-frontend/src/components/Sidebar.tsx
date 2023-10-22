@@ -86,7 +86,7 @@ export default function SideBar({
                 <div className="font-medium">Dashboard</div>
               </NavLink>
 
-              <div className="bg-[#F0F0F6] flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
+              <div className="w-56 bg-[#F0F0F6] flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
                 <SearchBar isSearchKpi={isSearchKpi} />
                 {circles &&
                   circles.map((circle, index) => (
@@ -145,7 +145,12 @@ export default function SideBar({
               </div>
               {user.id ? (
                 <div className="mt-16 px-4">
-                  <span>Welcome {userDetails.username}</span>{" "}
+                  <span>
+                    Welcome{" "}
+                    {userDetails && userDetails.username
+                      ? userDetails.username
+                      : user.email}
+                  </span>
                 </div>
               ) : (
                 <div></div>
