@@ -35,6 +35,7 @@ export default function AddKpiModalPage({
   const [unitValue, setUnitValue] = useState("numeric");
   const [formulaValue, setFormulaValue] = useState("aggregate");
   const [cumulativeValue, setCumulativeValue] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const addKpiToCircle = async (kpiId: number) => {
     try {
@@ -53,6 +54,7 @@ export default function AddKpiModalPage({
       }
       if (data) {
         console.log("check data add kpi to circle", data);
+        fetchKpiDefinitions();
       }
     } catch (error: any) {
       alert(error.message);
@@ -80,6 +82,7 @@ export default function AddKpiModalPage({
       }
       if (data) {
         console.log("check data add kpi to history", data);
+        fetchKpiDefinitions();
       }
     } catch (error: any) {
       alert(error.message);
@@ -93,6 +96,7 @@ export default function AddKpiModalPage({
     setUnitValue("numeric");
     setFormulaValue("aggregate");
     setCumulativeValue(false);
+    setError("");
     onRequestClose();
   };
 
@@ -116,15 +120,18 @@ export default function AddKpiModalPage({
 
       if (error) {
         console.log("Error adding new KPI:", error.message);
+        setError(
+          "This KPI's name already exists in the system. Please enter a new KPI name!"
+        );
       }
       if (data) {
         console.log("check data add kpi", data);
         const newKpi = data[0];
         addKpiToCircle(newKpi.kpi_id);
         addKpiToHistory(newKpi.kpi_id);
-        const updatedKpiDefinitions = [...kpiDefinitions, newKpi];
-        setKpiDefinitions(updatedKpiDefinitions);
-        await fetchKpiDefinitions();
+        // const updatedKpiDefinitions = [...kpiDefinitions, newKpi];
+        // setKpiDefinitions(updatedKpiDefinitions);
+        fetchKpiDefinitions();
         handleCloseModal();
       }
     } catch (error: any) {
@@ -156,6 +163,7 @@ export default function AddKpiModalPage({
             onChange={(e) => setKpiName(e.target.value)}
             required
           />
+          <div className="text-sm text-red-600">{error}</div>
         </div>
         <div className="flex flex-col items-start gap-2.5 pb-10 border-b border-[#D0D8DB]">
           <label htmlFor="description" className="text-base font-medium">
@@ -182,6 +190,7 @@ export default function AddKpiModalPage({
                   name="periodicity-group"
                   onChange={(e) => setPeriodicityValue(e.target.value)}
                   row
+                  className="flex gap-10"
                 >
                   <FormControlLabel
                     control={
@@ -297,48 +306,52 @@ export default function AddKpiModalPage({
                   row
                   className="flex gap-16 items-center"
                 >
-                  <FormControlLabel
-                    control={
-                      <Radio
-                        sx={{ "&.Mui-checked": { color: deepPurple[500] } }}
-                      />
-                    }
-                    label="As average"
-                    value="average"
-                  />
-                  <Tooltip
-                    title={
-                      <div className="text-center">
-                        With this selection you get the average of all the KPI
-                        values for the period.
-                      </div>
-                    }
-                  >
-                    <span className="text-[#7C7E7E] text-lg">
-                      <HiMiniInformationCircle />
-                    </span>
-                  </Tooltip>
-                  <FormControlLabel
-                    control={
-                      <Radio
-                        sx={{ "&.Mui-checked": { color: deepPurple[500] } }}
-                      />
-                    }
-                    label="As total sum"
-                    value="aggregate"
-                  />
-                  <Tooltip
-                    title={
-                      <div className="text-center">
-                        With this selection you get the combined total of all
-                        the KPI values for the period.
-                      </div>
-                    }
-                  >
-                    <span className="text-[#7C7E7E] text-lg">
-                      <HiMiniInformationCircle />
-                    </span>
-                  </Tooltip>
+                  <div className="flex gap-16 items-center mr-36">
+                    <FormControlLabel
+                      control={
+                        <Radio
+                          sx={{ "&.Mui-checked": { color: deepPurple[500] } }}
+                        />
+                      }
+                      label="As average"
+                      value="average"
+                    />
+                    <Tooltip
+                      title={
+                        <div className="text-center">
+                          With this selection you get the average of all the KPI
+                          values for the period.
+                        </div>
+                      }
+                    >
+                      <span className="text-[#7C7E7E] text-lg">
+                        <HiMiniInformationCircle />
+                      </span>
+                    </Tooltip>
+                  </div>
+                  <div className="flex gap-16 items-center">
+                    <FormControlLabel
+                      control={
+                        <Radio
+                          sx={{ "&.Mui-checked": { color: deepPurple[500] } }}
+                        />
+                      }
+                      label="As total sum"
+                      value="aggregate"
+                    />
+                    <Tooltip
+                      title={
+                        <div className="text-center">
+                          With this selection you get the combined total of all
+                          the KPI values for the period.
+                        </div>
+                      }
+                    >
+                      <span className="text-[#7C7E7E] text-lg">
+                        <HiMiniInformationCircle />
+                      </span>
+                    </Tooltip>
+                  </div>
                 </RadioGroup>
               </FormControl>
             </Box>
@@ -360,63 +373,68 @@ export default function AddKpiModalPage({
                   row
                   className="flex gap-8 items-center"
                 >
-                  <FormControlLabel
-                    control={
-                      <Radio
-                        sx={{ "&.Mui-checked": { color: deepPurple[500] } }}
-                      />
-                    }
-                    label="As absolute values"
-                    value={false}
-                  />
-                  <Tooltip
-                    title={
-                      <div className="text-center">
-                        <div>
-                          With this selection you get the exact or specific
-                          value without relation to previous data.
+                  <div className="flex gap-8 items-center mr-32">
+                    <FormControlLabel
+                      control={
+                        <Radio
+                          sx={{ "&.Mui-checked": { color: deepPurple[500] } }}
+                        />
+                      }
+                      label="As absolute values"
+                      value={false}
+                    />
+                    <Tooltip
+                      title={
+                        <div className="text-center">
+                          <div>
+                            With this selection you get the exact or specific
+                            value without relation to previous data.
+                          </div>
+                          <br />
+                          <div>
+                            Example: If you sold 10 items on day 1 and 20 items
+                            on day 2, the absolute value for day 2 is 20 items.
+                          </div>
                         </div>
-                        <br />
-                        <div>
-                          Example: If you sold 10 items on day 1 and 20 items on
-                          day 2, the absolute value for day 2 is 20 items.
+                      }
+                    >
+                      <span className="text-[#7C7E7E] text-lg">
+                        <HiMiniInformationCircle />
+                      </span>
+                    </Tooltip>
+                  </div>
+                  <div className="flex gap-8 items-center">
+                    <FormControlLabel
+                      control={
+                        <Radio
+                          sx={{ "&.Mui-checked": { color: deepPurple[500] } }}
+                        />
+                      }
+                      label="As cumulative values"
+                      value={true}
+                    />
+                    <Tooltip
+                      title={
+                        <div className="text-center">
+                          <div>
+                            With this selection you will get the running total
+                            of all the values up to the current point and
+                            including this periods current value.
+                          </div>
+                          <br />
+                          <div>
+                            Example: If you sold 10 items on day 1 and 20 items
+                            on day 2, the cumulative value for day 2 is 30
+                            items.
+                          </div>
                         </div>
-                      </div>
-                    }
-                  >
-                    <span className="text-[#7C7E7E] text-lg">
-                      <HiMiniInformationCircle />
-                    </span>
-                  </Tooltip>
-                  <FormControlLabel
-                    control={
-                      <Radio
-                        sx={{ "&.Mui-checked": { color: deepPurple[500] } }}
-                      />
-                    }
-                    label="As cumulative values"
-                    value={true}
-                  />
-                  <Tooltip
-                    title={
-                      <div className="text-center">
-                        <div>
-                          With this selection you will get the running total of
-                          all the values up to the current point and including
-                          this periods current value.
-                        </div>
-                        <br />
-                        <div>
-                          Example: If you sold 10 items on day 1 and 20 items on
-                          day 2, the cumulative value for day 2 is 30 items.
-                        </div>
-                      </div>
-                    }
-                  >
-                    <span className="text-[#7C7E7E] text-lg">
-                      <HiMiniInformationCircle />
-                    </span>
-                  </Tooltip>
+                      }
+                    >
+                      <span className="text-[#7C7E7E] text-lg">
+                        <HiMiniInformationCircle />
+                      </span>
+                    </Tooltip>
+                  </div>
                 </RadioGroup>
               </FormControl>
             </Box>
