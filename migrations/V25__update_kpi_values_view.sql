@@ -1,4 +1,5 @@
-CREATE OR REPLACE VIEW 
+DROP VIEW if exists public.kpi_values;
+CREATE VIEW 
   public.kpi_values as
 select
   kpi_value_history_id,
@@ -22,4 +23,4 @@ from
   rank() over(partition by kpi_id, circle_id order by period_date desc, created_at desc) rank
 from kpi_values_history)
    as sq
-where rank = 1
+where rank = 1;
