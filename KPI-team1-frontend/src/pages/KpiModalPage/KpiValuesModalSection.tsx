@@ -18,6 +18,7 @@ const KpiValuesModalSection = ({
   fetchKpiDefinition,
   isLoading,
   kpiValues,
+  onRequestClose,
 }: {
   kpi: KpiExtended;
   circleId: number;
@@ -25,11 +26,13 @@ const KpiValuesModalSection = ({
   fetchKpiDefinition: () => void;
   isLoading: boolean;
   kpiValues: KpiValue[];
+  onRequestClose: () => void;
 }): JSX.Element => {
   const [comment, setComment] = useState<string>("");
   const [newDate, setNewDate] = useState<Date | null>(null);
   const [newValue, setNewValue] = useState<number | null>(null);
   const [targetValue, setTargetValue] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const PREVIOUS_VALUES_COLUMNS: GridColDef[] = [
     {
@@ -106,20 +109,17 @@ const KpiValuesModalSection = ({
   }, [kpi]);
 
   const renderAddNewValue = () => {
-    const handleSave = async (
-      value: number | null,
-      date: Date | null,
-      comment: string | null
-    ) => {
+    const handleSave = async (e: React.SyntheticEvent) => {
+      e.preventDefault();
       try {
         const { data, error } = await supabase
           .from("kpi_values_history")
           .insert([
             {
               kpi_id: kpi?.kpi_id,
-              value: value,
+              value: newValue,
               circle_id: circleId,
-              period_date: date,
+              period_date: newDate,
               comment: comment,
               action: "CREATE",
               periodicity: kpi?.periodicity,
@@ -128,13 +128,16 @@ const KpiValuesModalSection = ({
           .select("*");
 
         if (error) {
-          alert(`Error inserting new value \nDetails: ${error.message}`);
+          setError(
+            "The date for updating KPI's value shouldn't be a future date. Please set a date again!"
+          );
         }
         if (data) {
           fetchKpiValues();
+          setError("");
         }
       } catch (error: any) {
-        alert(error.message);
+        console.log(error.message);
       }
     };
     return (
@@ -143,54 +146,59 @@ const KpiValuesModalSection = ({
           Set a new value for{" "}
           <span className="font-medium">{kpi?.kpi_name}</span>
         </div>
-        <div className="flex justify-between my-2">
-          <label className="font-medium w-full mr-2">
-            Set a date*
-            <input
-              className="block w-full p-2 border rounded-md"
-              name="set date"
-              type="date"
-              onChange={(e) => {
-                setNewDate(new Date(e.target.value));
-              }}
-            />
-          </label>
+        <form onSubmit={handleSave}>
+          <div className="flex justify-between my-2">
+            <label className="font-medium w-full mr-2">
+              Set a date*
+              <input
+                className="block w-full p-2 border rounded-md"
+                name="set date"
+                type="date"
+                onChange={(e) => {
+                  setNewDate(new Date(e.target.value));
+                }}
+                required
+              />
+            </label>
+            <label className="font-medium w-full">
+              Enter a new value*
+              <input
+                className="block w-full p-2 border rounded-md"
+                name="new value"
+                type="number"
+                placeholder="What's your value"
+                onChange={(e) => {
+                  setNewValue(parseInt(e.target.value));
+                }}
+                required
+              />
+            </label>
+          </div>
+          <div className="text-sm text-red-600">{error}</div>
           <label className="font-medium w-full">
-            Enter a new value*
-            <input
+            Comment
+            <textarea
               className="block w-full p-2 border rounded-md"
-              name="new value"
-              type="number"
-              placeholder="What's your value"
+              name="comment"
+              rows={3}
+              placeholder="Optional: add comment to your changes"
               onChange={(e) => {
-                setNewValue(parseInt(e.target.value));
+                setComment(e.target.value);
               }}
             />
           </label>
-        </div>
-        <label className="font-medium w-full">
-          Comment
-          <textarea
-            className="block w-full p-2 border rounded-md"
-            name="comment"
-            rows={3}
-            placeholder="Optional: add comment to your changes"
-            onChange={(e) => {
-              setComment(e.target.value);
-            }}
-          />
-        </label>
-        <div className="pt-4 flex justify-end">
-          <button className="w-28 h-10 mr-4 bg-white rounded border border-customYellow justify-center items-center gap-2 inline-flex text-zinc-700 text-base font-medium">
-            Cancel
-          </button>
-          <button
-            className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium"
-            onClick={() => handleSave(newValue, newDate, comment)}
-          >
-            Save
-          </button>
-        </div>
+          <div className="pt-4 flex justify-end">
+            <button
+              className="w-28 h-10 mr-4 bg-white rounded border border-customYellow justify-center items-center gap-2 inline-flex text-zinc-700 text-base font-medium"
+              onClick={() => onRequestClose()}
+            >
+              Cancel
+            </button>
+            <button className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium">
+              Save
+            </button>
+          </div>
+        </form>
       </>
     );
   };

@@ -222,7 +222,7 @@ export default function KpiPage(): JSX.Element {
           isOpen={modalIsOpen}
           onRequestClose={handleOpenModal}
           kpiId={selectedKpiId}
-          circleId={Number(circleId)}
+          circleId={Number(selectedCircleId)}
         />
       )}
 

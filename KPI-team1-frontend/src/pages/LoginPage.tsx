@@ -72,6 +72,7 @@ export default function LoginPage(): JSX.Element {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-col text-sm mb-5">
@@ -82,6 +83,7 @@ export default function LoginPage(): JSX.Element {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <div className="text-sm text-red-600 mb-3">{error}</div>
