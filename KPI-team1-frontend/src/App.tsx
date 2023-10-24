@@ -123,6 +123,7 @@ export default function App() {
               userDetails,
               setUserDetails,
               kpiDefinitions,
+              fetchKpiDefinitions,
             }}
           />
         </div>

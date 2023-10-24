@@ -15,14 +15,14 @@ const KpiValuesModalSection = ({
   kpi,
   circleId,
   fetchKpiValues,
-  fetchKpiDefinition,
+  fetchKpiDefinitions,
   isLoading,
   kpiValues,
 }: {
   kpi: KpiExtended;
   circleId: number;
   fetchKpiValues: () => void;
-  fetchKpiDefinition: () => void;
+  fetchKpiDefinitions: () => void;
   isLoading: boolean;
   kpiValues: KpiValue[];
 }): JSX.Element => {
@@ -132,6 +132,7 @@ const KpiValuesModalSection = ({
         }
         if (data) {
           fetchKpiValues();
+          fetchKpiDefinitions();
         }
       } catch (error: any) {
         alert(error.message);
@@ -242,7 +243,7 @@ const KpiValuesModalSection = ({
           alert(`Error updating the target \nDetails: ${error.message}`);
           return;
         }
-        fetchKpiDefinition();
+        fetchKpiDefinitions();
       } catch (error: any) {
         console.log(error.message);
       }

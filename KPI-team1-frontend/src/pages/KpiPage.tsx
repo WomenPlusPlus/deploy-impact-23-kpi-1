@@ -181,9 +181,11 @@ export default function KpiPage(): JSX.Element {
 
       <div className="flex">
         <div className="w-11/12 xl:w-800">
-          <div className="text-2xl pb-4 border-b border-gray-300">
-            KPIs - {circleKpis[0]?.circle_name}
-          </div>
+          {circleKpis[0] ? (
+            <div className="text-2xl pb-4 border-b border-gray-300">
+              KPIs - {circleKpis[0]?.circle_name}
+            </div>
+          ) : null}
           {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}
         </div>
       </div>
