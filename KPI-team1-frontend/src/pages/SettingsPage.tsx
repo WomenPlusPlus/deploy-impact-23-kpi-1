@@ -38,8 +38,6 @@ export default function UserDetailsPage(): JSX.Element {
       newDetails.defaultCircleId = defaultCircleId;
     }
 
-    console.log(newDetails);
-
     await supabase.rpc("update_username_and_default_circle", {
       p_user_id: user.id,
       p_username: newDetails.username,
@@ -124,7 +122,7 @@ export default function UserDetailsPage(): JSX.Element {
                   {circles.map((c) => (
                     <option
                       value={c.circle_user[0].circle_id}
-                      // TODO provide random key
+                      key={`${c.circle_user[0].circle_id}-key`}
                     >
                       {c.circle_name}
                     </option>

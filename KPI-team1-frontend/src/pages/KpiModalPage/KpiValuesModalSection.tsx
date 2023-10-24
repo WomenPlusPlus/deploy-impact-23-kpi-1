@@ -32,7 +32,8 @@ const KpiValuesModalSection = ({
   const [newDate, setNewDate] = useState<Date | null>(null);
   const [newValue, setNewValue] = useState<number | null>(null);
   const [targetValue, setTargetValue] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [dateError, setDateError] = useState<string | null>(null);
+  const [inputError, setInputError] = useState<string | null>(null);
 
   const PREVIOUS_VALUES_COLUMNS: GridColDef[] = [
     {
@@ -108,6 +109,9 @@ const KpiValuesModalSection = ({
     setTargetValue(kpi.target_value);
   }, [kpi]);
 
+  const minValue = kpi.value_min;
+  const maxValue = kpi.value_max;
+
   const renderAddNewValue = () => {
     const handleSave = async (e: React.SyntheticEvent) => {
       e.preventDefault();
@@ -127,14 +131,9 @@ const KpiValuesModalSection = ({
           ])
           .select("*");
 
-        if (error) {
-          setError(
-            "The date for updating KPI's value shouldn't be a future date. Please set a date again!"
-          );
-        }
+        if (error) throw error.message;
         if (data) {
           fetchKpiValues();
-          setError("");
         }
       } catch (error: any) {
         console.log(error.message);
@@ -147,34 +146,61 @@ const KpiValuesModalSection = ({
           <span className="font-medium">{kpi?.kpi_name}</span>
         </div>
         <form onSubmit={handleSave}>
-          <div className="flex justify-between my-2">
-            <label className="font-medium w-full mr-2">
-              Set a date*
-              <input
-                className="block w-full p-2 border rounded-md"
-                name="set date"
-                type="date"
-                onChange={(e) => {
-                  setNewDate(new Date(e.target.value));
-                }}
-                required
-              />
-            </label>
-            <label className="font-medium w-full">
-              Enter a new value*
-              <input
-                className="block w-full p-2 border rounded-md"
-                name="new value"
-                type="number"
-                placeholder="What's your value"
-                onChange={(e) => {
-                  setNewValue(parseInt(e.target.value));
-                }}
-                required
-              />
-            </label>
+          <div className="flex gap-4">
+            <div className="flex flex-col w-1/2">
+              <label className="font-medium w-full mr-2">
+                Set a date*
+                <input
+                  className="block w-full p-2 border rounded-md"
+                  name="set date"
+                  type="date"
+                  onChange={(e) => {
+                    if (new Date(e.target.value) <= new Date()) {
+                      setNewDate(new Date(e.target.value));
+                      setDateError("");
+                    } else {
+                      setDateError(
+                        "The date for updating KPI's value shouldn't be a future date. Please set a date again!"
+                      );
+                    }
+                  }}
+                  required
+                />
+              </label>
+              <div className="text-sm text-red-600">{dateError}</div>
+            </div>
+            <div className="flex flex-col w-1/2">
+              <label className="font-medium w-full">
+                Enter a new value*
+                <input
+                  className="block w-full p-2 border rounded-md"
+                  name="new value"
+                  type="number"
+                  placeholder="What's your value"
+                  onChange={(e) => {
+                    const inputValue = parseInt(e.target.value);
+                    if (minValue !== null && inputValue < minValue.valueOf()) {
+                      setInputError(
+                        `Input value must be greater than or equal to ${minValue}`
+                      );
+                    } else if (
+                      maxValue !== null &&
+                      inputValue > maxValue.valueOf()
+                    ) {
+                      setInputError(
+                        `Input value must be less than or equal to ${maxValue}`
+                      );
+                    } else {
+                      setNewValue(inputValue);
+                      setInputError("");
+                    }
+                  }}
+                  required
+                />
+              </label>
+              <div className="text-sm text-red-600">{inputError}</div>
+            </div>
           </div>
-          <div className="text-sm text-red-600">{error}</div>
           <label className="font-medium w-full">
             Comment
             <textarea

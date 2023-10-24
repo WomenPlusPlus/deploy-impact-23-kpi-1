@@ -145,7 +145,7 @@ export default function KpiPage(): JSX.Element {
     } else {
       setSelectedCircleId(userDetails.defaultCircleId);
     }
-  }, [circleId]);
+  }, [circleId, userDetails]);
 
   const circleKpis =
     kpiDefinitions &&

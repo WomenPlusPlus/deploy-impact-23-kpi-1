@@ -284,7 +284,7 @@ export default function AddKpiModalPage({
               Calculation - How is this KPI calculated?
             </div>
             <div className="text-sm my-3">
-              You can check the additional informations to each selection if you
+              You can check the additional information to each selection if you
               are not sure which.
             </div>
             <div className="flex justify-center">
