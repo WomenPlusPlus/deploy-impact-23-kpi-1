@@ -1,25 +1,25 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../../supabase";
-import { KpiLogs } from "../../model/kpi";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { format } from "date-fns";
-import { getDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
+import { useState, useEffect } from 'react';
+import { supabase } from '../../supabase';
+import { KpiExtended, KpiLogs } from '../../model/kpi';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { format } from 'date-fns';
+import { getDisplayValueByPeriodicity } from '../../helpers/kpiHelpers';
 const LOGS_HEADERS: GridColDef[] = [
   {
-    headerName: "User",
-    field: "user_name",
+    headerName: 'User',
+    field: 'user_name',
     flex: 3,
     sortable: true,
-    headerAlign: "center",
-    align: "center",
+    headerAlign: 'center',
+    align: 'center',
     renderCell: (params) => {
       const circleName = params.row.user_circle_name || null;
       return (
-        <div className="text-center">
-          <span className="text-center">{params.value}</span>
+        <div className='text-center'>
+          <span className='text-center'>{params.value}</span>
 
           {circleName && (
-            <div className="text-xs text-gray-400 text-center">
+            <div className='text-xs text-gray-400 text-center'>
               {circleName}
             </div>
           )}
@@ -29,41 +29,48 @@ const LOGS_HEADERS: GridColDef[] = [
   },
 
   {
-    headerName: "Period",
-    field: "historical_standardized_date",
+    headerName: 'Period',
+    field: 'historical_standardized_date',
     flex: 2,
     sortable: true,
-    headerAlign: "center",
-    align: "center",
+    headerAlign: 'center',
+    align: 'center',
     renderCell: (params) => {
       return getDisplayValueByPeriodicity(params.row.periodicity, params.value);
     },
   },
   {
-    headerName: "Date Entered",
-    field: "period_date",
+    headerName: 'Date Entered',
+    field: 'period_date',
     flex: 2,
     sortable: true,
-    headerAlign: "center",
-    align: "center",
+    headerAlign: 'center',
+    align: 'center',
   },
   {
-    headerName: "Value entered",
-    field: "value",
+    headerName: 'Value entered',
+    field: 'value',
     flex: 2,
     sortable: true,
-    headerAlign: "center",
-    align: "center",
+    headerAlign: 'center',
+    align: 'center',
   },
   {
-    headerName: "Added on",
-    field: "created_at",
+    headerName: 'Comment',
+    field: 'comment',
     flex: 2,
     sortable: true,
-    headerAlign: "center",
-    align: "left",
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    headerName: 'Added on',
+    field: 'created_at',
+    flex: 2,
+    sortable: true,
+    headerAlign: 'center',
+    align: 'left',
     renderCell: (params) => {
-      //todo: update with timezone as it seems to show the utc time
       return <>{format(new Date(params.value), "yyyy-MM-dd HH'h'mm")}</>;
     },
   },
@@ -73,18 +80,25 @@ const other = {
   showColumnVerticalBorder: true,
 };
 
-export default function KpiHistoryModalSection(): JSX.Element {
+export default function KpiHistoryModalSection({
+  circleId,
+  kpi,
+}: {
+  circleId: number;
+  kpi: KpiExtended;
+}): JSX.Element {
   const [kpiLogs, setKpiLogs] = useState<KpiLogs[]>([]);
   const fetchKpiHistory = async () => {
     try {
       let { data: kpi_logs, error } = await supabase
-        .from("kpi_logs")
-        .select("*")
-        .order("created_at", { ascending: false });
-      //todo:filter by kpi_id and circle_id
+        .from('kpi_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .eq('kpi_id', kpi.kpi_id)
+        .eq('circle_id', circleId);
 
       if (error) {
-        console.log("Error getting kpi logs:", error);
+        console.log('Error getting kpi logs:', error);
       }
       if (kpi_logs) {
         setKpiLogs(kpi_logs);
@@ -96,7 +110,7 @@ export default function KpiHistoryModalSection(): JSX.Element {
 
   useEffect(() => {
     fetchKpiHistory();
-  }, []);
+  }, [circleId, kpi.kpi_id]);
 
   return (
     <>
@@ -106,8 +120,8 @@ export default function KpiHistoryModalSection(): JSX.Element {
         rowSelection={false}
         columns={LOGS_HEADERS}
         classes={{
-          columnHeaders: "bg-customPurple",
-          columnHeader: "uppercase",
+          columnHeaders: 'bg-customPurple',
+          columnHeader: 'uppercase',
         }}
         {...other}
       />

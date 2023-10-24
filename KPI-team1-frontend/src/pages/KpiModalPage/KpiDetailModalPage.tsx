@@ -91,7 +91,7 @@ const KpiDetailModalPage = ({
             } w-1/3 h-10  border-b-2 justify-center items-center font-medium`}
             onClick={() => setSelectView('history')}
           >
-            <KpiHistoryModalSection />
+            History
           </button>
         </div>
         {selectView === 'values' ? (
@@ -104,7 +104,7 @@ const KpiDetailModalPage = ({
             kpiValues={kpiValues}
           />
         ) : (
-          <>history</>
+          <KpiHistoryModalSection circleId={circleId} kpi={kpiDefinition} />
         )}
       </>
     );
