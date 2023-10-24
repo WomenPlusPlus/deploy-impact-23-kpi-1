@@ -101,6 +101,7 @@ const KpiDetailModalPage = ({
             fetchKpiDefinition={fetchKpiDefinition}
             isLoading={isLoading}
             kpiValues={kpiValues}
+            onRequestClose={onRequestClose}
           />
         ) : (
           <>history</>
