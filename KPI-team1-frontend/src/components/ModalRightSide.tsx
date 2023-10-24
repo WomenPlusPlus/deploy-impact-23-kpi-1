@@ -9,7 +9,7 @@ interface ModalRightSideProps {
 
 const customStyles = {
   content: {
-    width: "40%",
+    width: "60%",
     padding: "20px",
     border: "none",
     left: "auto",
