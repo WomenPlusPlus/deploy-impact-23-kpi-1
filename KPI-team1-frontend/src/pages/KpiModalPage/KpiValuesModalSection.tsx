@@ -2,9 +2,10 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { getDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 import { supabase } from "../../supabase";
 import { useState, useEffect } from "react";
-import { LinearProgress, TextField } from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import { KpiExtended, KpiValue } from "../../model/kpi";
 import { format, set } from "date-fns";
+import CustomGridToolbar from "../../components/CustomGridToolBar";
 
 const other = {
   showCellVerticalBorder: true,
@@ -237,6 +238,7 @@ const KpiValuesModalSection = ({
           <DataGrid
             slots={{
               loadingOverlay: LinearProgress,
+              toolbar: CustomGridToolbar,
             }}
             loading={isLoading}
             getRowId={(row) => row.kpi_value_history_id}
@@ -300,7 +302,7 @@ const KpiValuesModalSection = ({
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setTargetValue(Number(event.target.value));
               }}
-              value={targetValue || undefined}
+              value={targetValue || ""}
             />
           </label>
         </div>

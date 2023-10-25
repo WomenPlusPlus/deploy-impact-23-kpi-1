@@ -4,6 +4,8 @@ import { KpiExtended, KpiLogs } from "../../model/kpi";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
 import { getDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
+import CustomGridToolbar from "../../components/CustomGridToolBar";
+
 const LOGS_HEADERS: GridColDef[] = [
   {
     headerName: "User",
@@ -117,6 +119,9 @@ export default function KpiHistoryModalSection({
       <DataGrid
         getRowId={(row) => row.kpi_value_history_id}
         rows={kpiLogs}
+        slots={{
+          toolbar: CustomGridToolbar,
+        }}
         rowSelection={false}
         columns={LOGS_HEADERS}
         classes={{
