@@ -1,5 +1,12 @@
 import { Tooltip } from "@mui/material";
-import { endOfWeek, format, getQuarter, getWeek, startOfWeek } from "date-fns";
+import {
+  endOfWeek,
+  format,
+  getQuarter,
+  getWeek,
+  getYear,
+  startOfWeek,
+} from "date-fns";
 
 export const getDisplayValueByPeriodicity = (
   periodicity: string,
@@ -7,15 +14,19 @@ export const getDisplayValueByPeriodicity = (
 ) => {
   const today = new Date();
   const isCurrentYear = (date: Date) => {
-    return date.getFullYear() === today.getFullYear();
+    return getYear(date) === getYear(today);
   };
 
-  const getRenderCell = (value: string, isCurrentYear: boolean) => {
+  const getRenderCell = (
+    value: string,
+    isCurrentYear: boolean,
+    lDate: Date
+  ) => {
     return (
       <span>
         <div className="text-center">{value}</div>
         <div className="m-0 p-0 text-center text-xs text-gray-400">
-          {isCurrentYear ? "" : date.getFullYear()}
+          {isCurrentYear ? "" : getYear(lDate)}
         </div>
       </span>
     );
@@ -23,9 +34,13 @@ export const getDisplayValueByPeriodicity = (
   if (date) {
     const newDate = new Date(date);
     if (periodicity === "quarterly") {
-      return getRenderCell(`Q${getQuarter(newDate)}`, isCurrentYear(newDate));
+      return getRenderCell(
+        `Q${getQuarter(newDate)}`,
+        isCurrentYear(newDate),
+        newDate
+      );
     } else if (periodicity === "yearly") {
-      return getRenderCell(format(newDate, "yyyy"), true);
+      return getRenderCell(format(newDate, "yyyy"), true, newDate);
     } else if (periodicity === "weekly") {
       //show the date range of the week in a tooltip
       const firstDayOfWeek = startOfWeek(newDate, { weekStartsOn: 1 });
@@ -44,12 +59,17 @@ export const getDisplayValueByPeriodicity = (
               weekStartsOn: 1,
               firstWeekContainsDate: 4,
             })}`,
-            isCurrentYear(firstDayOfWeek)
+            isCurrentYear(firstDayOfWeek),
+            newDate
           )}
         </Tooltip>
       );
     } else if (periodicity === "monthly") {
-      return getRenderCell(format(newDate, "MMM"), isCurrentYear(newDate));
+      return getRenderCell(
+        format(newDate, "MMM"),
+        isCurrentYear(newDate),
+        newDate
+      );
     }
     {
       return format(newDate, "dd.MM.yyyy");

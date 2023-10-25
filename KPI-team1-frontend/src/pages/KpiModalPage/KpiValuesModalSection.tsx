@@ -2,9 +2,10 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { getDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 import { supabase } from "../../supabase";
 import { useState, useEffect } from "react";
-import { LinearProgress, TextField } from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import { KpiExtended, KpiValue } from "../../model/kpi";
 import { format, set } from "date-fns";
+import CustomGridToolbar from "../../components/CustomGridToolBar";
 
 const other = {
   showCellVerticalBorder: true,
@@ -15,7 +16,7 @@ const KpiValuesModalSection = ({
   kpi,
   circleId,
   fetchKpiValues,
-  fetchKpiDefinition,
+  fetchKpiDefinitions,
   isLoading,
   kpiValues,
   onRequestClose,
@@ -23,7 +24,7 @@ const KpiValuesModalSection = ({
   kpi: KpiExtended;
   circleId: number;
   fetchKpiValues: () => void;
-  fetchKpiDefinition: () => void;
+  fetchKpiDefinitions: () => void;
   isLoading: boolean;
   kpiValues: KpiValue[];
   onRequestClose: () => void;
@@ -134,6 +135,7 @@ const KpiValuesModalSection = ({
         if (error) throw error.message;
         if (data) {
           fetchKpiValues();
+          fetchKpiDefinitions();
         }
       } catch (error: any) {
         console.log(error.message);
@@ -236,6 +238,7 @@ const KpiValuesModalSection = ({
           <DataGrid
             slots={{
               loadingOverlay: LinearProgress,
+              toolbar: CustomGridToolbar,
             }}
             loading={isLoading}
             getRowId={(row) => row.kpi_value_history_id}
@@ -276,7 +279,7 @@ const KpiValuesModalSection = ({
           alert(`Error updating the target \nDetails: ${error.message}`);
           return;
         }
-        fetchKpiDefinition();
+        fetchKpiDefinitions();
       } catch (error: any) {
         console.log(error.message);
       }
@@ -299,7 +302,7 @@ const KpiValuesModalSection = ({
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setTargetValue(Number(event.target.value));
               }}
-              value={targetValue || undefined}
+              value={targetValue || ""}
             />
           </label>
         </div>
