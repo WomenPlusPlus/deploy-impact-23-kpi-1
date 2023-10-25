@@ -10,12 +10,15 @@ import { HiOutlinePlusCircle } from "react-icons/hi";
 import AddKpiModalPage from "./AddKpiModalPage";
 import { HiMiniInformationCircle } from "react-icons/hi2";
 import { Tooltip } from "@mui/material";
+import { set } from "date-fns";
 
 interface OutletContext {
   circles: Circles[];
   kpiDefinitions: KpiExtended[];
   userDetails: UserDetails;
   fetchKpiDefinitions: () => Promise<void>;
+  circleId: number | null;
+  setCircleId: (circleId: number) => void;
 }
 
 const other = {
@@ -131,18 +134,27 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
 const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
-  const { circleId } = useParams();
+  const { circleId: circleIdParam } = useParams();
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpiId, setSelectedKpiId] = useState<number | null>(null);
   const [addKpiModalIsOpen, setAddKpiModalIsOpen] = useState(false);
-  const { kpiDefinitions, userDetails, fetchKpiDefinitions }: OutletContext =
-    useOutletContext();
+  const {
+    kpiDefinitions,
+    userDetails,
+    fetchKpiDefinitions,
+    circleId,
+    setCircleId,
+  }: OutletContext = useOutletContext();
 
   useEffect(() => {
     if (circleId) {
-      setSelectedCircleId(circleId);
+      setSelectedCircleId(circleId.toString());
+    } else if (circleIdParam) {
+      setCircleId(Number(circleIdParam));
+      setSelectedCircleId(circleIdParam);
     } else {
+      setCircleId(Number(userDetails.defaultCircleId));
       setSelectedCircleId(userDetails.defaultCircleId);
     }
   }, [circleId, userDetails]);

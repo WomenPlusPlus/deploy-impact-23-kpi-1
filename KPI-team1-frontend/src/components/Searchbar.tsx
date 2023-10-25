@@ -8,10 +8,12 @@ import { useNavigate } from "react-router-dom";
 
 interface SearchBarProps {
   isSearchKpi: boolean;
+  setCircleId: (circleId: number) => void;
 }
 
 export default function SearchBar({
   isSearchKpi,
+  setCircleId,
 }: SearchBarProps): JSX.Element {
   const [input, setInput] = useState<string>("");
   const [circleResult, setCircleResult] = useState<CircleName[]>([]);
@@ -92,6 +94,7 @@ export default function SearchBar({
           <GenericList
             data={circleResult}
             onClick={(item) => {
+              setCircleId(item.circle_id);
               navigate(`/kpi/circles/${item.circle_id}`);
               setCircleResult([]);
               setInput("");

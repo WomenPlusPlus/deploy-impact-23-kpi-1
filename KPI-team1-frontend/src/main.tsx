@@ -20,6 +20,7 @@ const router = createBrowserRouter([
       { path: "/kpi/circles/:circleId", element: <KpiPage /> },
       { path: "/kpi/circles", element: <KpiPage /> },
       { path: "/kpi/:kpiId", element: <EachKpi /> },
+      { path: "/dashboard/:circleId", element: <Dashboard /> },
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/settings", element: <UserDetailsPage /> },
     ],

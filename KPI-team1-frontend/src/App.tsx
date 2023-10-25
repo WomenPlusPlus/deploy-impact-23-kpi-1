@@ -6,7 +6,7 @@ import { PiBell } from "react-icons/pi";
 import { Circles } from "./model/circle";
 import { KpiExtended } from "./model/kpi";
 import SideBar from "./components/Sidebar";
-import SearchBar from "./components/Searchbar";
+import SearchBar from "./components/SearchBar";
 
 const initialUser: User = {
   id: "",
@@ -22,6 +22,7 @@ export default function App() {
     username: null,
     defaultCircleId: null,
   });
+  const [circleId, setCircleId] = useState<number | null>(null);
 
   // TODO maybe move this functionality to LoginPage ?
   async function fetchUser() {
@@ -38,6 +39,7 @@ export default function App() {
   }
 
   async function getCircles() {
+    if (!user.id) return;
     try {
       const { data, error } = await supabase
         .from("circle")
@@ -51,6 +53,7 @@ export default function App() {
   }
 
   async function fetchUserDetails() {
+    if (!user.id) return;
     try {
       const { data, error } = await supabase
         .from("username_with_default_circle")
@@ -99,12 +102,14 @@ export default function App() {
           setCircles={setCircles}
           userDetails={userDetails}
           setUserDetails={setUserDetails}
+          circleId={circleId}
+          setCircleId={setCircleId}
         />
       </div>
       <div className="flex flex-col grow">
         <div className="flex items-start justify-between py-4 px-8 border-b border-[#D0D8DB] ">
           <div className="flex flex-col w-1/2">
-            <SearchBar isSearchKpi={isSearchKpi} />
+            <SearchBar isSearchKpi={isSearchKpi} setCircleId={setCircleId} />
           </div>
 
           <div className="flex justify-end items-center gap-20 border-l border-[#D0D8DB] w-1/3 py-1.5">
@@ -130,6 +135,8 @@ export default function App() {
               setUserDetails,
               kpiDefinitions,
               fetchKpiDefinitions,
+              circleId,
+              setCircleId,
             }}
           />
         </div>

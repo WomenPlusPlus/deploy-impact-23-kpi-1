@@ -1,27 +1,28 @@
 import { useState, useEffect } from "react";
 import { KpiValue } from "../model/kpi";
 import { supabase } from "../supabase";
-import AreaChart from "../components/AreaChart";
+import AreaChart from "../components/graphs/AreaChart";
 import { Grid } from "@mui/material";
+import { useOutletContext } from "react-router-dom";
 
+interface OutletContext {
+  circleId: number | null;
+}
 export default function Dashboard(): JSX.Element {
   const [kpiAllValues, setAllKpiValues] = useState<KpiValue[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { circleId }: OutletContext = useOutletContext();
   const fetchAllKpiValues = async () => {
-    setIsLoading(true);
     try {
       const { data, error } = await supabase
         .from("kpi_values_period_standardized")
         .select("*")
-        .eq("circle_id", 4);
+        .eq("circle_id", circleId);
 
       if (data) {
         setAllKpiValues(data);
       }
-      setIsLoading(false);
     } catch (error: any) {
       alert(error.message);
-      setIsLoading(false);
     }
   };
   useEffect(() => {
