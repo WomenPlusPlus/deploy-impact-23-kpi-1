@@ -99,6 +99,7 @@ const KpiDetailModalPage = ({
             fetchKpiDefinitions={fetchKpiDefinitions}
             isLoading={isLoading}
             kpiValues={kpiValues}
+            onRequestClose={onRequestClose}
           />
         ) : (
           <KpiHistoryModalSection circleId={circleId} kpi={kpiDefinition} />
