@@ -4,24 +4,29 @@ import App from "./App.tsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
-import AdminPage from "./pages/AdminPage.tsx";
 import KpiPage from "./pages/KpiPage.tsx";
 import EachKpi from "./pages/EachKpi.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import UserDetailsPage from "./pages/SettingsPage.tsx";
+import Layout from "./Layout.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      { path: "/login", element: <LoginPage /> },
-      { path: "/admin", element: <AdminPage /> },
-      { path: "/kpi/circles/:circleId", element: <KpiPage /> },
-      { path: "/kpi/circles", element: <KpiPage /> },
-      { path: "/kpi/:kpiId", element: <EachKpi /> },
-      { path: "/dashboard", element: <Dashboard /> },
-      { path: "/settings", element: <UserDetailsPage /> },
+      { index: true, element: <LoginPage /> },
+      {
+        path: "/kpi",
+        element: <Layout />,
+        children: [
+          { path: "circles/:circleId", element: <KpiPage /> },
+          { path: "circles", element: <KpiPage /> },
+          { path: ":kpiId", element: <EachKpi /> },
+          { path: "dashboard", element: <Dashboard /> },
+          { path: "settings", element: <UserDetailsPage /> },
+        ],
+      },
     ],
   },
 ]);

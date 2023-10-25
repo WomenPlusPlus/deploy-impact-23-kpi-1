@@ -5,7 +5,7 @@ import { HiStar } from "react-icons/hi2";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FiLogIn } from "react-icons/fi";
 import { FiLogOut } from "react-icons/fi";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
 import { User, UserDetails } from "../model/user";
 import { Circles } from "../model/circle";
@@ -29,13 +29,16 @@ export default function SideBar({
   setUserDetails,
 }: SideBarProps): JSX.Element {
   const isSearchKpi: boolean = false;
+  const navigate = useNavigate();
 
   async function handleLogout() {
+    console.log("check logout");
     let { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser({});
     setCircles([]);
     setUserDetails({ username: null, defaultCircleId: null });
+    navigate("/");
   }
 
   return (
@@ -49,13 +52,10 @@ export default function SideBar({
         </button>
         <div className="hidden sm:block">
           <div className="px-4 pt-14 flex flex-col gap-8 font-custom">
-            <NavLink
-              to={"/"}
-              className="flex justify-center items-center self-stretch gap-4"
-            >
+            <div className="flex justify-center items-center self-stretch gap-4">
               <img className="w-14 h-14" src={Logo} alt="Pro Juventute logo" />
               <div className="text-2xl">KPI tracking</div>
-            </NavLink>
+            </div>
             <div>
               <NavLink
                 to={"/kpi/circles"}
@@ -72,7 +72,7 @@ export default function SideBar({
                 <div className="font-medium">KPI's</div>
               </NavLink>
               <NavLink
-                to={"/dashboard"}
+                to={"/kpi/dashboard"}
                 className={({ isActive }) =>
                   "text-xl flex items-center gap-3 p-4 self-stretch mt-2.5" +
                   (isActive
@@ -107,41 +107,24 @@ export default function SideBar({
               </div>
               <hr />
               <div>
-                {user?.id ? (
-                  <NavLink
-                    to="/settings"
-                    className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]"
-                  >
-                    <span>
-                      <AiOutlineSetting />
-                    </span>
-                    <div className="font-medium">Settings</div>
-                  </NavLink>
-                ) : (
-                  <></>
-                )}
-                {user?.id ? (
-                  <NavLink
-                    to={"/"}
-                    className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]"
-                    onClick={handleLogout}
-                  >
-                    <span>
-                      <FiLogOut />
-                    </span>
-                    <div className="font-medium">Log out</div>
-                  </NavLink>
-                ) : (
-                  <NavLink
-                    to={"/login"}
-                    className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E]"
-                  >
-                    <span>
-                      <FiLogIn />
-                    </span>
-                    <div className="font-medium">Log in</div>
-                  </NavLink>
-                )}
+                <NavLink
+                  to="/kpi/settings"
+                  className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E] hover:text-yellow-600"
+                >
+                  <span>
+                    <AiOutlineSetting />
+                  </span>
+                  <div className="font-medium">Settings</div>
+                </NavLink>
+                <div
+                  className="text-xl flex items-center gap-2.5 p-4 self-stretch text-[#7C7E7E] cursor-pointer hover:text-yellow-600"
+                  onClick={handleLogout}
+                >
+                  <span>
+                    <FiLogOut />
+                  </span>
+                  <div className="font-medium">Log out</div>
+                </div>
               </div>
               {user.id ? (
                 <div className="mt-16 px-4">

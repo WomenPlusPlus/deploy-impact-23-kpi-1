@@ -35,7 +35,7 @@ export default function LoginPage(): JSX.Element {
             id: data.user.id,
             email: data.user.email,
           };
-          setUser(userData);
+          userData && setUser(userData);
         } else {
           setError("Incorrect email or password. Please retry!");
         }
@@ -54,8 +54,8 @@ export default function LoginPage(): JSX.Element {
   }, [userDetails, circles]);
 
   return (
-    <div className="flex flex-col items-center h-full">
-      <div className="flex flex-col items-center justify-center w-2/3 md:w-2/6 min-w-fit px-9 pb-16 pt-20 shadow-lg rounded-lg bg-white">
+    <div className="flex justify-center items-center h-screen">
+      <div className="flex flex-col items-center justify-center w-2/3 md:w-1/3 min-w-fit px-9 pb-24 pt-28 shadow-2xl rounded-lg bg-white">
         <div className="flex justify-center items-center self-stretch gap-4">
           <img className="w-14 h-14" src={Logo} alt="Pro Juventute logo" />
           <div className="text-2xl">KPI tracking</div>
