@@ -3,7 +3,13 @@ import ModalRightSide from "../../components/ModalRightSide";
 import { KpiExtended, KpiValue } from "../../model/kpi";
 import { supabase } from "../../supabase";
 import KpiValuesModalSection from "./KpiValuesModalSection";
+import KpiHistoryModalSection from "./KpiHistoryModalSection";
+import { useOutletContext } from "react-router-dom";
 
+interface OutletContext {
+  kpiDefinitions: KpiExtended[];
+  fetchKpiDefinitions: () => void;
+}
 const KpiDetailModalPage = ({
   isOpen,
   onRequestClose,
@@ -19,6 +25,8 @@ const KpiDetailModalPage = ({
   const [kpiDefinition, setKpiDefinition] = useState<KpiExtended | null>(null);
   const [kpiValues, setKpiValues] = useState<KpiValue[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { kpiDefinitions, fetchKpiDefinitions }: OutletContext =
+    useOutletContext();
 
   const fetchKpiValues = async () => {
     try {
@@ -42,27 +50,17 @@ const KpiDetailModalPage = ({
     }
   };
 
-  const fetchKpiDefinition = async () => {
-    try {
-      let { data: kpi, error } = await supabase
-        .from("kpi_definition_with_latest_values")
-        .select("*")
-        .eq("kpi_id", kpiId)
-        .eq("circle_id", circleId);
-
-      if (error) {
-        alert(error.message);
-      }
-      if (kpi) {
-        setKpiDefinition(kpi[0]);
-      }
-    } catch (error: any) {
-      alert(error.message);
+  useEffect(() => {
+    if (kpiDefinitions) {
+      setKpiDefinition(
+        kpiDefinitions.find(
+          (kpi) => kpi.kpi_id === kpiId && kpi.circle_id === circleId
+        ) || null
+      );
     }
-  };
+  }, [kpiDefinitions]);
 
   useEffect(() => {
-    fetchKpiDefinition();
     fetchKpiValues();
   }, [kpiId]);
 
@@ -98,13 +96,13 @@ const KpiDetailModalPage = ({
             kpi={kpiDefinition}
             circleId={circleId}
             fetchKpiValues={fetchKpiValues}
-            fetchKpiDefinition={fetchKpiDefinition}
+            fetchKpiDefinitions={fetchKpiDefinitions}
             isLoading={isLoading}
             kpiValues={kpiValues}
             onRequestClose={onRequestClose}
           />
         ) : (
-          <>history</>
+          <KpiHistoryModalSection circleId={circleId} kpi={kpiDefinition} />
         )}
       </>
     );

@@ -45,3 +45,9 @@ export interface KpiValue {
   periodicity: KpiPeriodicity;
   standardized_date: string;
 }
+
+export interface KpiLogs extends KpiValue {
+  user_name: string;
+  user_circle_id: number;
+  user_circle_name: string;
+}
