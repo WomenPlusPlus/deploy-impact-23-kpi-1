@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../supabase";
@@ -35,18 +36,22 @@ export default function LoginPage(): JSX.Element {
             email: data.user.email,
           };
           setUser(userData);
-          if (userDetails) {
-            navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
-          } else {
-            navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
-          }
+        } else {
+          setError("Incorrect email or password. Please retry!");
         }
-        setError("Incorrect email or password. Please retry!");
       }
     } catch (error) {
       console.error(error);
     }
   }
+
+  useEffect(() => {
+    if (userDetails && userDetails.defaultCircleId) {
+      navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
+    } else if (circles.length > 0) {
+      navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
+    }
+  }, [userDetails, circles]);
 
   return (
     <div className="flex flex-col items-center h-full">
@@ -67,6 +72,7 @@ export default function LoginPage(): JSX.Element {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-col text-sm mb-5">
@@ -77,6 +83,7 @@ export default function LoginPage(): JSX.Element {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <div className="text-sm text-red-600 mb-3">{error}</div>
