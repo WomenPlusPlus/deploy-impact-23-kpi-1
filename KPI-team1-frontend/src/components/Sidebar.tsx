@@ -9,7 +9,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { supabase } from "../supabase";
 import { User, UserDetails } from "../model/user";
 import { Circles } from "../model/circle";
-import SearchBar from "./SearchBar";
+import SearchBar from "./Searchbar";
 
 interface SideBarProps {
   user: User;
