@@ -3,7 +3,7 @@ name: 'Migrate database schema'
 on:
   push:
     branches:
-      - database-from-V27-V2
+      - main
     paths:
       - 'migrations/**'
 
