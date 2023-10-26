@@ -1,5 +1,4 @@
--- test comment
-DROP VIEW if exists public.kpi_values_period_standardized;
+CREATE or REPLACE VIEW as
 select *,
 Case when target_value > 0 then ROUND(cumulative_value/target_value*100, 0) else null end as target_fulfilled
 FROM
