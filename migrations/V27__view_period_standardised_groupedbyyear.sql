@@ -18,36 +18,34 @@ select distinct
   t1.created_at,
   kd.periodicity as kpi_periodicity,
   case
-    when kd.periodicity = ‘yearly’::periodicity then date_trunc(
-      ‘year’::text,
+    when kd.periodicity = 'yearly'::periodicity then date_trunc(
+      'year'::text,
       t1.period_date::timestamp with time zone
-    ) + ‘1 year’::interval - ‘1 day’::interval
-    when kd.periodicity = ‘monthly’::periodicity then date_trunc(
-      ‘month’::text,
+    ) + '1 year'::interval - '1 day'::interval
+    when kd.periodicity = 'monthly'::periodicity then date_trunc(
+      'month'::text,
       t1.period_date::timestamp with time zone
-    ) + ‘1 mon’::interval - ‘1 day’::interval
-    when kd.periodicity = ‘quarterly’::periodicity then date_trunc(
-      ‘quarter’::text,
+    ) + '1 mon'::interval - '1 day'::interval
+    when kd.periodicity = 'quarterly'::periodicity then date_trunc(
+      'quarter'::text,
       t1.period_date::timestamp with time zone
-    ) + ‘3 mons’::interval - ‘1 day’::interval
-    when kd.periodicity = ‘weekly’::periodicity then date_trunc(
-      ‘week’::text,
+    ) + '3 mons'::interval - '1 day'::interval
+    when kd.periodicity = 'weekly'::periodicity then date_trunc(
+      'week'::text,
       t1.period_date::timestamp with time zone
-    ) - ‘1 day’::interval + ‘7 days’::interval
+    ) - '1 day'::interval + '7 days'::interval
     else t1.period_date::timestamp with time zone
   end as standardized_date,
   ku.user_name,
   t1.comment,
-  --CASE WHEN EXTRACT(YEAR FROM t1.period_date) = EXTRACT(YEAR FROM CURRENT_DATE) THEN
-    case when kd.cumulative = false and kd.formula = ‘aggregate’ then sum(t1.value) over (partition by t1.kpi_id, t1.circle_id, EXTRACT(YEAR FROM t1.period_date) order by t1.period_date)
-    when kd.cumulative = true and kd.formula = ‘aggregate’ then t1.value
-    when kd.cumulative = false and kd.formula = ‘average’ then avg(t1.value) over (partition by t1.kpi_id, t1.circle_id, EXTRACT(YEAR FROM t1.period_date) order by t1.period_date)
-    when kd.cumulative = true and kd.formula = ‘average’ then t1.value
+    case when kd.cumulative = false and kd.formula = 'aggregate' then sum(t1.value) over (partition by t1.kpi_id, t1.circle_id, EXTRACT(YEAR FROM t1.period_date) order by t1.period_date)
+    when kd.cumulative = true and kd.formula = 'aggregate' then t1.value
+    when kd.cumulative = false and kd.formula = 'average' then avg(t1.value) over (partition by t1.kpi_id, t1.circle_id, EXTRACT(YEAR FROM t1.period_date) order by t1.period_date)
+    when kd.cumulative = true and kd.formula = 'average' then t1.value
     end as cumulative_value,
-  --END
-  case when kd.formula = ‘aggregate’ then ‘area_graph’
-  when kd.formula = ‘average’ and kd.unit in (‘numeric’, ‘%’) then ‘line_graph’
-  when kd.formula = ‘average’ and kd.unit = ‘boolean’ then ‘donut_graph’
+  case when kd.formula = 'aggregate' then 'area_graph'
+  when kd.formula = 'average' and kd.unit in ('numeric', '%') then 'line_graph'
+  when kd.formula = 'average' and kd.unit = 'boolean' then 'donut_graph'
   end as graph_type,
   tar.target_value
 from
