@@ -3,7 +3,6 @@ import { HiOutlineTableCells } from "react-icons/hi2";
 import { HiOutlinePresentationChartLine } from "react-icons/hi2";
 import { HiStar } from "react-icons/hi2";
 import { AiOutlineSetting } from "react-icons/ai";
-import { FiLogIn } from "react-icons/fi";
 import { FiLogOut } from "react-icons/fi";
 import { NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
@@ -32,7 +31,6 @@ export default function SideBar({
   const navigate = useNavigate();
 
   async function handleLogout() {
-    console.log("check logout");
     let { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser({});

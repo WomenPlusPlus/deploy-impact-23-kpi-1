@@ -228,18 +228,20 @@ export default function KpiPage(): JSX.Element {
 
       <div className="flex">
         <div className="w-full xl:w-800">
-          <div className="flex justify-between text-2xl pb-4 border-b border-gray-300">
-            {circleKpis[0] ? `KPIs - ${circleKpis[0].circle_name}` : ""}
-            <button
-              className="flex justify-center items-center py-2 px-6 gap-2.5 rounded-md bg-[#FBBB21] text-[#131313] text-base font-semibold cursor-pointer hover:bg-yellow-600"
-              onClick={handleOpenAddKpiModal}
-            >
-              <span className="text-xl">
-                <HiOutlinePlusCircle />
-              </span>
-              <div>KPI</div>
-            </button>
-          </div>
+          {circleKpis?.[0] && (
+            <div className="flex justify-between text-2xl pb-4 border-b border-gray-300">
+              KPIs - {circleKpis[0].circle_name}
+              <button
+                className="flex justify-center items-center py-2 px-6 gap-2.5 rounded-md bg-[#FBBB21] text-[#131313] text-base font-semibold cursor-pointer hover:bg-yellow-600"
+                onClick={handleOpenAddKpiModal}
+              >
+                <span className="text-xl">
+                  <HiOutlinePlusCircle />
+                </span>
+                <div>KPI</div>
+              </button>
+            </div>
+          )}
           {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}
         </div>
       </div>

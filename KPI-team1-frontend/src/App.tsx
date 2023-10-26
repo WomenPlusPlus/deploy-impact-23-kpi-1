@@ -64,6 +64,10 @@ export default function App() {
     }
   }
 
+  useEffect(() => {
+    fetchUserDetails();
+  }, [user.id, userDetails.defaultCircleId]);
+
   const fetchKpiDefinitions = async () => {
     try {
       let { data: kpi_definition, error } = await supabase
@@ -82,7 +86,6 @@ export default function App() {
     fetchUser();
     getCircles();
     fetchKpiDefinitions();
-    fetchUserDetails();
   }, [user.id]);
 
   return (
