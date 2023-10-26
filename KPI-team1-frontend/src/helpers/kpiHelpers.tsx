@@ -78,3 +78,25 @@ export const getDisplayValueByPeriodicity = (
     return null;
   }
 };
+
+export const getStringDisplayValueByPeriodicity = (
+  periodicity: string,
+  date: Date
+) => {
+  const newDate = new Date(date);
+  if (periodicity === "quarterly") {
+    return `Q${getQuarter(newDate)}`;
+  } else if (periodicity === "yearly") {
+    return format(newDate, "yyyy");
+  } else if (periodicity === "weekly") {
+    const firstDayOfWeek = startOfWeek(newDate, { weekStartsOn: 1 });
+    return `Week ${getWeek(firstDayOfWeek, {
+      weekStartsOn: 1,
+      firstWeekContainsDate: 4,
+    })}`;
+  } else if (periodicity === "monthly") {
+    return format(newDate, "MMM");
+  } else {
+    return format(newDate, "yyyy-MM-dd");
+  }
+};

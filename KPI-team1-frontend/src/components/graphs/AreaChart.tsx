@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import { getStringDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 
 const AreaChart = ({
   seriesName,
   xValues,
   yValues,
+  periodicity,
+  target_value,
+  targetFulfilled,
+  percentage_change,
 }: {
   seriesName: string;
   xValues: string[];
   yValues: number[];
+  periodicity: string;
+  target_value: number | null;
+  targetFulfilled: number[] | null[];
+  percentage_change: number | null;
 }) => {
   const [chartOptions, setChartOptions] = useState<any>(null);
   const xValuesCopy = [...xValues];
@@ -19,7 +28,31 @@ const AreaChart = ({
     const index = xValues.indexOf(xValue);
     return yValues[index];
   });
+  const sortedDisplayXValues = sortedXValues.map((xValue) => {
+    const date = new Date(xValue);
+    return getStringDisplayValueByPeriodicity(periodicity, date);
+  });
+  const sortedTargetFulfilled = sortedXValues.map((xValue) => {
+    const index = xValues.indexOf(xValue);
+    return targetFulfilled[index];
+  });
+
+  const lastTargetFulfilled =
+    sortedTargetFulfilled[sortedTargetFulfilled.length - 1];
+
   useEffect(() => {
+    var minYValue = target_value
+      ? Math.min(...yValues, target_value, 0)
+      : Math.min(...yValues, 0);
+    var maxYValue =
+      Math.round(
+        ((target_value
+          ? Math.max(...yValues, target_value)
+          : Math.max(...yValues)) *
+          1.1) /
+          10
+      ) * 10;
+
     const options = {
       chart: {
         height: "100%",
@@ -67,59 +100,89 @@ const AreaChart = ({
         {
           data: sortedYValues,
           color: "#1A56DB",
+          name: seriesName,
         },
       ],
       xaxis: {
-        categories: sortedXValues,
+        categories: sortedDisplayXValues,
         labels: {
-          show: false,
+          show: true,
         },
         axisBorder: {
-          show: false,
+          show: true,
         },
         axisTicks: {
           show: false,
         },
       },
       yaxis: {
-        show: false,
+        show: true,
+        max: maxYValue,
+        min: minYValue,
+      },
+      annotations: {
+        yaxis: [{}],
       },
     };
+
+    if (target_value) {
+      options.annotations.yaxis = [
+        {
+          y: target_value,
+          borderColor: "#22AD5C",
+          label: {
+            show: false,
+            borderColor: "#22AD5C",
+            style: {
+              color: "#fff",
+              background: "#22AD5C",
+            },
+            text: `Target (${lastTargetFulfilled}%) : ${target_value} `,
+          },
+        },
+      ];
+    }
     setChartOptions(options);
   }, [xValues]);
 
+  const isNewValueHigher = percentage_change && percentage_change > 0;
+  const textClass = isNewValueHigher ? "text-green-500" : "text-red-600";
+
   return (
-    <div className="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+    <div className="m-5 bg-white rounded-lg shadow p-4 md:p-6">
       <div className="flex justify-between">
         <div>
-          <h5 className="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">
+          <h5 className="leading-none text-3xl font-bold text-gray-900 pb-2">
             {sortedYValues[yValues.length - 1]}
           </h5>
-          <p className="text-base font-normal text-gray-500 dark:text-gray-400">
-            {seriesName}
-          </p>
+          <p className="text-base font-normal text-gray-500">{seriesName}</p>
         </div>
-        <div className="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
-          {
-            //todo: update with percentage change
-          }
-          12%
-          <svg
-            className="w-3 h-3 ml-1"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 10 14"
+        {percentage_change ? (
+          <div
+            className={`flex items-center px-2.5 py-0.5 text-base font-semibold text-center ${textClass}`}
           >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13V1m0 0L1 5m4-4 4 4"
-            />
-          </svg>
-        </div>
+            {`${percentage_change.toFixed(2)}%`}
+            <svg
+              className="w-3 h-3 ml-1"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 14"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d={
+                  isNewValueHigher
+                    ? "M5 13V1m0 0L1 5m4-4 4 4"
+                    : "M5 1V13M5 13l4-4M5 13l-4-4"
+                }
+              />
+            </svg>
+          </div>
+        ) : null}
       </div>
       <div id="area-chart">
         {chartOptions && (
