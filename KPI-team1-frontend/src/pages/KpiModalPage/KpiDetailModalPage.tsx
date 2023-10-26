@@ -58,7 +58,7 @@ const KpiDetailModalPage = ({
         ) || null
       );
     }
-  }, [kpiDefinitions]);
+  }, [kpiId, kpiDefinitions]);
 
   useEffect(() => {
     fetchKpiValues();
