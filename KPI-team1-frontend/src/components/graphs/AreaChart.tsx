@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { getStringDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
+import { ApexChartType } from "../../model/kpi";
+import { GRAPH_TYPES } from "../../constants";
 
 const AreaChart = ({
   seriesName,
@@ -10,6 +12,7 @@ const AreaChart = ({
   target_value,
   targetFulfilled,
   percentage_change,
+  graph_type = GRAPH_TYPES["line_graph"],
 }: {
   seriesName: string;
   xValues: string[];
@@ -18,6 +21,7 @@ const AreaChart = ({
   target_value: number | null;
   targetFulfilled: number[] | null[];
   percentage_change: number | null;
+  graph_type: ApexChartType | null;
 }) => {
   const [chartOptions, setChartOptions] = useState<any>(null);
   const xValuesCopy = [...xValues];
@@ -39,7 +43,6 @@ const AreaChart = ({
 
   const lastTargetFulfilled =
     sortedTargetFulfilled[sortedTargetFulfilled.length - 1];
-
   useEffect(() => {
     var minYValue = target_value
       ? Math.min(...yValues, target_value, 0)
@@ -57,7 +60,7 @@ const AreaChart = ({
       chart: {
         height: "100%",
         maxWidth: "100%",
-        type: "area",
+        type: graph_type || "line",
         fontFamily: "Inter, sans-serif",
         dropShadow: {
           enabled: false,
@@ -72,13 +75,14 @@ const AreaChart = ({
           show: false,
         },
       },
+
       fill: {
-        type: "gradient",
+        type: graph_type === GRAPH_TYPES["area_graph"] ? "gradient" : "solid",
         gradient: {
           opacityFrom: 0.55,
           opacityTo: 0,
           shade: "#1C64F2",
-          gradientToColors: ["#1C64F2"],
+          gradientToColors: "#1C64F2",
         },
       },
       dataLabels: {
@@ -96,10 +100,15 @@ const AreaChart = ({
           top: 0,
         },
       },
+      markers: {
+        size: [5],
+        strokeWidth: 0,
+      },
       series: [
         {
           data: sortedYValues,
-          color: "#1A56DB",
+          color:
+            graph_type === GRAPH_TYPES["area_graph"] ? "#1A56DB" : "#6634C1",
           name: seriesName,
         },
       ],
@@ -189,7 +198,7 @@ const AreaChart = ({
           <ReactApexChart
             options={chartOptions}
             series={chartOptions.series}
-            type="area"
+            type={graph_type || "line"}
           />
         )}
       </div>

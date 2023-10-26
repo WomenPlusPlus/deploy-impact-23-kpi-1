@@ -6,10 +6,15 @@ enum KpiPeriodicity {
   Yearly = "yearly",
 }
 
-enum GraphType {
+export enum GraphType {
   AreaGraph = "area_graph",
   LineGraph = "line_graph",
   DonutGraph = "donut_graph",
+}
+export enum ApexChartType {
+  Area = "area",
+  Line = "line",
+  Donut = "donut",
 }
 
 export interface Kpi {
@@ -53,7 +58,7 @@ export interface KpiValue {
   periodicity: KpiPeriodicity;
   standardized_date: string;
   comment: string | null;
-  graph_type: string;
+  graph_type: GraphType | null;
   cumulative_value: number;
   target_value: number | null;
   target_fulfilled: number | null;

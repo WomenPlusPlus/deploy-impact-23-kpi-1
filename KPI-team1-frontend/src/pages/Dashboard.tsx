@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { KpiExtended, KpiValue } from "../model/kpi";
+import { GraphType, KpiExtended, KpiValue } from "../model/kpi";
 import { supabase } from "../supabase";
 import AreaChart from "../components/graphs/AreaChart";
 import { Grid } from "@mui/material";
 import { useOutletContext, useParams } from "react-router-dom";
 import { UserDetails } from "../model/user";
+import { GRAPH_TYPES } from "../constants";
 
 interface OutletContext {
   circleId: number | null;
@@ -59,7 +60,10 @@ export default function Dashboard(): JSX.Element {
     if (foundKpi) {
       foundKpi.values.push({
         standardized_date: curr.standardized_date,
-        cumulative_value: curr.cumulative_value,
+        cumulative_value:
+          curr.graph_type === GraphType.LineGraph
+            ? curr.cumulative_value.toFixed(2)
+            : curr.cumulative_value,
         target_fulfilled: curr.target_fulfilled,
       });
     } else {
@@ -67,13 +71,15 @@ export default function Dashboard(): JSX.Element {
         (kpi) =>
           kpi.kpi_id === curr.kpi_id && kpi.circle_id === selectedCircleId
       );
-
       acc.push({
         kpi_id: curr.kpi_id,
         values: [
           {
             standardized_date: curr.standardized_date,
-            cumulative_value: curr.cumulative_value,
+            cumulative_value:
+              curr.graph_type === GraphType.LineGraph
+                ? curr.cumulative_value.toFixed(2)
+                : curr.cumulative_value,
             target_fulfilled: curr.target_fulfilled,
           },
         ],
@@ -81,7 +87,7 @@ export default function Dashboard(): JSX.Element {
         periodicity: kpiDefinition?.periodicity || "",
         target_value: kpiDefinition?.target_value || null,
         percentage_change: kpiDefinition?.percentage_change,
-        area_type: kpiDefinition?.graph_type,
+        graph_type: curr.graph_type,
       });
     }
     return acc;
@@ -107,6 +113,7 @@ export default function Dashboard(): JSX.Element {
                 periodicity={item.periodicity}
                 target_value={item.target_value}
                 percentage_change={item.percentage_change}
+                graph_type={GRAPH_TYPES[item.graph_type] || null}
               />
             </Grid>
           );

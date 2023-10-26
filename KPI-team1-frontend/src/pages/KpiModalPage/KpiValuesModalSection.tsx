@@ -72,6 +72,15 @@ const KpiValuesModalSection = ({
         }
       },
     },
+    //todo: to remove when data seems working correctly
+    {
+      headerName: "Cumulative Value",
+      field: "cumulative_value",
+      flex: 1,
+      sortable: true,
+      headerAlign: "center",
+      align: "center",
+    },
 
     {
       headerName: "Comment",
