@@ -1,3 +1,4 @@
+-- test comment
 DROP VIEW if exists public.kpi_values_period_standardized;
 select *,
 Case when target_value > 0 then ROUND(cumulative_value/target_value*100, 0) else null end as target_fulfilled
@@ -60,5 +61,4 @@ order by
   standardized_date desc,
   t1.circle_id,
   t1.created_at desc
-) as sq
-;
+) as sq;
