@@ -88,6 +88,7 @@ export default function Dashboard(): JSX.Element {
         target_value: kpiDefinition?.target_value || null,
         percentage_change: kpiDefinition?.percentage_change,
         graph_type: curr.graph_type,
+        show: kpiDefinition?.is_approved || false,
       });
     }
     return acc;
@@ -96,28 +97,30 @@ export default function Dashboard(): JSX.Element {
   return (
     <div className="App">
       <Grid container>
-        {allKpis.map((item: any) => {
-          return (
-            <Grid item xs={6} key={item.kpi_id}>
-              <AreaAndLineGraph
-                xValues={item.values.map(
-                  (value: any) => value.standardized_date
-                )}
-                yValues={item.values.map(
-                  (value: any) => value.cumulative_value
-                )}
-                targetFulfilled={item.values.map(
-                  (value: any) => value.target_fulfilled
-                )}
-                seriesName={item.kpi_name}
-                periodicity={item.periodicity}
-                target_value={item.target_value}
-                percentage_change={item.percentage_change}
-                graph_type={GRAPH_TYPES[item.graph_type] || null}
-              />
-            </Grid>
-          );
-        })}
+        {allKpis
+          .filter((item: any) => item.show === true)
+          .map((item: any) => {
+            return (
+              <Grid item xs={6} key={item.kpi_id}>
+                <AreaAndLineGraph
+                  xValues={item.values.map(
+                    (value: any) => value.standardized_date
+                  )}
+                  yValues={item.values.map(
+                    (value: any) => value.cumulative_value
+                  )}
+                  targetFulfilled={item.values.map(
+                    (value: any) => value.target_fulfilled
+                  )}
+                  seriesName={item.kpi_name}
+                  periodicity={item.periodicity}
+                  target_value={item.target_value}
+                  percentage_change={item.percentage_change}
+                  graph_type={GRAPH_TYPES[item.graph_type] || null}
+                />
+              </Grid>
+            );
+          })}
       </Grid>
     </div>
   );

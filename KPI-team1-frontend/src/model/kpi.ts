@@ -27,6 +27,7 @@ export interface Kpi {
   unit: string | null;
   created_at: string | null;
   updated_at: string | null;
+  is_approved: boolean;
 }
 
 //kpi_definition_with_latest_values
