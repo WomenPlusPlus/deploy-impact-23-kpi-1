@@ -16,8 +16,6 @@ interface OutletContext {
   kpiDefinitions: KpiExtended[];
   userDetails: UserDetails;
   fetchKpiDefinitions: () => Promise<void>;
-  circleId: number | null;
-  setCircleId: (circleId: number) => void;
 }
 
 const other = {
@@ -133,27 +131,18 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
 const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
-  const { circleId: circleIdParam } = useParams();
+  const { circleId } = useParams();
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpiId, setSelectedKpiId] = useState<number | null>(null);
   const [addKpiModalIsOpen, setAddKpiModalIsOpen] = useState(false);
-  const {
-    kpiDefinitions,
-    userDetails,
-    fetchKpiDefinitions,
-    circleId,
-    setCircleId,
-  }: OutletContext = useOutletContext();
+  const { kpiDefinitions, userDetails, fetchKpiDefinitions }: OutletContext =
+    useOutletContext();
 
   useEffect(() => {
     if (circleId) {
-      setSelectedCircleId(circleId.toString());
-    } else if (circleIdParam) {
-      setCircleId(Number(circleIdParam));
-      setSelectedCircleId(circleIdParam);
+      setSelectedCircleId(circleId);
     } else {
-      setCircleId(Number(userDetails.defaultCircleId));
       setSelectedCircleId(userDetails.defaultCircleId);
     }
   }, [circleId, userDetails]);
@@ -193,7 +182,7 @@ export default function KpiPage(): JSX.Element {
     };
 
     return (
-      <div key={periodicity}>
+      <div key={periodicity} className="mt-5">
         <div className="text-xl font-medium">{`${periodicity
           .charAt(0)
           .toUpperCase()}${periodicity.slice(1)} KPIs`}</div>
@@ -238,7 +227,7 @@ export default function KpiPage(): JSX.Element {
       )}
 
       <div className="flex">
-        <div className="w-full xl:w-800">
+        <div className="w-full xl:w-800 m-5">
           {circleKpis?.[0] && (
             <div className="flex justify-between text-2xl pb-4 border-b border-gray-300">
               KPIs - {circleKpis[0].circle_name}

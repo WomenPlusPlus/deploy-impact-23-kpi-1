@@ -94,8 +94,19 @@ export default function Dashboard(): JSX.Element {
     return acc;
   }, []);
 
+  const circleKpis =
+    kpiDefinitions &&
+    kpiDefinitions.filter(
+      (kpiDefinition) => kpiDefinition.circle_id === Number(selectedCircleId)
+    );
+
   return (
-    <div className="App">
+    <div>
+      {circleKpis?.[0] && (
+        <div className="text-2xl m-5 pb-4 border-b border-gray-300">
+          KPIs - {circleKpis[0].circle_name}
+        </div>
+      )}
       <Grid container>
         {allKpis
           .filter((item: any) => item.show === true)
