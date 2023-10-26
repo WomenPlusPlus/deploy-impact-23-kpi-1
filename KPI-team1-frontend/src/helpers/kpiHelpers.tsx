@@ -48,9 +48,9 @@ export const getDisplayValueByPeriodicity = (
       return (
         <Tooltip
           title={
-            <span>{`${format(firstDayOfWeek, "dd.MM.yyyy")} - ${format(
+            <span>{`${format(firstDayOfWeek, "yyyy-MM-dd")} - ${format(
               lastDayOfWeek,
-              "dd.MM.yyyy"
+              "yyyy-MM-dd"
             )}`}</span>
           }
         >
@@ -72,9 +72,53 @@ export const getDisplayValueByPeriodicity = (
       );
     }
     {
-      return format(newDate, "dd.MM.yyyy");
+      return format(newDate, "yyyy-MM-dd");
     }
   } else {
     return null;
   }
+};
+
+export const getStringDisplayValueByPeriodicity = (
+  periodicity: string,
+  date: Date
+) => {
+  const newDate = new Date(date);
+  if (periodicity === "quarterly") {
+    return `Q${getQuarter(newDate)}`;
+  } else if (periodicity === "yearly") {
+    return format(newDate, "yyyy");
+  } else if (periodicity === "weekly") {
+    const firstDayOfWeek = startOfWeek(newDate, { weekStartsOn: 1 });
+    return `Week ${getWeek(firstDayOfWeek, {
+      weekStartsOn: 1,
+      firstWeekContainsDate: 4,
+    })}`;
+  } else if (periodicity === "monthly") {
+    return format(newDate, "MMM");
+  } else {
+    return format(newDate, "yyyy-MM-dd");
+  }
+};
+
+export const getPreviousPeriodByPeriodicity = (
+  periodicity: string,
+  date: Date = new Date()
+) => {
+  const getNewDate = (date: Date) => {
+    const newDate = new Date(date);
+    if (periodicity === "quarterly") {
+      return new Date(newDate.setMonth(newDate.getMonth() - 3));
+    } else if (periodicity === "yearly") {
+      return new Date(newDate.setFullYear(newDate.getFullYear() - 1));
+    } else if (periodicity === "weekly") {
+      return new Date(newDate.setDate(newDate.getDate() - 7));
+    } else if (periodicity === "monthly") {
+      return new Date(newDate.setMonth(newDate.getMonth() - 1));
+    } else {
+      return new Date(newDate.setDate(newDate.getDate() - 1));
+    }
+  };
+
+  return getStringDisplayValueByPeriodicity(periodicity, getNewDate(date));
 };
