@@ -4,12 +4,7 @@ import { HiOutlinePresentationChartLine } from "react-icons/hi2";
 import { HiStar } from "react-icons/hi2";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
-import {
-  NavLink,
-  useNavigate,
-  useLocation,
-  useOutletContext,
-} from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../supabase";
 import { User, UserDetails } from "../model/user";
 import { Circles } from "../model/circle";
@@ -22,8 +17,6 @@ interface SideBarProps {
   setCircles: (circles: Circles[]) => void;
   userDetails: UserDetails;
   setUserDetails: (userDetails: UserDetails) => void;
-}
-interface OutletContext {
   circleId: number | null;
   setCircleId: (circleId: number | null) => void;
 }
@@ -35,10 +28,11 @@ export default function SideBar({
   setCircles,
   userDetails,
   setUserDetails,
+  circleId,
+  setCircleId,
 }: SideBarProps): JSX.Element {
   const isSearchKpi: boolean = false;
   const navigate = useNavigate();
-  const { circleId, setCircleId }: OutletContext = useOutletContext();
 
   async function handleLogout() {
     let { error } = await supabase.auth.signOut();
@@ -86,7 +80,7 @@ export default function SideBar({
                 <div className="font-medium">KPI's</div>
               </NavLink>
               <NavLink
-                to={circleId ? `/dashboard/${circleId}` : "/dashboard"}
+                to={circleId ? `/kpi/dashboard/${circleId}` : "/kpi/dashboard"}
                 className={({ isActive }) =>
                   "text-xl flex items-center gap-3 p-4 self-stretch mt-2.5" +
                   (isActive
@@ -116,7 +110,7 @@ export default function SideBar({
                         " rounded-lg flex items-center p-4 gap-4 self-stretch  text-black" +
                         (isActive ||
                         isLinkActive(
-                          `/dashboard/${circle.circle_user[0].circle_id}`
+                          `/kpi/dashboard/${circle.circle_user[0].circle_id}`
                         )
                           ? " bg-[#FBBB21]"
                           : "  hover:bg-gray-300")

@@ -10,7 +10,6 @@ import { HiOutlinePlusCircle } from "react-icons/hi";
 import AddKpiModalPage from "./AddKpiModalPage";
 import { HiMiniInformationCircle } from "react-icons/hi2";
 import { Tooltip } from "@mui/material";
-import { set } from "date-fns";
 
 interface OutletContext {
   circles: Circles[];
