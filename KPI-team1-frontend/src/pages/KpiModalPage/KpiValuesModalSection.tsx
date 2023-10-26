@@ -1,3 +1,4 @@
+import * as React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { getDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 import { supabase } from "../../supabase";
@@ -6,6 +7,8 @@ import { LinearProgress } from "@mui/material";
 import { KpiExtended, KpiValue } from "../../model/kpi";
 import { format, set } from "date-fns";
 import CustomGridToolbar from "../../components/CustomGridToolBar";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 const other = {
   showCellVerticalBorder: true,
@@ -35,6 +38,7 @@ const KpiValuesModalSection = ({
   const [targetValue, setTargetValue] = useState<number | null>(null);
   const [dateError, setDateError] = useState<string | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
+  const [open, setOpen] = React.useState(false);
 
   const PREVIOUS_VALUES_COLUMNS: GridColDef[] = [
     {
@@ -256,6 +260,23 @@ const KpiValuesModalSection = ({
     );
   };
   const renderSetTargetValue = () => {
+    const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+      props,
+      ref
+    ) {
+      return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const handleCloseAlert = (
+      event?: React.SyntheticEvent | Event,
+      reason?: string
+    ) => {
+      if (reason === "clickaway") {
+        return;
+      }
+      setOpen(false);
+    };
+
     const handleSaveTarget = async (value: string | null) => {
       if (!value) return;
       const numberedValue = Number(value);
@@ -272,14 +293,11 @@ const KpiValuesModalSection = ({
           .select("target_value");
         if (data) {
           const result = data[0].target_value;
-          alert(`Target value successfully updated to ${result}`);
           setTargetValue(result);
+          setOpen(true);
+          fetchKpiDefinitions();
         }
-        if (error) {
-          alert(`Error updating the target \nDetails: ${error.message}`);
-          return;
-        }
-        fetchKpiDefinitions();
+        if (error) throw error.message;
       } catch (error: any) {
         console.log(error.message);
       }
@@ -306,6 +324,19 @@ const KpiValuesModalSection = ({
             />
           </label>
         </div>
+        <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleCloseAlert}
+        >
+          <Alert
+            onClose={handleCloseAlert}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Target value successfully updated to {targetValue}
+          </Alert>
+        </Snackbar>
       </>
     );
   };
