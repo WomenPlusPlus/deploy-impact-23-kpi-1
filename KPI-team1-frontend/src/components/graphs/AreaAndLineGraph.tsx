@@ -4,7 +4,7 @@ import { getStringDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 import { ApexChartType } from "../../model/kpi";
 import { GRAPH_TYPES } from "../../constants";
 
-const AreaChart = ({
+const AreaAndLineGraph = ({
   seriesName,
   xValues,
   yValues,
@@ -12,7 +12,7 @@ const AreaChart = ({
   target_value,
   targetFulfilled,
   percentage_change,
-  graph_type = GRAPH_TYPES["line_graph"],
+  graph_type: selectedGraphType = GRAPH_TYPES["line_graph"],
 }: {
   seriesName: string;
   xValues: string[];
@@ -23,6 +23,10 @@ const AreaChart = ({
   percentage_change: number | null;
   graph_type: ApexChartType | null;
 }) => {
+  const graph_type =
+    selectedGraphType === GRAPH_TYPES["donut_graph"]
+      ? GRAPH_TYPES["line_graph"]
+      : selectedGraphType;
   const [chartOptions, setChartOptions] = useState<any>(null);
   const xValuesCopy = [...xValues];
   const sortedXValues = xValuesCopy.sort((a, b) => {
@@ -44,17 +48,18 @@ const AreaChart = ({
   const lastTargetFulfilled =
     sortedTargetFulfilled[sortedTargetFulfilled.length - 1];
   useEffect(() => {
-    var minYValue = target_value
+    const minYValue = target_value
       ? Math.min(...yValues, target_value, 0)
       : Math.min(...yValues, 0);
-    var maxYValue =
-      Math.round(
-        ((target_value
-          ? Math.max(...yValues, target_value)
-          : Math.max(...yValues)) *
-          1.1) /
-          10
-      ) * 10;
+
+    const maxNonRoundedYValue = target_value
+      ? Math.max(...yValues, target_value)
+      : Math.max(...yValues);
+
+    const maxYValue =
+      maxNonRoundedYValue > 10
+        ? Math.round((maxNonRoundedYValue * 1.1) / 10) * 10
+        : maxNonRoundedYValue * 1.1;
 
     const options = {
       chart: {
@@ -92,7 +97,7 @@ const AreaChart = ({
         width: 6,
       },
       grid: {
-        show: false,
+        show: true,
         strokeDashArray: 4,
         padding: {
           left: 2,
@@ -128,6 +133,8 @@ const AreaChart = ({
         show: true,
         max: maxYValue,
         min: minYValue,
+        tickAmount: 6,
+        forceNiceScale: true,
       },
       annotations: {
         yaxis: [{}],
@@ -206,4 +213,4 @@ const AreaChart = ({
   );
 };
 
-export default AreaChart;
+export default AreaAndLineGraph;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { GraphType, KpiExtended, KpiValue } from "../model/kpi";
 import { supabase } from "../supabase";
-import AreaChart from "../components/graphs/AreaChart";
+import AreaAndLineGraph from "../components/graphs/AreaAndLineGraph";
 import { Grid } from "@mui/material";
 import { useOutletContext, useParams } from "react-router-dom";
 import { UserDetails } from "../model/user";
@@ -99,7 +99,7 @@ export default function Dashboard(): JSX.Element {
         {allKpis.map((item: any) => {
           return (
             <Grid item xs={6} key={item.kpi_id}>
-              <AreaChart
+              <AreaAndLineGraph
                 xValues={item.values.map(
                   (value: any) => value.standardized_date
                 )}
