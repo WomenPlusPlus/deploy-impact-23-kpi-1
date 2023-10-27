@@ -6,6 +6,17 @@ enum KpiPeriodicity {
   Yearly = "yearly",
 }
 
+export enum GraphType {
+  AreaGraph = "area_graph",
+  LineGraph = "line_graph",
+  DonutGraph = "donut_graph",
+}
+export enum ApexChartType {
+  Area = "area",
+  Line = "line",
+  Donut = "donut",
+}
+
 export interface Kpi {
   kpi_id: number;
   kpi_name: string;
@@ -16,6 +27,7 @@ export interface Kpi {
   unit: string | null;
   created_at: string | null;
   updated_at: string | null;
+  is_approved: boolean;
 }
 
 //kpi_definition_with_latest_values
@@ -30,6 +42,8 @@ export interface KpiExtended extends Kpi {
   latest_user_id: string;
   target_id: number | null;
   target_value: number | null;
+  percentage_change: number | null;
+  graph_type: GraphType | null;
 }
 
 //kpi_values_period_standardized
@@ -44,6 +58,11 @@ export interface KpiValue {
   created_at: string | null; //todo: should not be null. need to update db
   periodicity: KpiPeriodicity;
   standardized_date: string;
+  comment: string | null;
+  graph_type: GraphType | null;
+  cumulative_value: number;
+  target_value: number | null;
+  target_fulfilled: number | null;
 }
 
 export interface KpiLogs extends KpiValue {

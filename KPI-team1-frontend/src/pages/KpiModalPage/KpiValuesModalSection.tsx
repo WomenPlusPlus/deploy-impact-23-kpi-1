@@ -76,7 +76,6 @@ const KpiValuesModalSection = ({
         }
       },
     },
-
     {
       headerName: "Comment",
       field: "comment",

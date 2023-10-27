@@ -10,11 +10,11 @@ interface OutletContext {
   setUser: any;
   circles: Circles[];
   userDetails: UserDetails;
-  setUserDetails: (UserDetails: UserDetails) => void;
+  setCircleId: (circleId: number) => void;
 }
 
 export default function LoginPage(): JSX.Element {
-  const { setUser, circles, userDetails, setUserDetails }: OutletContext =
+  const { setUser, circles, userDetails, setCircleId }: OutletContext =
     useOutletContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,8 +47,10 @@ export default function LoginPage(): JSX.Element {
 
   useEffect(() => {
     if (userDetails && userDetails.defaultCircleId) {
+      setCircleId(Number(userDetails.defaultCircleId));
       navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
     } else if (circles.length > 0) {
+      setCircleId(circles[0].circle_user[0].circle_id);
       navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
     }
   }, [userDetails, circles]);

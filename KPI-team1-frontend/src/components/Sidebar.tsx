@@ -4,7 +4,7 @@ import { HiOutlinePresentationChartLine } from "react-icons/hi2";
 import { HiStar } from "react-icons/hi2";
 import { AiOutlineSetting } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../supabase";
 import { User, UserDetails } from "../model/user";
 import { Circles } from "../model/circle";
@@ -17,6 +17,8 @@ interface SideBarProps {
   setCircles: (circles: Circles[]) => void;
   userDetails: UserDetails;
   setUserDetails: (userDetails: UserDetails) => void;
+  circleId: number | null;
+  setCircleId: (circleId: number | null) => void;
 }
 
 export default function SideBar({
@@ -26,6 +28,8 @@ export default function SideBar({
   setCircles,
   userDetails,
   setUserDetails,
+  circleId,
+  setCircleId,
 }: SideBarProps): JSX.Element {
   const isSearchKpi: boolean = false;
   const navigate = useNavigate();
@@ -34,11 +38,23 @@ export default function SideBar({
     let { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser({});
+    setCircleId(null);
     setCircles([]);
     setUserDetails({ username: null, defaultCircleId: null });
     navigate("/");
   }
-
+  const location = useLocation();
+  const isLinkActive = (matchPath: string) => {
+    return location.pathname === matchPath;
+  };
+  const getPath = () => {
+    const pathParts = location.pathname.split("/");
+    if (pathParts.includes("dashboard")) {
+      return "dashboard";
+    } else {
+      return "circles";
+    }
+  };
   return (
     <>
       <section className="max-h-full my-auto">
@@ -56,7 +72,7 @@ export default function SideBar({
             </div>
             <div>
               <NavLink
-                to={"/kpi/circles"}
+                to={circleId ? `/kpi/circles/${circleId}` : "/kpi/circles"}
                 className={({ isActive }) =>
                   "text-xl flex items-center gap-3 p-4 self-stretch" +
                   (isActive
@@ -70,7 +86,7 @@ export default function SideBar({
                 <div className="font-medium">KPI's</div>
               </NavLink>
               <NavLink
-                to={"/kpi/dashboard"}
+                to={circleId ? `/kpi/dashboard/${circleId}` : "/kpi/dashboard"}
                 className={({ isActive }) =>
                   "text-xl flex items-center gap-3 p-4 self-stretch mt-2.5" +
                   (isActive
@@ -85,14 +101,28 @@ export default function SideBar({
               </NavLink>
 
               <div className="w-56 bg-[#F0F0F6] flex flex-col py-6 px-4 items-center gap-4 rounded-lg my-10">
-                <SearchBar isSearchKpi={isSearchKpi} />
+                <SearchBar
+                  isSearchKpi={isSearchKpi}
+                  setCircleId={setCircleId}
+                  path={getPath()}
+                />
                 {circles &&
                   circles.map((circle, index) => (
                     <NavLink
-                      to={`/kpi/circles/${circle.circle_user[0].circle_id}`}
+                      onClick={() =>
+                        setCircleId(circle.circle_user[0].circle_id)
+                      }
+                      to={`/kpi/${getPath()}/${
+                        circle.circle_user[0].circle_id
+                      }`}
                       className={({ isActive }) =>
                         " rounded-lg flex items-center p-4 gap-4 self-stretch  text-black" +
-                        (isActive ? " bg-[#FBBB21]" : "  hover:bg-gray-300")
+                        (isActive ||
+                        isLinkActive(
+                          `/kpi/dashboard/${circle.circle_user[0].circle_id}`
+                        )
+                          ? " bg-[#FBBB21]"
+                          : "  hover:bg-gray-300")
                       }
                       key={index}
                     >

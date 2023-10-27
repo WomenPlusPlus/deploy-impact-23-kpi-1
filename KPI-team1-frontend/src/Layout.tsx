@@ -15,6 +15,8 @@ interface OutletContext {
   userDetails: UserDetails;
   setUserDetails: (UserDetails: UserDetails) => void;
   fetchKpiDefinitions: () => Promise<void>;
+  circleId: number | null;
+  setCircleId: (circleId: number | null) => void;
 }
 
 export default function Layout() {
@@ -28,6 +30,8 @@ export default function Layout() {
     userDetails,
     setUserDetails,
     fetchKpiDefinitions,
+    circleId,
+    setCircleId,
   }: OutletContext = useOutletContext();
 
   return (
@@ -40,12 +44,14 @@ export default function Layout() {
           setCircles={setCircles}
           userDetails={userDetails}
           setUserDetails={setUserDetails}
+          circleId={circleId}
+          setCircleId={setCircleId}
         />
       </div>
       <div className="flex flex-col grow">
         <div className="flex items-start justify-between py-4 px-8 border-b border-[#D0D8DB] ">
           <div className="flex flex-col w-1/2">
-            <SearchBar isSearchKpi={isSearchKpi} />
+            <SearchBar isSearchKpi={isSearchKpi} setCircleId={setCircleId} />
           </div>
 
           <div className="flex justify-end items-center gap-20 border-l border-[#D0D8DB] w-1/3 py-1.5">
@@ -71,6 +77,8 @@ export default function Layout() {
               setUserDetails,
               kpiDefinitions,
               fetchKpiDefinitions,
+              circleId,
+              setCircleId,
             }}
           />
         </div>
