@@ -43,12 +43,18 @@ export default function SideBar({
     setUserDetails({ username: null, defaultCircleId: null });
     navigate("/");
   }
-
+  const location = useLocation();
   const isLinkActive = (matchPath: string) => {
-    const location = useLocation();
     return location.pathname === matchPath;
   };
-
+  const getPath = () => {
+    const pathParts = location.pathname.split("/");
+    if (pathParts.includes("dashboard")) {
+      return "dashboard";
+    } else {
+      return "circles";
+    }
+  };
   return (
     <>
       <section className="max-h-full my-auto">
@@ -98,6 +104,7 @@ export default function SideBar({
                 <SearchBar
                   isSearchKpi={isSearchKpi}
                   setCircleId={setCircleId}
+                  path={getPath()}
                 />
                 {circles &&
                   circles.map((circle, index) => (
@@ -105,7 +112,9 @@ export default function SideBar({
                       onClick={() =>
                         setCircleId(circle.circle_user[0].circle_id)
                       }
-                      to={`/kpi/circles/${circle.circle_user[0].circle_id}`}
+                      to={`/kpi/${getPath()}/${
+                        circle.circle_user[0].circle_id
+                      }`}
                       className={({ isActive }) =>
                         " rounded-lg flex items-center p-4 gap-4 self-stretch  text-black" +
                         (isActive ||
