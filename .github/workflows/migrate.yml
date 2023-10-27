@@ -3,7 +3,7 @@ name: 'Migrate database schema'
 on:
   push:
     branches:
-      - database-test
+      - main
     paths:
       - 'migrations/**'
 
