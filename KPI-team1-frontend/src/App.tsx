@@ -18,6 +18,7 @@ export default function App() {
     username: null,
     defaultCircleId: null,
   });
+  const [circleId, setCircleId] = useState<number | null>(null);
 
   // TODO maybe move this functionality to LoginPage ?
   async function fetchUser() {
@@ -34,6 +35,7 @@ export default function App() {
   }
 
   async function getCircles() {
+    if (!user.id) return;
     try {
       const { data, error } = await supabase
         .from("circle")
@@ -47,6 +49,7 @@ export default function App() {
   }
 
   async function fetchUserDetails() {
+    if (!user.id) return;
     try {
       const { data, error } = await supabase
         .from("username_with_default_circle")
@@ -99,6 +102,8 @@ export default function App() {
         setUserDetails,
         kpiDefinitions,
         fetchKpiDefinitions,
+        circleId,
+        setCircleId,
       }}
     />
   );
