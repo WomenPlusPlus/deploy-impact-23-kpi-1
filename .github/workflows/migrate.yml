@@ -3,7 +3,7 @@ name: "Migrate database schema"
 on:
   push:
     branches:
-      - update-table-circle-kpi-def
+      - main
     paths:
       - "migrations/**"
 
