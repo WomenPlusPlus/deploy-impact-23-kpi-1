@@ -1,11 +1,11 @@
-name: 'Migrate database schema'
+name: "Migrate database schema"
 
 on:
   push:
     branches:
-      - main
+      - update-table-circle-kpi-def
     paths:
-      - 'migrations/**'
+      - "migrations/**"
 
 jobs:
   migrate-database:
