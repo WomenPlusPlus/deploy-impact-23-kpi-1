@@ -16,6 +16,8 @@ interface OutletContext {
   kpiDefinitions: KpiExtended[];
   userDetails: UserDetails;
   fetchKpiDefinitions: () => Promise<void>;
+  circleId: number | null;
+  setCircleId: (circleId: number) => void;
 }
 
 const other = {
@@ -131,21 +133,30 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
 const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
 
 export default function KpiPage(): JSX.Element {
-  const { circleId } = useParams();
-  const [selectedCircleId, setSelectedCircleId] = useState<string | null>("");
+  const { circleId: circleIdParam } = useParams();
+  const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpiId, setSelectedKpiId] = useState<number | null>(null);
   const [addKpiModalIsOpen, setAddKpiModalIsOpen] = useState(false);
-  const { kpiDefinitions, userDetails, fetchKpiDefinitions }: OutletContext =
-    useOutletContext();
+  const {
+    kpiDefinitions,
+    userDetails,
+    fetchKpiDefinitions,
+    circleId,
+    setCircleId,
+  }: OutletContext = useOutletContext();
 
   useEffect(() => {
     if (circleId) {
-      setSelectedCircleId(circleId);
+      setSelectedCircleId(Number(circleId));
+    } else if (!circleId && circleIdParam) {
+      setCircleId(Number(circleIdParam));
+      setSelectedCircleId(Number(circleIdParam));
     } else {
-      setSelectedCircleId(userDetails.defaultCircleId);
+      setCircleId(Number(userDetails.defaultCircleId));
+      setSelectedCircleId(Number(userDetails.defaultCircleId));
     }
-  }, [circleId, userDetails]);
+  }, [circleIdParam, circleId, userDetails]);
 
   const circleKpis =
     kpiDefinitions &&
