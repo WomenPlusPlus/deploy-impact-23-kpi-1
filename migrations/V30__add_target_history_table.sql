@@ -12,7 +12,7 @@ CREATE TABLE target_history (
     PRIMARY KEY (target_history_id),
     CONSTRAINT fk_kpi FOREIGN KEY(kpi_id) REFERENCES kpi_definition(kpi_id),
     CONSTRAINT fk_circle FOREIGN KEY(circle_id) REFERENCES circle(circle_id),
-    CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES auth.user(id)
+    CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES auth.users(id)
 );
 
 DROP TRIGGER IF EXISTS target_history_trigger on "public"."target";
