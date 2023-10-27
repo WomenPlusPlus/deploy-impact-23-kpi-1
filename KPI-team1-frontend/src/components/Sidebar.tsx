@@ -7,14 +7,14 @@ import { FiLogOut } from "react-icons/fi";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../supabase";
 import { User, UserDetails } from "../model/user";
-import { Circles } from "../model/circle";
+import { FavoriteCircle } from "../model/circle";
 import SearchBar from "./Searchbar";
 
 interface SideBarProps {
   user: User;
   setUser: any;
-  circles: Circles[];
-  setCircles: (circles: Circles[]) => void;
+  favoriteCircles: FavoriteCircle[];
+  setFavoriteCircles: (circles: FavoriteCircle[]) => void;
   userDetails: UserDetails;
   setUserDetails: (userDetails: UserDetails) => void;
   circleId: number | null;
@@ -24,8 +24,8 @@ interface SideBarProps {
 export default function SideBar({
   user,
   setUser,
-  circles,
-  setCircles,
+  favoriteCircles,
+  setFavoriteCircles,
   userDetails,
   setUserDetails,
   circleId,
@@ -39,7 +39,7 @@ export default function SideBar({
     if (error) throw error;
     setUser({});
     setCircleId(null);
-    setCircles([]);
+    setFavoriteCircles([]);
     setUserDetails({ username: null, defaultCircleId: null });
     navigate("/");
   }
@@ -106,8 +106,8 @@ export default function SideBar({
                   setCircleId={setCircleId}
                   path={getPath()}
                 />
-                {circles &&
-                  circles.map((circle, index) => (
+                {favoriteCircles &&
+                  favoriteCircles.map((circle, index) => (
                     <NavLink
                       onClick={() =>
                         setCircleId(circle.circle_user[0].circle_id)

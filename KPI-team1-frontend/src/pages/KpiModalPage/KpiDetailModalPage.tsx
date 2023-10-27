@@ -28,6 +28,13 @@ const KpiDetailModalPage = ({
   const { kpiDefinitions, fetchKpiDefinitions }: OutletContext =
     useOutletContext();
 
+  const PRETTY_UNIT: {
+    [key: string]: string;
+  } = {
+    boolean: "True/False",
+    numeric: "Count",
+    "%": "Percentage",
+  };
   const fetchKpiValues = async () => {
     try {
       setIsLoading(true);
@@ -70,39 +77,64 @@ const KpiDetailModalPage = ({
     }
     return (
       <>
-        <div className="text-center text-2xl font-light">
-          KPI - {kpiDefinition?.kpi_name}
-        </div>
-        <div className="mb-2">
-          <button
-            className={`${
-              selectView === "values" ? "border-black" : " dark:text-gray-600"
-            } w-1/3 h-10 border-b-2 justify-center items-center font-medium`}
-            onClick={() => setSelectView("values")}
-          >
-            Values
-          </button>
-          <button
-            className={`${
-              selectView === "history" ? "border-black" : " dark:text-gray-600"
-            } w-1/3 h-10  border-b-2 justify-center items-center font-medium`}
-            onClick={() => setSelectView("history")}
-          >
-            History
-          </button>
-        </div>
-        {selectView === "values" ? (
-          <KpiValuesModalSection
-            kpi={kpiDefinition}
-            circleId={circleId}
-            fetchKpiValues={fetchKpiValues}
-            fetchKpiDefinitions={fetchKpiDefinitions}
-            isLoading={isLoading}
-            kpiValues={kpiValues}
-            onRequestClose={onRequestClose}
-          />
+        {kpiDefinition ? (
+          <>
+            <div className="text-center text-2xl font-light">
+              KPI - {kpiDefinition.kpi_name}
+            </div>
+            <div className="text-center text-sm font-light">
+              <span>
+                {kpiDefinition.cumulative ?? null
+                  ? kpiDefinition.cumulative
+                    ? "cumulative entries"
+                    : "absolute entries"
+                  : null}{" "}
+              </span>
+              <span>
+                {kpiDefinition.formula ? kpiDefinition.formula : null}{" "}
+              </span>
+              <span>
+                as {kpiDefinition.unit ? PRETTY_UNIT[kpiDefinition.unit] : null}
+              </span>
+            </div>
+            <div className="mb-2">
+              <button
+                className={`${
+                  selectView === "values"
+                    ? "border-black"
+                    : " dark:text-gray-600"
+                } w-1/3 h-10 border-b-2 justify-center items-center font-medium`}
+                onClick={() => setSelectView("values")}
+              >
+                Values
+              </button>
+              <button
+                className={`${
+                  selectView === "history"
+                    ? "border-black"
+                    : " dark:text-gray-600"
+                } w-1/3 h-10  border-b-2 justify-center items-center font-medium`}
+                onClick={() => setSelectView("history")}
+              >
+                History
+              </button>
+            </div>
+            {selectView === "values" ? (
+              <KpiValuesModalSection
+                kpi={kpiDefinition}
+                circleId={circleId}
+                fetchKpiValues={fetchKpiValues}
+                fetchKpiDefinitions={fetchKpiDefinitions}
+                isLoading={isLoading}
+                kpiValues={kpiValues}
+                onRequestClose={onRequestClose}
+              />
+            ) : (
+              <KpiHistoryModalSection circleId={circleId} kpi={kpiDefinition} />
+            )}
+          </>
         ) : (
-          <KpiHistoryModalSection circleId={circleId} kpi={kpiDefinition} />
+          <></>
         )}
       </>
     );

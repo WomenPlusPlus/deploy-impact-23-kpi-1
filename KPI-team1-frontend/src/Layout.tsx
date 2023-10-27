@@ -2,15 +2,17 @@ import { Outlet, useOutletContext } from "react-router-dom";
 import SearchBar from "./components/Searchbar";
 import SideBar from "./components/Sidebar";
 import { PiBell } from "react-icons/pi";
-import { Circles } from "./model/circle";
+import { Circle, FavoriteCircle } from "./model/circle";
 import { KpiExtended } from "./model/kpi";
 import { User, UserDetails } from "./model/user";
 
 interface OutletContext {
   user: User;
   setUser: (user: User) => void;
-  circles: Circles[];
-  setCircles: (circles: Circles[]) => void;
+  favoriteCircles: FavoriteCircle[];
+  setFavoriteCircles: (circles: FavoriteCircle[]) => void;
+  circles: Circle[];
+  setCircles: (circles: Circle[]) => void;
   kpiDefinitions: KpiExtended[];
   userDetails: UserDetails;
   setUserDetails: (UserDetails: UserDetails) => void;
@@ -24,6 +26,8 @@ export default function Layout() {
   const {
     user,
     setUser,
+    favoriteCircles,
+    setFavoriteCircles,
     circles,
     setCircles,
     kpiDefinitions,
@@ -40,8 +44,8 @@ export default function Layout() {
         <SideBar
           user={user}
           setUser={setUser}
-          circles={circles}
-          setCircles={setCircles}
+          favoriteCircles={favoriteCircles}
+          setFavoriteCircles={setFavoriteCircles}
           userDetails={userDetails}
           setUserDetails={setUserDetails}
           circleId={circleId}
@@ -71,7 +75,9 @@ export default function Layout() {
           <Outlet
             context={{
               setUser,
+              favoriteCircles,
               circles,
+              setCircles,
               user,
               userDetails,
               setUserDetails,

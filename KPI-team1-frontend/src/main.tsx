@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
-import KpiPage from "./pages/KpiPage.tsx";
+import KpiPage from "./pages/KpiPage/KpiPage.tsx";
 import EachKpi from "./pages/EachKpi.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import UserDetailsPage from "./pages/SettingsPage.tsx";
