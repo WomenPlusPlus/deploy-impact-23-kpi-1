@@ -24,6 +24,7 @@ select
   t1.target_fulfilled,
   previous_value,
   case when t1.latest_value > 0 and previous_value > 0 then ((t1.latest_value-previous_value)/previous_value)*100
+  when previous_value = 0 then 'NaN'
   else null end as percentage_change
 from
   circle_kpi_definition ckd
