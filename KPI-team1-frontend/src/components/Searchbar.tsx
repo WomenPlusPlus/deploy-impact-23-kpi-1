@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 interface SearchBarProps {
   isSearchKpi: boolean;
   setCircleId: (circleId: number) => void;
-  path: string;
+  path?: string;
 }
 
 export default function SearchBar({
