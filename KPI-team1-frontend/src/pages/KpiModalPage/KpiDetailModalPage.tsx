@@ -5,6 +5,8 @@ import { supabase } from "../../supabase";
 import KpiValuesModalSection from "./KpiValuesModalSection";
 import KpiHistoryModalSection from "./KpiHistoryModalSection";
 import { useOutletContext } from "react-router-dom";
+import { Switch } from "@mui/material";
+import { green } from "@mui/material/colors";
 
 interface OutletContext {
   kpiDefinitions: KpiExtended[];
@@ -71,6 +73,27 @@ const KpiDetailModalPage = ({
     fetchKpiValues();
   }, [kpiId]);
 
+  const handleDisable = async (kpiDefinition: KpiExtended) => {
+    try {
+      let { data: kpi, error } = await supabase
+        .from("circle_kpi_definition")
+        .update({
+          is_active: false,
+        })
+        .eq("circle_kpidef_id", kpiDefinition.circle_kpidef_id)
+        .select("*");
+
+      if (error) {
+        throw error;
+      }
+      if (kpi && kpi.length > 0) {
+        fetchKpiDefinitions();
+      }
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
   const renderModalContent = () => {
     if (!kpiDefinition) {
       return null;
@@ -79,6 +102,25 @@ const KpiDetailModalPage = ({
       <>
         {kpiDefinition ? (
           <>
+            <div>
+              <Switch
+                color="default"
+                sx={{
+                  "&.MuiSwitch-root .MuiSwitch-track": {
+                    backgroundColor: green[200],
+                  },
+
+                  "&.MuiSwitch-root .Mui-checked": {
+                    color: green[300],
+                  },
+                }}
+                checked={kpiDefinition.is_active}
+                onChange={() => {
+                  handleDisable(kpiDefinition);
+                }}
+              />
+              <span className="text-sm font-medium">active</span>
+            </div>
             <div className="text-center text-2xl font-light">
               KPI - {kpiDefinition.kpi_name}
             </div>

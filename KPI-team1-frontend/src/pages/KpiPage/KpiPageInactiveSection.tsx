@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { Kpi, KpiExtendedWithCircles } from "../../model/kpi";
+import { KpiExtended } from "../../model/kpi";
 import { supabase } from "../../supabase";
 import { DataGrid } from "@mui/x-data-grid";
 import { HEADER_KPI_COLUMNS_INACTIVE } from "./KpiPageHeaders";
-import { Button } from "@mui/material";
 
-const KpiPageInactiveSection = ({ circleId }: { circleId: number | null }) => {
-  const [kpiDefinitions, setKpiDefinitions] = useState<
-    KpiExtendedWithCircles[]
-  >([]);
+const KpiPageInactiveSection = ({
+  circleId,
+  fetchKpiDefinitions,
+}: {
+  circleId: number | null;
+  fetchKpiDefinitions: () => Promise<void>;
+}) => {
+  const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<number[]>([]);
 
   const fetchInactiveAndActiveKpis = async () => {
@@ -63,14 +66,43 @@ const KpiPageInactiveSection = ({ circleId }: { circleId: number | null }) => {
       const selectedKpiDefinitions = kpiDefinitions.filter((kpi) =>
         selectedRowIds.includes(kpi.kpi_id)
       );
-      const selectedCircleKpiDefinitions = selectedKpiDefinitions.map(
-        (kpi) => ({
-          circle_kpidef_id: kpi.circle_kpidef_id || undefined,
+      const selectedCircleKpiDefinitionsToAdd = selectedKpiDefinitions
+        .filter((kpi) => !kpi.circle_kpidef_id)
+        .map((kpi) => ({
           circle_id: circleId,
           kpi_id: kpi.kpi_id,
           is_active: true,
-        })
-      );
+        }));
+
+      const selectedCircleKpiDefinitionsToUpdate = selectedKpiDefinitions
+        .filter((kpi) => kpi.circle_kpidef_id)
+        .map((kpi) => ({
+          circle_kpidef_id: kpi.circle_kpidef_id,
+          circle_id: circleId,
+          kpi_id: kpi.kpi_id,
+          is_active: true,
+        }));
+
+      const { data, error } = await supabase
+        .from("circle_kpi_definition")
+        .update(selectedCircleKpiDefinitionsToUpdate)
+        .select("circle_kpidef_id");
+
+      const { data: addedData, error: addedError } = await supabase
+        .from("circle_kpi_definition")
+        .insert(selectedCircleKpiDefinitionsToAdd)
+        .select("circle_kpidef_id");
+
+      if ((data && data.length > 0) || (addedData && addedData.length > 0)) {
+        fetchKpiDefinitions();
+        fetchInactiveAndActiveKpis();
+      }
+      if (error) {
+        throw error;
+      }
+      if (addedError) {
+        throw error;
+      }
     } catch (error: any) {
       console.log(error.message);
     }
@@ -85,9 +117,24 @@ const KpiPageInactiveSection = ({ circleId }: { circleId: number | null }) => {
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleActivate}>
-        Activate
-      </Button>
+      <div className="flex justify-end  mb-2">
+        <button
+          disabled={selectedRowIds.length === 0}
+          className={`py-2 px-2 rounded-md border-2 text-base w-36 font-semibold  ${
+            selectedRowIds.length >= 1
+              ? "hover:bg-[#FBBB21] border-[#FBBB21]"
+              : "text-gray-400"
+          }`}
+          onClick={handleActivate}
+        >
+          Activate{" "}
+          {selectedRowIds.length > 0
+            ? `${selectedRowIds.length} KPI${
+                selectedRowIds.length > 1 ? "s" : ""
+              }`
+            : ""}
+        </button>
+      </div>
       <DataGrid
         getRowId={(row) => row.kpi_id}
         rows={kpiDefinitions}

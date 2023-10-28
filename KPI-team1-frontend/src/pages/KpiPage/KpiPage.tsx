@@ -182,7 +182,10 @@ export default function KpiPage(): JSX.Element {
           {selectView === "active" ? (
             periodicityOrder.map((periodicity) => renderDataGrid(periodicity))
           ) : (
-            <KpiPageInactiveSection circleId={Number(selectedCircleId)} />
+            <KpiPageInactiveSection
+              circleId={Number(selectedCircleId)}
+              fetchKpiDefinitions={fetchKpiDefinitions}
+            />
           )}
         </div>
       </div>

@@ -52,6 +52,8 @@ export interface KpiExtended extends Kpi {
   target_value: number | null;
   percentage_change: number | null;
   graph_type: GraphType | null;
+  circle_kpidef_id: number | undefined;
+  is_active: boolean;
 }
 
 //kpi_values_period_standardized
@@ -77,9 +79,4 @@ export interface KpiLogs extends KpiValue {
   user_name: string;
   user_circle_id: number;
   user_circle_name: string;
-}
-
-export interface KpiExtendedWithCircles extends KpiExtended {
-  circle_kpidef_id?: number | undefined;
-  is_active?: boolean;
 }
