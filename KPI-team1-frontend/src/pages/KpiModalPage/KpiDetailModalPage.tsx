@@ -73,21 +73,42 @@ const KpiDetailModalPage = ({
     fetchKpiValues();
   }, [kpiId]);
 
-  const handleDisable = async (kpiDefinition: KpiExtended) => {
+  const handleSwitch = async (
+    kpiDefinition: KpiExtended,
+    isChecked: boolean
+  ) => {
     try {
-      let { data: kpi, error } = await supabase
-        .from("circle_kpi_definition")
-        .update({
-          is_active: false,
-        })
-        .eq("circle_kpidef_id", kpiDefinition.circle_kpidef_id)
-        .select("*");
+      if (!kpiDefinition.circle_kpidef_id) return;
+      if (isChecked) {
+        let { data: kpi, error } = await supabase
+          .from("circle_kpi_definition")
+          .update({
+            is_active: true,
+          })
+          .eq("circle_kpidef_id", kpiDefinition.circle_kpidef_id)
+          .select("*");
 
-      if (error) {
-        throw error;
-      }
-      if (kpi && kpi.length > 0) {
-        fetchKpiDefinitions();
+        if (error) {
+          throw error;
+        }
+        if (kpi && kpi.length > 0) {
+          fetchKpiDefinitions();
+        }
+      } else {
+        let { data: kpi, error } = await supabase
+          .from("circle_kpi_definition")
+          .update({
+            is_active: false,
+          })
+          .eq("circle_kpidef_id", kpiDefinition.circle_kpidef_id)
+          .select("*");
+
+        if (error) {
+          throw error;
+        }
+        if (kpi && kpi.length > 0) {
+          fetchKpiDefinitions();
+        }
       }
     } catch (error: any) {
       alert(error.message);
@@ -115,8 +136,8 @@ const KpiDetailModalPage = ({
                   },
                 }}
                 checked={kpiDefinition.is_active}
-                onChange={() => {
-                  handleDisable(kpiDefinition);
+                onChange={(e) => {
+                  handleSwitch(kpiDefinition, e.target.checked);
                 }}
               />
               <span className="text-sm font-medium">active</span>

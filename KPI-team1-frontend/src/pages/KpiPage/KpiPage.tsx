@@ -53,7 +53,9 @@ export default function KpiPage(): JSX.Element {
   const circleKpis =
     kpiDefinitions &&
     kpiDefinitions.filter(
-      (kpiDefinition) => kpiDefinition.circle_id === Number(selectedCircleId)
+      (kpiDefinition) =>
+        kpiDefinition.circle_id === Number(selectedCircleId) &&
+        kpiDefinition.is_active === true
     );
 
   const handleOpenModal = () => {
