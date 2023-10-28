@@ -3,7 +3,7 @@ name: "Migrate database schema"
 on:
   push:
     branches:
-      - main
+      - active-kpi-feature
     paths:
       - "migrations/**"
 
