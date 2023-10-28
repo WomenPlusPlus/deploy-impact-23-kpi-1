@@ -1,7 +1,4 @@
 ALTER TABLE public.kpi_definition
-ADD created_by uuid not null default '2eca1eb1-2876-4625-ab7b-ce5342343f08';
-
-ALTER TABLE public.kpi_definition
 ALTER COLUMN created_by SET DEFAULT auth.uid ();
 
 CREATE OR REPLACE VIEW 
