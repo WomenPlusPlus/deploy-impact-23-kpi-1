@@ -1,4 +1,4 @@
-DROP IF EXISTS VIEW public.kpi_values_period_standardized;
+DROP VIEW IF EXISTS public.kpi_values_period_standardized;
 CREATE VIEW 
 public.kpi_values_period_standardized as
 select *,
