@@ -1,5 +1,4 @@
 ALTER TABLE public.kpi_definition_with_latest_values RENAME COLUMN active TO is_active;
-
 CREATE or REPLACE VIEW 
   public.kpi_definition_with_latest_values as
 select
