@@ -9,6 +9,7 @@ import { HiOutlinePlusCircle } from "react-icons/hi";
 import AddKpiModalPage from "../AddKpiModalPage";
 import { HEADER_KPI_COLUMNS } from "./KpiPageHeaders";
 import KpiPageInactiveSection from "./KpiPageInactiveSection";
+import { getStringDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 
 interface OutletContext {
   circles: Circle[];
@@ -84,10 +85,15 @@ export default function KpiPage(): JSX.Element {
     };
 
     return (
-      <div key={periodicity}>
-        <div className="text-xl font-medium">{`${periodicity
-          .charAt(0)
-          .toUpperCase()}${periodicity.slice(1)} KPIs`}</div>
+      <div key={periodicity} className="mt-5">
+        <div className="flex items-end">
+          <div className="text-xl font-medium mr-2">{`${periodicity
+            .charAt(0)
+            .toUpperCase()}${periodicity.slice(1)} KPIs`}</div>{" "}
+          <span className="text-gray-400 text-xs font-semibold italic">
+            {getStringDisplayValueByPeriodicity(periodicity, new Date())}
+          </span>
+        </div>
         <div className="shadow-md border-0 border-primary-light mb-10">
           <DataGrid
             getRowId={(row) => row.circle_kpidef_id}
