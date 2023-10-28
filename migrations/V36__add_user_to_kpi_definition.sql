@@ -1,7 +1,7 @@
 ALTER TABLE public.kpi_definition
 ALTER COLUMN created_by SET DEFAULT auth.uid ();
 
-DROP VIEW if exists public.kpi_definition_with_latest_values
+DROP VIEW if exists public.kpi_definition_with_latest_values;
 CREATE VIEW 
   public.kpi_definition_with_latest_values as
 select
@@ -70,7 +70,7 @@ order by
 kpi_id,
 ckd.circle_kpidef_id;
 
-DROP VIEW if exists public.kpi_values_period_standardized
+DROP VIEW if exists public.kpi_values_period_standardized;
 CREATE VIEW 
 public.kpi_values_period_standardized as
 select *,
