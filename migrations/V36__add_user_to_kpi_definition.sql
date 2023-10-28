@@ -70,8 +70,7 @@ order by
 kpi_id,
 ckd.circle_kpidef_id;
 
-DROP VIEW if exists public.kpi_values_period_standardized;
-CREATE VIEW 
+CREATE OR REPLACE VIEW 
 public.kpi_values_period_standardized as
 select *,
 Case when target_value > 0 then ROUND(cumulative_value/target_value*100, 0) else null end as target_fulfilled
