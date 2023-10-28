@@ -147,7 +147,6 @@ export default function EachKpi(): JSX.Element {
     setSelectedKpi(kpi);
     handleOpenModal();
   };
-  console.log("check modal open", modalIsOpen);
 
   const fetchKpi = async () => {
     try {
