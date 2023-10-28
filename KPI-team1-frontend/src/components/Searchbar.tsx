@@ -82,7 +82,7 @@ export default function SearchBar({
           className="text-sm outline-0 w-full"
           type="text"
           placeholder={
-            isSearchKpi ? "Type to search for KPI's" : "Search circle"
+            isSearchKpi ? "Type to search for KPIs" : "Search circle"
           }
           value={input}
           onChange={(e) => handleChange(e.target.value)}

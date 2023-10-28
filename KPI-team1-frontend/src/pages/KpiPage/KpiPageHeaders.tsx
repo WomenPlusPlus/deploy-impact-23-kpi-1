@@ -66,7 +66,8 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
           <Grid item xs={4} className="mr-1 text-center">
             {getDisplayValue(value)}{" "}
           </Grid>
-          {params.row.percentage_change ? (
+          {params.row.percentage_change &&
+          typeof params.row.percentage_change === "number" ? (
             <Grid
               item
               xs={4}

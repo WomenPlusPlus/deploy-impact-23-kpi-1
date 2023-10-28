@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Circles } from "../model/circle";
+import { FavoriteCircle } from "../model/circle";
 import { User, UserDetails } from "../model/user";
 import { supabase } from "../supabase";
 import { HiMiniArrowUpTray, HiOutlineInformationCircle } from "react-icons/hi2";
@@ -11,7 +11,7 @@ interface UserUpdateError {
 
 interface OutletContext {
   user: User;
-  circles: Circles[];
+  circles: FavoriteCircle[];
   userDetails: UserDetails;
   setUserDetails: (u: UserDetails) => void;
 }

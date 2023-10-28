@@ -113,7 +113,7 @@ export default function AddKpiModalPage({
       if (error) {
         console.log("Error adding new KPI:", error.message);
         setError(
-          "This KPI's name already exists in the system. Please enter a new KPI name!"
+          "This KPIs name already exists in the system. Please enter a new KPI name!"
         );
       }
       if (data) {

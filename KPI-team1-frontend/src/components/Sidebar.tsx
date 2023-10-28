@@ -83,7 +83,7 @@ export default function SideBar({
                 <span>
                   <HiOutlineTableCells />
                 </span>
-                <div className="font-medium">KPI's</div>
+                <div className="font-medium">KPIs</div>
               </NavLink>
               <NavLink
                 to={circleId ? `/kpi/dashboard/${circleId}` : "/kpi/dashboard"}

@@ -173,7 +173,7 @@ const AreaAndLineGraph = ({
           </h5>
           <p className="text-base font-normal text-gray-500">{seriesName}</p>
         </div>
-        {percentage_change ? (
+        {percentage_change && typeof percentage_change === "number" ? (
           <div
             className={`flex items-center px-2.5 py-0.5 text-base font-semibold text-center ${textClass}`}
           >
