@@ -1,8 +1,4 @@
-ALTER TABLE public.kpi_definition
-ALTER COLUMN created_by SET DEFAULT auth.uid ();
-
-DROP VIEW if exists public.kpi_definition_with_latest_values;
-CREATE VIEW 
+CREATE or REPLACE VIEW 
   public.kpi_definition_with_latest_values as
 select
   ckd.circle_kpidef_id,
