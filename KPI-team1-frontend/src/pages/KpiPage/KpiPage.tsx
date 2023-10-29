@@ -218,6 +218,7 @@ export default function KpiPage(): JSX.Element {
         setAlertMessage={setAlertMessage}
         setSeverity={setSeverity}
       />
+
       <SnackBarComponent
         open={open}
         alertMessage={alertMessage}
