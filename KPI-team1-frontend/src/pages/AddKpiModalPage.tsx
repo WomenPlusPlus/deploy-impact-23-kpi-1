@@ -57,7 +57,7 @@ export default function AddKpiModalPage({
         fetchKpiDefinitions();
       }
     } catch (error: any) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 
@@ -85,6 +85,7 @@ export default function AddKpiModalPage({
             unit: unitValue,
             cumulative: cumulativeValue,
             formula: formulaValue,
+            active: true,
           },
         ])
         .select("*");
@@ -109,7 +110,7 @@ export default function AddKpiModalPage({
       setAlertMessage("Error adding new KPI!");
       setOpenAlert(true);
 
-      alert(error.message);
+      console.log(error.message);
     }
   };
 
