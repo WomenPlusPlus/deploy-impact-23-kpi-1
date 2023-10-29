@@ -185,7 +185,7 @@ const KpiValuesModalSection = ({
                       setDateError("");
                     } else {
                       setDateError(
-                        "The date for updating KPI's value shouldn't be a future date. Please set a date again!"
+                        "The date for updating KPIs value shouldn't be a future date. Please set a date again!"
                       );
                     }
                   }}

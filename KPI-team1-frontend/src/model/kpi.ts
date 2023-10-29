@@ -17,6 +17,12 @@ export enum ApexChartType {
   Donut = "donut",
 }
 
+enum KpiFormula {
+  Average = "average",
+  Aggregate = "aggregate",
+}
+
+//kpi_definition
 export interface Kpi {
   kpi_id: number;
   kpi_name: string;
@@ -25,16 +31,16 @@ export interface Kpi {
   value_min: Number | null;
   value_max: Number | null;
   unit: string | null;
+  created_by: string | null;
   created_at: string | null;
   updated_at: string | null;
-  is_approved: boolean;
   cumulative: boolean;
-  formula: string;
+  formula: KpiFormula | null;
+  is_approved: boolean;
 }
 
 //kpi_definition_with_latest_values
 export interface KpiExtended extends Kpi {
-  circle_kpidef_id: number;
   circle_id: number;
   circle_name: string;
   kpi_created_at: string | null;
@@ -49,6 +55,7 @@ export interface KpiExtended extends Kpi {
   cumulative_value: number;
   target_fulfilled: number | null;
   previous_value: number | null;
+  circle_kpidef_id: number | undefined;
   is_active: boolean;
 }
 
@@ -61,7 +68,7 @@ export interface KpiValue {
   value: number;
   period_date: string;
   action: string;
-  created_at: string | null; //todo: should not be null. need to update db
+  created_at: string;
   periodicity: KpiPeriodicity;
   standardized_date: string;
   comment: string | null;

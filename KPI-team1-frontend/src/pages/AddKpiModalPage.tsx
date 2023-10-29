@@ -83,7 +83,6 @@ export default function AddKpiModalPage({
             description: description ? description : null,
             periodicity: periodicityValue,
             unit: unitValue,
-            active: false,
             cumulative: cumulativeValue,
             formula: formulaValue,
           },
@@ -93,7 +92,7 @@ export default function AddKpiModalPage({
       if (error) {
         console.log("Error adding new KPI:", error.message);
         setError(
-          "This KPI's name already exists in the system. Please enter a new KPI name!"
+          "This KPIs name already exists in the system. Please enter a new KPI name!"
         );
       }
       if (data) {
@@ -269,8 +268,8 @@ export default function AddKpiModalPage({
               Calculation - How is this KPI calculated?
             </div>
             <div className="text-sm my-3">
-              You can check the additional information to each selection if you
-              are not sure which.
+              If you're unsure about any options in the form, check for more
+              info with each selection.
             </div>
             <div className="flex justify-center">
               <Box>
@@ -335,7 +334,7 @@ export default function AddKpiModalPage({
           </div>
           <div className="py-10 border-b border-[#D0D8DB]">
             <div className="text-2xl font-normal mb-4">
-              Value type-How should all the future values be stored?
+              Value Type - How should all the future values be stored?
             </div>
             <div className="flex justify-center">
               <Box>

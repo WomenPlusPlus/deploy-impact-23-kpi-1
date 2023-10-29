@@ -1,4 +1,4 @@
-export interface Circles {
+export interface FavoriteCircle {
   circle_name: string;
   circle_user: CircleUser[];
 }
@@ -9,9 +9,9 @@ export interface CircleUser {
   user_id: string;
 }
 
-export interface CircleName {
+export interface Circle {
   circle_id: number;
   circle_name: string;
-  created_at: string | null;
+  created_at: string;
   updated_at: string | null;
 }

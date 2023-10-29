@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../supabase";
 import Logo from "../assets/images/logo .png";
-import { Circles } from "../model/circle";
+import { FavoriteCircle } from "../model/circle";
 import { UserDetails } from "../model/user";
 
 interface OutletContext {
   setUser: any;
-  circles: Circles[];
+  circles: FavoriteCircle[];
   userDetails: UserDetails;
   setCircleId: (circleId: number) => void;
 }
@@ -49,7 +49,7 @@ export default function LoginPage(): JSX.Element {
     if (userDetails && userDetails.defaultCircleId) {
       setCircleId(Number(userDetails.defaultCircleId));
       navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
-    } else if (circles.length > 0) {
+    } else if (circles.length > 0 && circles[0].circle_user?.length > 0) {
       setCircleId(circles[0].circle_user[0].circle_id);
       navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
     }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
-import { CircleName } from "../model/circle";
+import { Circle } from "../model/circle";
 import { Kpi } from "../model/kpi";
 import { GenericList } from "../generics/GenericList";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ export default function SearchBar({
   path = "circles",
 }: SearchBarProps): JSX.Element {
   const [input, setInput] = useState<string>("");
-  const [circleResult, setCircleResult] = useState<CircleName[]>([]);
+  const [circleResult, setCircleResult] = useState<Circle[]>([]);
   const [kpiResult, setKpiResult] = useState<Kpi[]>([]);
   const navigate = useNavigate();
 
@@ -82,7 +82,7 @@ export default function SearchBar({
           className="text-sm outline-0 w-full"
           type="text"
           placeholder={
-            isSearchKpi ? "Type to search for KPI's" : "Search circle"
+            isSearchKpi ? "Type to search for KPIs" : "Search circle"
           }
           value={input}
           onChange={(e) => handleChange(e.target.value)}
