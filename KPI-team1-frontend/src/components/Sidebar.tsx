@@ -68,7 +68,7 @@ export default function SideBar({
           <div className="px-4 pt-14 flex flex-col gap-8 font-custom">
             <div className="flex justify-center items-center self-stretch gap-4">
               <img className="w-14 h-14" src={Logo} alt="Pro Juventute logo" />
-              <div className="text-2xl">KPI tracking</div>
+              <div className="text-2xl">KPI Monitor</div>
             </div>
             <div>
               <NavLink
