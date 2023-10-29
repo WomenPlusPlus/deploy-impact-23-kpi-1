@@ -13,7 +13,6 @@ import { getStringDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
 import SnackBarComponent from "../../components/SnackBarComponent";
 
 interface OutletContext {
-  circles: Circle[];
   kpiDefinitions: KpiExtended[];
   userDetails: UserDetails;
   fetchKpiDefinitions: () => Promise<void>;
@@ -41,7 +40,6 @@ export default function KpiPage(): JSX.Element {
     "success" | "error" | "info" | "warning"
   >("info");
   const {
-    circles,
     kpiDefinitions,
     userDetails,
     fetchKpiDefinitions,
@@ -61,13 +59,12 @@ export default function KpiPage(): JSX.Element {
     }
   }, [circleIdParam, circleId, userDetails]);
 
-  // const selectedCircle = circles.find(
-  //   (circle) => circle.circle_id === Number(selectedCircleId)
-  // );
   const circleKpis =
     kpiDefinitions &&
     kpiDefinitions.filter(
-      (kpiDefinition) => kpiDefinition.circle_id === Number(selectedCircleId)
+      (kpiDefinition) =>
+        kpiDefinition.circle_id === Number(selectedCircleId) &&
+        kpiDefinition.is_active
     );
 
   const handleOpenModal = () => {
