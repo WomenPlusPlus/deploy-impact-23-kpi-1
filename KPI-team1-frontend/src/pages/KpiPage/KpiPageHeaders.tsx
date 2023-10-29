@@ -235,13 +235,14 @@ export const HEADER_KPI_COLUMNS_INACTIVE: GridColDef[] = [
     align: "center",
   },
   {
-    headerName: "Created At",
+    headerName: "Created at",
     field: "created_at",
     flex: 1,
     sortable: true,
     headerAlign: "center",
     align: "center",
     renderCell: (params) => {
+      if (!params.value) return null;
       return <>{format(new Date(params.value), "yyyy-MM-dd")}</>;
     },
   },

@@ -25,22 +25,29 @@ const KpiPageInactiveSection = ({
       }
       const kpiDefinitionsResult = kpi_definitions || [];
 
-      let { data: activeCircleKpiDefinitions, error: circleError } =
-        await supabase
-          .from("circle_kpi_definition")
-          .select("kpi_id, circle_kpidef_id")
-          .eq("circle_id", circleId)
-          .eq("is_active", true);
+      let { data: circleKpiDefIds, error: circleError } = await supabase
+        .from("circle_kpi_definition")
+        .select("*")
+        .eq("circle_id", circleId);
 
       if (circleError) {
         throw circleError;
       }
-      const activeCircles = activeCircleKpiDefinitions || [];
+      // const activeCircles = activeCircleKpiDefinitions || [];
 
       const circleKpiDefIdMap: { [key: number]: number } = {};
-      activeCircles.forEach((circleKpiDef) => {
-        circleKpiDefIdMap[circleKpiDef.kpi_id] = circleKpiDef.circle_kpidef_id;
-      });
+
+      circleKpiDefIds && circleKpiDefIds.length > 0
+        ? circleKpiDefIds.forEach((circleKpiDef) => {
+            circleKpiDefIdMap[circleKpiDef.kpi_id] =
+              circleKpiDef.circle_kpidef_id;
+          })
+        : null;
+
+      const activeCircles =
+        circleKpiDefIds && circleKpiDefIds.length > 0
+          ? circleKpiDefIds.filter((circleKpiDef) => circleKpiDef.is_active)
+          : [];
 
       const filteredKpiDefinitions = kpiDefinitionsResult.filter((kpi) => {
         return !activeCircles.some(
@@ -82,25 +89,34 @@ const KpiPageInactiveSection = ({
           kpi_id: kpi.kpi_id,
           is_active: true,
         }));
-
-      const { data, error } = await supabase
-        .from("circle_kpi_definition")
-        .update(selectedCircleKpiDefinitionsToUpdate)
-        .select("circle_kpidef_id");
-
-      const { data: addedData, error: addedError } = await supabase
+      let fetchedData = [];
+      for (const selectedCircleKpiDefinitionToUpdate of selectedCircleKpiDefinitionsToUpdate) {
+        const { data, error } = await supabase
+          .from("circle_kpi_definition")
+          .update(selectedCircleKpiDefinitionToUpdate)
+          .eq(
+            "circle_kpidef_id",
+            selectedCircleKpiDefinitionToUpdate.circle_kpidef_id
+          )
+          .select("circle_kpidef_id");
+        if (data && data.length > 0) fetchedData.push(...data);
+        if (error) {
+          throw error;
+        }
+      }
+      const { data: addedData, error } = await supabase
         .from("circle_kpi_definition")
         .insert(selectedCircleKpiDefinitionsToAdd)
         .select("circle_kpidef_id");
 
-      if ((data && data.length > 0) || (addedData && addedData.length > 0)) {
+      if (
+        (fetchedData && fetchedData.length > 0) ||
+        (addedData && addedData.length > 0)
+      ) {
         fetchKpiDefinitions();
         fetchInactiveAndActiveKpis();
       }
       if (error) {
-        throw error;
-      }
-      if (addedError) {
         throw error;
       }
     } catch (error: any) {
