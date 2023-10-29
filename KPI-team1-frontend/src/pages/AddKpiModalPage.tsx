@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalRightSide from "../components/ModalRightSide";
 import { IoCloseOutline } from "react-icons/io5";
 import {
@@ -12,6 +12,7 @@ import {
 import { deepPurple } from "@mui/material/colors";
 import { HiMiniInformationCircle } from "react-icons/hi2";
 import { supabase } from "../supabase";
+import { KpiName } from "../model/kpi";
 
 export default function AddKpiModalPage({
   isOpen,
@@ -37,6 +38,25 @@ export default function AddKpiModalPage({
   const [formulaValue, setFormulaValue] = useState("aggregate");
   const [cumulativeValue, setCumulativeValue] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [allKpiNames, setAllKpiNames] = useState<KpiName[]>([]);
+
+  const getAllKpiNames = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("kpi_definition")
+        .select("kpi_name");
+      if (error) throw error;
+      if (data) {
+        setAllKpiNames(data);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getAllKpiNames();
+  }, []);
 
   const addKpiToCircle = async (kpiId: number) => {
     try {
@@ -75,41 +95,49 @@ export default function AddKpiModalPage({
   const handleAddKpi = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      const { data, error } = await supabase
-        .from("kpi_definition")
-        .insert([
-          {
-            kpi_name: kpiName,
-            description: description ? description : null,
-            periodicity: periodicityValue,
-            unit: unitValue,
-            cumulative: cumulativeValue,
-            formula: formulaValue,
-            active: true,
-          },
-        ])
-        .select("*");
+      const kpiNameLowerCase = kpiName.toLowerCase();
+      const isNameExists = allKpiNames.some(
+        (kpi) => kpi.kpi_name.toLowerCase() === kpiNameLowerCase
+      );
 
-      if (error) {
-        console.log("Error adding new KPI:", error.message);
+      if (isNameExists) {
         setError(
-          "This KPIs name already exists in the system. Please enter a new KPI name!"
+          "This KPI's name already exists in the system. Please enter a new KPI name."
         );
-      }
-      if (data) {
-        const newKpi = data[0];
-        addKpiToCircle(newKpi.kpi_id);
-        setOpenAlert(true);
-        setAlertMessage("KPI added successfully!");
-        setSeverity("success");
-        fetchKpiDefinitions();
-        handleCloseModal();
+      } else {
+        const { data, error } = await supabase
+          .from("kpi_definition")
+          .insert([
+            {
+              kpi_name: kpiName,
+              description: description ? description : null,
+              periodicity: periodicityValue,
+              unit: unitValue,
+              cumulative: cumulativeValue,
+              formula: formulaValue,
+              active: true,
+            },
+          ])
+          .select("*");
+
+        if (error) {
+          console.log("Error adding new KPI:", error.message);
+          setError("Error adding new KPI. Please try again.");
+        } else if (data) {
+          const newKpi = data[0];
+          addKpiToCircle(newKpi.kpi_id);
+          setOpenAlert(true);
+          setAlertMessage("KPI added successfully!");
+          setSeverity("success");
+          fetchKpiDefinitions();
+          handleCloseModal();
+          getAllKpiNames();
+        }
       }
     } catch (error: any) {
       setSeverity("error");
       setAlertMessage("Error adding new KPI!");
       setOpenAlert(true);
-
       console.log(error.message);
     }
   };
@@ -149,7 +177,7 @@ export default function AddKpiModalPage({
               className="grow appearance-none shadow-sm border border-gray-200 p-2 focus:outline-none focus:border-[#ADBCF2] focus:border-2 rounded w-full"
               type="text"
               name="description"
-              placeholder="Write how your new KPI is called"
+              placeholder="Give a description of the new KPI"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
