@@ -5,19 +5,15 @@ import { User, UserDetails } from "../model/user";
 import { supabase } from "../supabase";
 import { HiMiniArrowUpTray, HiOutlineInformationCircle } from "react-icons/hi2";
 
-interface UserUpdateError {
-  message: String;
-}
-
 interface OutletContext {
   user: User;
-  circles: FavoriteCircle[];
+  favoriteCircles: FavoriteCircle[];
   userDetails: UserDetails;
   setUserDetails: (u: UserDetails) => void;
 }
 
 export default function UserDetailsPage(): JSX.Element {
-  const { circles, user, userDetails, setUserDetails }: OutletContext =
+  const { favoriteCircles, user, userDetails, setUserDetails }: OutletContext =
     useOutletContext();
 
   const [defaultCircleId, setDefaultCircleId] = useState(
@@ -109,7 +105,7 @@ export default function UserDetailsPage(): JSX.Element {
               >
                 Default circle
               </label>
-              {circles.length > 0 ? (
+              {favoriteCircles && favoriteCircles.length > 0 ? (
                 <select
                   name="defaultCircle"
                   defaultValue={defaultCircleId ? defaultCircleId : ""}
@@ -118,8 +114,7 @@ export default function UserDetailsPage(): JSX.Element {
                   }}
                   className="bg-[#FFF] border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-gray-500 block w-full p-2"
                 >
-                  <option value=""></option>
-                  {circles.map((c) => (
+                  {favoriteCircles.map((c) => (
                     <option
                       value={c.circle_user[0].circle_id}
                       key={`${c.circle_user[0].circle_id}-key`}
