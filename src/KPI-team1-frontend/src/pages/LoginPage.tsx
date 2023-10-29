@@ -92,7 +92,6 @@ export default function LoginPage(): JSX.Element {
           <button className="w-full shadow-sm rounded-lg bg-[#FBBB21] hover:bg-yellow-600 py-2 px-4">
             Login
           </button>
-          <div className="mt-8 text-center">Forget Password?</div>
         </form>
       </div>
     </div>
