@@ -15,11 +15,17 @@ const KpiDetailModalPage = ({
   onRequestClose,
   kpiId,
   circleId,
+  setOpenAlert,
+  setAlertMessage,
+  setSeverity,
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
   kpiId: number;
   circleId: number;
+  setOpenAlert: (value: boolean) => void;
+  setAlertMessage: (value: string) => void;
+  setSeverity: (value: "success" | "error" | "warning" | "info") => void;
 }): JSX.Element => {
   const [selectView, setSelectView] = useState<"values" | "history">("values");
   const [kpiDefinition, setKpiDefinition] = useState<KpiExtended | null>(null);
@@ -100,6 +106,9 @@ const KpiDetailModalPage = ({
             isLoading={isLoading}
             kpiValues={kpiValues}
             onRequestClose={onRequestClose}
+            setOpenAlert={setOpenAlert}
+            setAlertMessage={setAlertMessage}
+            setSeverity={setSeverity}
           />
         ) : (
           <KpiHistoryModalSection circleId={circleId} kpi={kpiDefinition} />

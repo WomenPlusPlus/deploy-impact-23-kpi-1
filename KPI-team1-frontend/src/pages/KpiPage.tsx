@@ -13,7 +13,10 @@ import { UserDetails } from "../model/user";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import AddKpiModalPage from "./AddKpiModalPage";
 import { HiMiniInformationCircle } from "react-icons/hi2";
-import { Grid, Tooltip } from "@mui/material";
+import { AlertProps, Grid, Snackbar, Tooltip } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
+import React from "react";
+import SnackBarComponent from "../components/SnackBarComponent";
 
 interface OutletContext {
   circles: Circles[];
@@ -212,6 +215,11 @@ export default function KpiPage(): JSX.Element {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpiId, setSelectedKpiId] = useState<number | null>(null);
   const [addKpiModalIsOpen, setAddKpiModalIsOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [severity, setSeverity] = useState<
+    "success" | "error" | "info" | "warning"
+  >("info");
   const {
     kpiDefinitions,
     userDetails,
@@ -249,6 +257,16 @@ export default function KpiPage(): JSX.Element {
   const handleClick = (kpi: number) => {
     setSelectedKpiId(kpi);
     handleOpenModal();
+  };
+
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   const renderDataGrid = (periodicity: string) => {
@@ -313,6 +331,9 @@ export default function KpiPage(): JSX.Element {
           onRequestClose={handleOpenModal}
           kpiId={selectedKpiId}
           circleId={Number(selectedCircleId)}
+          setOpenAlert={setOpen}
+          setAlertMessage={setAlertMessage}
+          setSeverity={setSeverity}
         />
       )}
 
@@ -341,6 +362,15 @@ export default function KpiPage(): JSX.Element {
         onRequestClose={handleOpenAddKpiModal}
         circleId={Number(selectedCircleId)}
         fetchKpiDefinitions={fetchKpiDefinitions}
+        setOpenAlert={setOpen}
+        setAlertMessage={setAlertMessage}
+        setSeverity={setSeverity}
+      />
+      <SnackBarComponent
+        open={open}
+        alertMessage={alertMessage}
+        severity={severity}
+        handleCloseAlert={handleCloseAlert}
       />
     </>
   );

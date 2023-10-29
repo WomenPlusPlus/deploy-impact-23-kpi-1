@@ -7,6 +7,7 @@ import KpiDetailModalPage from "./KpiModalPage/KpiDetailModalPage";
 import { Tooltip } from "@mui/material";
 import { HiMiniInformationCircle } from "react-icons/hi2";
 import { getDisplayValueByPeriodicity } from "../helpers/kpiHelpers";
+import SnackBarComponent from "../components/SnackBarComponent";
 
 export default function EachKpi(): JSX.Element {
   const periodicityOrder = [
@@ -138,6 +139,11 @@ export default function EachKpi(): JSX.Element {
   const { kpiId } = useParams();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedKpi, setSelectedKpi] = useState<KpiExtended | null>(null);
+  const [open, setOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [severity, setSeverity] = useState<
+    "success" | "error" | "info" | "warning"
+  >("info");
 
   const handleOpenModal = () => {
     setModalIsOpen(!modalIsOpen);
@@ -146,6 +152,15 @@ export default function EachKpi(): JSX.Element {
   const handleClick = (kpi: KpiExtended) => {
     setSelectedKpi(kpi);
     handleOpenModal();
+  };
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   const fetchKpi = async () => {
@@ -219,8 +234,17 @@ export default function EachKpi(): JSX.Element {
           onRequestClose={handleOpenModal}
           kpiId={selectedKpi.kpi_id}
           circleId={selectedKpi.circle_id}
+          setOpenAlert={setOpen}
+          setAlertMessage={setAlertMessage}
+          setSeverity={setSeverity}
         />
       )}
+      <SnackBarComponent
+        open={open}
+        alertMessage={alertMessage}
+        severity={severity}
+        handleCloseAlert={handleCloseAlert}
+      />
     </>
   );
 }

@@ -10,18 +10,18 @@ const AreaAndLineGraph = ({
   yValues,
   periodicity,
   target_value,
-  targetFulfilled,
   percentage_change,
   graph_type: selectedGraphType = GRAPH_TYPES["line_graph"],
+  target_fulfilled,
 }: {
   seriesName: string;
   xValues: string[];
   yValues: number[];
   periodicity: string;
   target_value: number | null;
-  targetFulfilled: number[] | null[];
   percentage_change: number | null;
   graph_type: ApexChartType | null;
+  target_fulfilled: number | null;
 }) => {
   const graph_type =
     selectedGraphType === GRAPH_TYPES["donut_graph"]
@@ -40,13 +40,7 @@ const AreaAndLineGraph = ({
     const date = new Date(xValue);
     return getStringDisplayValueByPeriodicity(periodicity, date);
   });
-  const sortedTargetFulfilled = sortedXValues.map((xValue) => {
-    const index = xValues.indexOf(xValue);
-    return targetFulfilled[index];
-  });
 
-  const lastTargetFulfilled =
-    sortedTargetFulfilled[sortedTargetFulfilled.length - 1];
   useEffect(() => {
     const minYValue = target_value
       ? Math.min(...yValues, target_value, 0)
@@ -153,7 +147,7 @@ const AreaAndLineGraph = ({
               color: "#fff",
               background: "#22AD5C",
             },
-            text: `Target (${lastTargetFulfilled}%) : ${target_value} `,
+            text: `Target : ${target_value} | Reached at ${target_fulfilled}%`,
           },
         },
       ];

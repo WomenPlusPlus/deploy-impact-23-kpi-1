@@ -28,6 +28,8 @@ export interface Kpi {
   created_at: string | null;
   updated_at: string | null;
   is_approved: boolean;
+  cumulative: boolean;
+  formula: string;
 }
 
 //kpi_definition_with_latest_values
@@ -39,11 +41,15 @@ export interface KpiExtended extends Kpi {
   kpi_updated_at: string | null;
   latest_value: Number;
   latest_standardized_date: string;
-  latest_user_id: string;
+  latest_user_id: string | null;
   target_id: number | null;
   target_value: number | null;
   percentage_change: number | null;
   graph_type: GraphType | null;
+  cumulative_value: number;
+  target_fulfilled: number | null;
+  previous_value: number | null;
+  is_active: boolean;
 }
 
 //kpi_values_period_standardized

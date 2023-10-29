@@ -18,11 +18,17 @@ export default function AddKpiModalPage({
   onRequestClose,
   circleId,
   fetchKpiDefinitions,
+  setOpenAlert,
+  setAlertMessage,
+  setSeverity,
 }: {
   isOpen: boolean;
   onRequestClose: () => void;
   circleId: number;
   fetchKpiDefinitions: () => Promise<void>;
+  setOpenAlert: (value: boolean) => void;
+  setAlertMessage: (value: string) => void;
+  setSeverity: (value: "success" | "error" | "warning" | "info") => void;
 }): JSX.Element {
   const [kpiName, setKpiName] = useState("");
   const [description, setDescription] = useState("");
@@ -46,33 +52,6 @@ export default function AddKpiModalPage({
 
       if (error) {
         console.log("Error adding new KPI to circle:", error.message);
-      }
-      if (data) {
-        fetchKpiDefinitions();
-      }
-    } catch (error: any) {
-      alert(error.message);
-    }
-  };
-
-  const addKpiToHistory = async (kpiId: number) => {
-    try {
-      const { data, error } = await supabase
-        .from("kpi_values_history")
-        .insert([
-          {
-            circle_id: circleId,
-            kpi_id: kpiId,
-            value: 0,
-            period_date: new Date(),
-            action: "CREATE",
-            periodicity: periodicityValue,
-          },
-        ])
-        .select("*");
-
-      if (error) {
-        console.log("Error adding new KPI to history:", error.message);
       }
       if (data) {
         fetchKpiDefinitions();
@@ -120,11 +99,17 @@ export default function AddKpiModalPage({
       if (data) {
         const newKpi = data[0];
         addKpiToCircle(newKpi.kpi_id);
-        addKpiToHistory(newKpi.kpi_id);
+        setOpenAlert(true);
+        setAlertMessage("KPI added successfully!");
+        setSeverity("success");
         fetchKpiDefinitions();
         handleCloseModal();
       }
     } catch (error: any) {
+      setSeverity("error");
+      setAlertMessage("Error adding new KPI!");
+      setOpenAlert(true);
+
       alert(error.message);
     }
   };
