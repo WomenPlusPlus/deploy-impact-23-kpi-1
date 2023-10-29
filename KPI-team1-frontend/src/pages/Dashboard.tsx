@@ -6,7 +6,7 @@ import { Grid } from "@mui/material";
 import { useOutletContext, useParams } from "react-router-dom";
 import { UserDetails } from "../model/user";
 import { GRAPH_TYPES } from "../constants";
-import { get } from "http";
+import SnackBarComponent from "../components/SnackBarComponent";
 
 interface OutletContext {
   circleId: number | null;
@@ -18,6 +18,11 @@ export default function Dashboard(): JSX.Element {
   const { circleId: circleIdParam } = useParams();
   const [kpiAllValues, setAllKpiValues] = useState<KpiValue[]>([]);
   const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
+  const [open, setOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [severity, setSeverity] = useState<
+    "success" | "error" | "info" | "warning"
+  >("info");
   const { circleId, setCircleId, kpiDefinitions, userDetails }: OutletContext =
     useOutletContext();
 
@@ -50,7 +55,7 @@ export default function Dashboard(): JSX.Element {
         setAllKpiValues(data);
       }
     } catch (error: any) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
   useEffect(() => {
@@ -118,6 +123,16 @@ export default function Dashboard(): JSX.Element {
     return acc;
   }, []);
 
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   const circleKpis =
     kpiDefinitions &&
     kpiDefinitions.filter(
@@ -155,6 +170,12 @@ export default function Dashboard(): JSX.Element {
             );
           })}
       </Grid>
+      <SnackBarComponent
+        open={open}
+        alertMessage={alertMessage}
+        severity={severity}
+        handleCloseAlert={handleCloseAlert}
+      />
     </div>
   );
 }

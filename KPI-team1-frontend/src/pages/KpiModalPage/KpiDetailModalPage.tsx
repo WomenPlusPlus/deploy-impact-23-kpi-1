@@ -54,13 +54,16 @@ const KpiDetailModalPage = ({
           .eq("circle_id", circleId);
 
         if (error) {
+          setAlertMessage("Error fetching KPI values");
+          setSeverity("error");
+          setOpenAlert(true);
           throw error;
         }
         setKpiValues(kpi_values || []);
         setIsLoading(false);
       }
     } catch (error: any) {
-      alert(error.message);
+      console.log(error.message);
       setIsLoading(false);
     }
   };
@@ -95,9 +98,15 @@ const KpiDetailModalPage = ({
           .select("*");
 
         if (error) {
+          setAlertMessage("Error activating KPI");
+          setSeverity("error");
+          setOpenAlert(true);
           throw error;
         }
         if (kpi && kpi.length > 0) {
+          setAlertMessage("KPI deactivated");
+          setSeverity("success");
+          setOpenAlert(true);
           fetchKpiDefinitions();
         }
       } else {
@@ -110,14 +119,21 @@ const KpiDetailModalPage = ({
           .select("*");
 
         if (error) {
+          setAlertMessage("Error deactivating KPI");
+          setSeverity("error");
+          setOpenAlert(true);
+
           throw error;
         }
         if (kpi && kpi.length > 0) {
+          setAlertMessage("KPI deactivated");
+          setSeverity("success");
+          setOpenAlert(true);
           fetchKpiDefinitions();
         }
       }
     } catch (error: any) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 
@@ -160,10 +176,13 @@ const KpiDetailModalPage = ({
                   : null}{" "}
               </span>
               <span>
-                {kpiDefinition.formula ? kpiDefinition.formula : null}{" "}
+                {kpiDefinition.formula
+                  ? kpiDefinition.formula.charAt(0).toUpperCase() +
+                    kpiDefinition.formula.slice(1)
+                  : null}{" "}
               </span>
               <span>
-                as {kpiDefinition.unit ? PRETTY_UNIT[kpiDefinition.unit] : null}
+                - {kpiDefinition.unit ? PRETTY_UNIT[kpiDefinition.unit] : null}
               </span>
             </div>
             <div className="mb-2">

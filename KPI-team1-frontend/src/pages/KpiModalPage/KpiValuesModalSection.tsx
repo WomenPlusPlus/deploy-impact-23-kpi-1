@@ -168,13 +168,12 @@ const KpiValuesModalSection = ({
           <div className="flex gap-4">
             <div className="flex flex-col w-1/2">
               <label className="font-medium w-full mr-2">
-                Set a date
                 {newDate
-                  ? ` : ${getStringDisplayValueByPeriodicity(
+                  ? `Selected Period : ${getStringDisplayValueByPeriodicity(
                       kpi.periodicity,
                       newDate
                     )}`
-                  : "*"}
+                  : " Set a date*"}
                 <input
                   className="block w-full p-2 border rounded-md"
                   name="set date"
@@ -183,6 +182,8 @@ const KpiValuesModalSection = ({
                     if (new Date(e.target.value) <= new Date()) {
                       setNewDate(new Date(e.target.value));
                       setDateError("");
+                    } else if (!e.target.value) {
+                      setNewDate(null);
                     } else {
                       setDateError(
                         "The date for updating KPIs value shouldn't be a future date. Please set a date again!"
