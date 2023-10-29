@@ -1,35 +1,14 @@
-import { useEffect, useState } from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { KpiExtended } from "../model/kpi";
-import KpiDetailModalPage from "./KpiModalPage/KpiDetailModalPage";
+import { GridColDef } from "@mui/x-data-grid";
 import {
   getDisplayValueByPeriodicity,
   getPreviousPeriodByPeriodicity,
   getStringDisplayValueByPeriodicity,
-} from "../helpers/kpiHelpers";
-import { useOutletContext, useParams } from "react-router-dom";
-import { Circles } from "../model/circle";
-import { UserDetails } from "../model/user";
-import { HiOutlinePlusCircle } from "react-icons/hi";
-import AddKpiModalPage from "./AddKpiModalPage";
+} from "../../helpers/kpiHelpers";
 import { HiMiniInformationCircle } from "react-icons/hi2";
 import { Grid, Tooltip } from "@mui/material";
+import { format } from "date-fns";
 
-interface OutletContext {
-  circles: Circles[];
-  kpiDefinitions: KpiExtended[];
-  userDetails: UserDetails;
-  fetchKpiDefinitions: () => Promise<void>;
-  circleId: number | null;
-  setCircleId: (circleId: number) => void;
-}
-
-const other = {
-  showCellVerticalBorder: true,
-  showColumnVerticalBorder: true,
-};
-
-const HEADER_KPI_COLUMNS: GridColDef[] = [
+export const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
     headerName: "KPI Name",
     field: "kpi_name",
@@ -204,144 +183,75 @@ const HEADER_KPI_COLUMNS: GridColDef[] = [
   },
 ];
 
-const periodicityOrder = ["daily", "weekly", "monthly", "quarterly", "yearly"];
+export const HEADER_KPI_COLUMNS_INACTIVE: GridColDef[] = [
+  {
+    headerName: "KPI Name",
+    field: "kpi_name",
+    flex: 2,
+    sortable: true,
+    hideable: false,
+    headerAlign: "center",
+  },
+  {
+    headerName: "Description",
+    field: "description",
+    flex: 3,
+    sortable: false,
 
-export default function KpiPage(): JSX.Element {
-  const { circleId: circleIdParam } = useParams();
-  const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedKpiId, setSelectedKpiId] = useState<number | null>(null);
-  const [addKpiModalIsOpen, setAddKpiModalIsOpen] = useState(false);
-  const {
-    kpiDefinitions,
-    userDetails,
-    fetchKpiDefinitions,
-    circleId,
-    setCircleId,
-  }: OutletContext = useOutletContext();
+    headerAlign: "center",
+    align: "center",
+  },
+  {
+    headerName: "Periodicity",
+    field: "periodicity",
+    flex: 1,
+    sortable: true,
+    headerAlign: "center",
+    align: "center",
+  },
+  {
+    headerName: "Unit",
+    field: "unit",
+    flex: 1,
+    sortable: true,
+    headerAlign: "center",
+    align: "center",
+  },
 
-  useEffect(() => {
-    if (circleId) {
-      setSelectedCircleId(Number(circleId));
-    } else if (!circleId && circleIdParam) {
-      setCircleId(Number(circleIdParam));
-      setSelectedCircleId(Number(circleIdParam));
-    } else {
-      setCircleId(Number(userDetails.defaultCircleId));
-      setSelectedCircleId(Number(userDetails.defaultCircleId));
-    }
-  }, [circleIdParam, circleId, userDetails]);
-
-  const circleKpis =
-    kpiDefinitions &&
-    kpiDefinitions.filter(
-      (kpiDefinition) => kpiDefinition.circle_id === Number(selectedCircleId)
-    );
-
-  const handleOpenModal = () => {
-    setModalIsOpen(!modalIsOpen);
-  };
-
-  const handleOpenAddKpiModal = () => {
-    setAddKpiModalIsOpen(!addKpiModalIsOpen);
-  };
-
-  const handleClick = (kpi: number) => {
-    setSelectedKpiId(kpi);
-    handleOpenModal();
-  };
-
-  const renderDataGrid = (periodicity: string) => {
-    const filteredKpiDefinitions = circleKpis.filter(
-      (item) => item.periodicity === periodicity
-    );
-    if (filteredKpiDefinitions.length === 0) {
-      return null;
-    }
-
-    const getRowClassName = (params: any) => {
-      if (params.row.is_approved === false) {
-        return "bg-orange-200";
-      }
-      return "";
-    };
-
-    return (
-      <div key={periodicity} className="mt-5">
-        <div className="flex items-end">
-          <div className="text-xl font-medium mr-2">{`${periodicity
-            .charAt(0)
-            .toUpperCase()}${periodicity.slice(1)} KPIs`}</div>{" "}
-          <span className="text-gray-400 text-xs font-semibold italic">
-            {getStringDisplayValueByPeriodicity(periodicity, new Date())}
-          </span>
-        </div>
-        <div className="shadow-md border-0 border-primary-light mb-10">
-          <DataGrid
-            getRowId={(row) => row.circle_kpidef_id}
-            rows={filteredKpiDefinitions}
-            rowSelection={false}
-            columns={HEADER_KPI_COLUMNS}
-            onRowClick={(params) => {
-              params.row.is_approved === true && handleClick(params.row.kpi_id);
-            }}
-            classes={{
-              columnHeaders: "bg-customPurple",
-              columnHeader: "uppercase",
-              row: "cursor-pointer",
-            }}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
-            }}
-            {...other}
-            getRowClassName={getRowClassName}
-          />
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <>
-      {selectedKpiId && (
-        <KpiDetailModalPage
-          isOpen={modalIsOpen}
-          onRequestClose={handleOpenModal}
-          kpiId={selectedKpiId}
-          circleId={Number(selectedCircleId)}
-        />
-      )}
-
-      <div className="flex">
-        <div className="w-full xl:w-800 m-5">
-          {circleKpis?.[0] && (
-            <div className="flex justify-between text-2xl pb-4 border-b border-gray-300">
-              KPIs - {circleKpis[0].circle_name}
-              <button
-                className="flex justify-center items-center py-2 px-6 gap-2.5 rounded-md bg-[#FBBB21] text-[#131313] text-base font-semibold cursor-pointer hover:bg-yellow-600"
-                onClick={handleOpenAddKpiModal}
-              >
-                <span className="text-xl">
-                  <HiOutlinePlusCircle />
-                </span>
-                <div>KPI</div>
-              </button>
-            </div>
-          )}
-          {periodicityOrder.map((periodicity) => renderDataGrid(periodicity))}
-        </div>
-      </div>
-
-      <AddKpiModalPage
-        isOpen={addKpiModalIsOpen}
-        onRequestClose={handleOpenAddKpiModal}
-        circleId={Number(selectedCircleId)}
-        fetchKpiDefinitions={fetchKpiDefinitions}
-      />
-    </>
-  );
-}
+  {
+    headerName: "Cumulative",
+    field: "cumulative",
+    flex: 1,
+    sortable: true,
+    headerAlign: "center",
+    align: "center",
+  },
+  {
+    headerName: "Formula",
+    field: "formula",
+    flex: 1,
+    sortable: true,
+    headerAlign: "center",
+    align: "center",
+  },
+  {
+    headerName: "Created at",
+    field: "created_at",
+    flex: 1,
+    sortable: true,
+    headerAlign: "center",
+    align: "center",
+    renderCell: (params) => {
+      if (!params.value) return null;
+      return <>{format(new Date(params.value), "yyyy-MM-dd")}</>;
+    },
+  },
+  {
+    headerName: "Approved",
+    field: "is_approved",
+    flex: 1,
+    sortable: true,
+    headerAlign: "center",
+    align: "center",
+  },
+];

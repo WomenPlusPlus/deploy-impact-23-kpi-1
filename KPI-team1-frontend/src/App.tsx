@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
 import { User, UserDetails } from "./model/user";
-import { Circles } from "./model/circle";
+import { FavoriteCircle } from "./model/circle";
 import { KpiExtended } from "./model/kpi";
 
 const initialUser: User = {
@@ -12,7 +12,8 @@ const initialUser: User = {
 
 export default function App() {
   const [user, setUser] = useState<User>(initialUser);
-  const [circles, setCircles] = useState<Circles[]>([]);
+  const [favoriteCircles, setFavoriteCircles] = useState<FavoriteCircle[]>([]);
+  const [circles, setCircles] = useState<FavoriteCircle[]>([]);
   const [kpiDefinitions, setKpiDefinitions] = useState<KpiExtended[]>([]);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     username: null,
@@ -34,7 +35,19 @@ export default function App() {
     }
   }
 
-  async function getCircles() {
+  const fetchCircles = async () => {
+    try {
+      let { data: circle, error } = await supabase.from("circle").select("*");
+      if (error) {
+        throw error;
+      }
+      setCircles(circle || []);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
+  async function getFavoriteCircles() {
     if (!user.id) return;
     try {
       const { data, error } = await supabase
@@ -42,7 +55,7 @@ export default function App() {
         .select("circle_name, circle_user!inner(*)")
         .eq("circle_user.user_id", user.id);
       if (error) throw error;
-      setCircles(data);
+      setFavoriteCircles(data);
     } catch (error) {
       console.log("Error getting data:", error);
     }
@@ -87,7 +100,8 @@ export default function App() {
 
   useEffect(() => {
     fetchUser();
-    getCircles();
+    getFavoriteCircles();
+    fetchCircles();
     fetchKpiDefinitions();
   }, [user.id]);
 
@@ -95,6 +109,8 @@ export default function App() {
     <Outlet
       context={{
         setUser,
+        favoriteCircles,
+        setFavoriteCircles,
         circles,
         setCircles,
         user,
