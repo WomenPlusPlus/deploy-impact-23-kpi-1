@@ -162,7 +162,7 @@ export default function AddKpiModalPage({
               className="grow appearance-none shadow-sm border border-gray-200 p-2 focus:outline-none focus:border-[#ADBCF2] focus:border-2 rounded w-full"
               type="text"
               name="kpi-name"
-              placeholder="Write how your new KPI is called"
+              placeholder="Write the name of your new KPI"
               value={kpiName}
               onChange={(e) => setKpiName(e.target.value)}
               required
@@ -294,7 +294,8 @@ export default function AddKpiModalPage({
           </div>
           <div className="pt-10">
             <div className="text-2xl font-normal">
-              Calculation - How is this KPI calculated?
+              Calculation - How would you like the values of the KPI to be
+              calculated over the year?
             </div>
             <div className="text-sm my-3">
               If you're unsure about any options in the form, check for more
@@ -323,8 +324,7 @@ export default function AddKpiModalPage({
                       <Tooltip
                         title={
                           <div className="text-center">
-                            With this selection you get the average of all the
-                            KPI values for the period.
+                            The average of all the KPI values for the year.
                           </div>
                         }
                       >
@@ -346,8 +346,8 @@ export default function AddKpiModalPage({
                       <Tooltip
                         title={
                           <div className="text-center">
-                            With this selection you get the combined total of
-                            all the KPI values for the period.
+                            The combined total of all the KPI values for the
+                            year.
                           </div>
                         }
                       >
@@ -363,7 +363,7 @@ export default function AddKpiModalPage({
           </div>
           <div className="py-10 border-b border-[#D0D8DB]">
             <div className="text-2xl font-normal mb-4">
-              Value Type - How should all the future values be stored?
+              Value Type - How would you like the values to be entered?
             </div>
             <div className="flex justify-center">
               <Box>
@@ -391,8 +391,8 @@ export default function AddKpiModalPage({
                         title={
                           <div className="text-center">
                             <div>
-                              With this selection you get the exact or specific
-                              value without relation to previous data.
+                              The current period’s value without relation to
+                              previous data.
                             </div>
                             <br />
                             <div>
@@ -422,9 +422,9 @@ export default function AddKpiModalPage({
                         title={
                           <div className="text-center">
                             <div>
-                              With this selection you will get the running total
-                              of all the values up to the current point and
-                              including this periods current value.
+                              The running total of all the values up to the
+                              current point and including the current period’s
+                              value.
                             </div>
                             <br />
                             <div>
