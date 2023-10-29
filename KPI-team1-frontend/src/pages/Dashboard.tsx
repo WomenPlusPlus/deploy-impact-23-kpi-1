@@ -6,6 +6,7 @@ import { Grid } from "@mui/material";
 import { useOutletContext, useParams } from "react-router-dom";
 import { UserDetails } from "../model/user";
 import { GRAPH_TYPES } from "../constants";
+import SnackBarComponent from "../components/SnackBarComponent";
 
 interface OutletContext {
   circleId: number | null;
@@ -17,6 +18,11 @@ export default function Dashboard(): JSX.Element {
   const { circleId: circleIdParam } = useParams();
   const [kpiAllValues, setAllKpiValues] = useState<KpiValue[]>([]);
   const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
+  const [open, setOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [severity, setSeverity] = useState<
+    "success" | "error" | "info" | "warning"
+  >("info");
   const { circleId, setCircleId, kpiDefinitions, userDetails }: OutletContext =
     useOutletContext();
 
@@ -49,7 +55,7 @@ export default function Dashboard(): JSX.Element {
         setAllKpiValues(data);
       }
     } catch (error: any) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
   useEffect(() => {
@@ -61,7 +67,8 @@ export default function Dashboard(): JSX.Element {
       foundKpi.values.push({
         standardized_date: curr.standardized_date,
         cumulative_value:
-          curr.graph_type === GraphType.LineGraph
+          curr.graph_type === GraphType.LineGraph ||
+          curr.graph_type === GraphType.DonutGraph
             ? curr.cumulative_value.toFixed(2)
             : curr.cumulative_value,
         target_fulfilled: curr.target_fulfilled,
@@ -71,28 +78,60 @@ export default function Dashboard(): JSX.Element {
         (kpi) =>
           kpi.kpi_id === curr.kpi_id && kpi.circle_id === selectedCircleId
       );
+
+      const getTargetValue = () => {
+        if (kpiDefinition?.target_value) {
+          if (
+            kpiDefinition.formula === "average" &&
+            kpiDefinition.unit === "boolean"
+          ) {
+            return {
+              value: (kpiDefinition.target_value / 100).toFixed(2),
+              target_percentage: kpiDefinition?.target_fulfilled
+                ? (kpiDefinition.target_fulfilled * 100).toFixed(2)
+                : null,
+            };
+          }
+          return {
+            value: kpiDefinition?.target_value,
+            target_percentage: kpiDefinition?.target_fulfilled,
+          };
+        }
+        return { value: null };
+      };
       acc.push({
         kpi_id: curr.kpi_id,
         values: [
           {
             standardized_date: curr.standardized_date,
             cumulative_value:
-              curr.graph_type === GraphType.LineGraph
+              curr.graph_type === GraphType.LineGraph ||
+              curr.graph_type === GraphType.DonutGraph
                 ? curr.cumulative_value.toFixed(2)
                 : curr.cumulative_value,
-            target_fulfilled: curr.target_fulfilled,
           },
         ],
         kpi_name: kpiDefinition?.kpi_name || "",
         periodicity: kpiDefinition?.periodicity || "",
-        target_value: kpiDefinition?.target_value || null,
+        target_value: getTargetValue().value,
         percentage_change: kpiDefinition?.percentage_change,
         graph_type: curr.graph_type,
         show: kpiDefinition?.is_approved || false,
+        target_fulfilled: getTargetValue().target_percentage,
       });
     }
     return acc;
   }, []);
+
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const circleKpis =
     kpiDefinitions &&
@@ -120,19 +159,23 @@ export default function Dashboard(): JSX.Element {
                   yValues={item.values.map(
                     (value: any) => value.cumulative_value
                   )}
-                  targetFulfilled={item.values.map(
-                    (value: any) => value.target_fulfilled
-                  )}
                   seriesName={item.kpi_name}
                   periodicity={item.periodicity}
                   target_value={item.target_value}
                   percentage_change={item.percentage_change}
                   graph_type={GRAPH_TYPES[item.graph_type] || null}
+                  target_fulfilled={item.target_fulfilled}
                 />
               </Grid>
             );
           })}
       </Grid>
+      <SnackBarComponent
+        open={open}
+        alertMessage={alertMessage}
+        severity={severity}
+        handleCloseAlert={handleCloseAlert}
+      />
     </div>
   );
 }

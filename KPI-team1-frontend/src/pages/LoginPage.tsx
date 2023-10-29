@@ -57,10 +57,10 @@ export default function LoginPage(): JSX.Element {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="flex flex-col items-center justify-center w-2/3 md:w-1/3 min-w-fit px-9 pb-24 pt-28 shadow-2xl rounded-lg bg-white">
+      <div className="flex flex-col items-center justify-center max-w-sm w-1/3 min-w-fit px-9 pb-24 pt-28 shadow-2xl rounded-lg bg-white">
         <div className="flex justify-center items-center self-stretch gap-4">
           <img className="w-14 h-14" src={Logo} alt="Pro Juventute logo" />
-          <div className="text-2xl">KPI tracking</div>
+          <div className="text-2xl">KPI Monitor</div>
         </div>
         <form
           className="w-full pt-10"

@@ -1,14 +1,15 @@
 import * as React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { getDisplayValueByPeriodicity } from "../../helpers/kpiHelpers";
+import {
+  getDisplayValueByPeriodicity,
+  getStringDisplayValueByPeriodicity,
+} from "../../helpers/kpiHelpers";
 import { supabase } from "../../supabase";
 import { useState, useEffect } from "react";
 import { LinearProgress } from "@mui/material";
 import { KpiExtended, KpiValue } from "../../model/kpi";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import CustomGridToolbar from "../../components/CustomGridToolBar";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 const other = {
   showCellVerticalBorder: true,
@@ -23,6 +24,9 @@ const KpiValuesModalSection = ({
   isLoading,
   kpiValues,
   onRequestClose,
+  setAlertMessage,
+  setOpenAlert,
+  setSeverity,
 }: {
   kpi: KpiExtended;
   circleId: number;
@@ -31,6 +35,9 @@ const KpiValuesModalSection = ({
   isLoading: boolean;
   kpiValues: KpiValue[];
   onRequestClose: () => void;
+  setAlertMessage: (message: string) => void;
+  setOpenAlert: (open: boolean) => void;
+  setSeverity: (value: "success" | "error" | "warning" | "info") => void;
 }): JSX.Element => {
   const [comment, setComment] = useState<string>("");
   const [newDate, setNewDate] = useState<Date | null>(null);
@@ -38,7 +45,6 @@ const KpiValuesModalSection = ({
   const [targetValue, setTargetValue] = useState<number | null>(null);
   const [dateError, setDateError] = useState<string | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
-  const [open, setOpen] = React.useState(false);
 
   const PREVIOUS_VALUES_COLUMNS: GridColDef[] = [
     {
@@ -135,12 +141,20 @@ const KpiValuesModalSection = ({
           ])
           .select("*");
 
-        if (error) throw error.message;
+        if (error) {
+          throw error.message;
+        }
         if (data) {
+          setAlertMessage("Value successfully added");
+          setSeverity("success");
+          setOpenAlert(true);
           fetchKpiValues();
           fetchKpiDefinitions();
         }
       } catch (error: any) {
+        setAlertMessage("Error while adding value");
+        setSeverity("error");
+        setOpenAlert(true);
         console.log(error.message);
       }
     };
@@ -154,7 +168,12 @@ const KpiValuesModalSection = ({
           <div className="flex gap-4">
             <div className="flex flex-col w-1/2">
               <label className="font-medium w-full mr-2">
-                Set a date*
+                {newDate
+                  ? `Selected Period : ${getStringDisplayValueByPeriodicity(
+                      kpi.periodicity,
+                      newDate
+                    )}`
+                  : " Set a date*"}
                 <input
                   className="block w-full p-2 border rounded-md"
                   name="set date"
@@ -163,6 +182,8 @@ const KpiValuesModalSection = ({
                     if (new Date(e.target.value) <= new Date()) {
                       setNewDate(new Date(e.target.value));
                       setDateError("");
+                    } else if (!e.target.value) {
+                      setNewDate(null);
                     } else {
                       setDateError(
                         "The date for updating KPIs value shouldn't be a future date. Please set a date again!"
@@ -259,23 +280,6 @@ const KpiValuesModalSection = ({
     );
   };
   const renderSetTargetValue = () => {
-    const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-      props,
-      ref
-    ) {
-      return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-    });
-
-    const handleCloseAlert = (
-      event?: React.SyntheticEvent | Event,
-      reason?: string
-    ) => {
-      if (reason === "clickaway") {
-        return;
-      }
-      setOpen(false);
-    };
-
     const handleSaveTarget = async (value: string | null) => {
       if (!value) return;
       const numberedValue = Number(value);
@@ -293,11 +297,16 @@ const KpiValuesModalSection = ({
         if (data) {
           const result = data[0].target_value;
           setTargetValue(result);
-          setOpen(true);
+          setAlertMessage(`Target successfully updated to ${result}`);
+          setSeverity("success");
+          setOpenAlert(true);
           fetchKpiDefinitions();
         }
         if (error) throw error.message;
       } catch (error: any) {
+        setAlertMessage("Error while updating target");
+        setSeverity("error");
+        setOpenAlert(true);
         console.log(error.message);
       }
     };
@@ -323,19 +332,6 @@ const KpiValuesModalSection = ({
             />
           </label>
         </div>
-        <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={handleCloseAlert}
-        >
-          <Alert
-            onClose={handleCloseAlert}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Target value successfully updated to {targetValue}
-          </Alert>
-        </Snackbar>
       </>
     );
   };
