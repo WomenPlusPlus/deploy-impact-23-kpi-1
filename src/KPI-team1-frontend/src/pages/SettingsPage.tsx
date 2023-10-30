@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { FavoriteCircle } from "../model/circle";
 import { User, UserDetails } from "../model/user";
 import { supabase } from "../supabase";
 import { HiMiniArrowUpTray, HiOutlineInformationCircle } from "react-icons/hi2";
+import { de } from "date-fns/locale";
 
 interface OutletContext {
   user: User;
@@ -22,10 +23,7 @@ export default function UserDetailsPage(): JSX.Element {
     setCircleId,
   }: OutletContext = useOutletContext();
 
-  const [defaultCircleId, setDefaultCircleId] = useState(
-    userDetails?.defaultCircleId
-  );
-
+  const [defaultCircleId, setDefaultCircleId] = useState<string | null>(null);
   const [username, setUsername] = useState(userDetails?.username);
   const navigate = useNavigate();
 
@@ -63,7 +61,12 @@ export default function UserDetailsPage(): JSX.Element {
 
     navigate(-1);
   }
-
+  useEffect(() => {
+    if (userDetails && userDetails.defaultCircleId) {
+      setDefaultCircleId(userDetails.defaultCircleId);
+    }
+  }, [userDetails.defaultCircleId]);
+  console.log("userDetails", userDetails, defaultCircleId);
   return (
     <form onSubmit={(e: React.SyntheticEvent) => handleSubmit(e)}>
       <div className="bg-grey-800 p-4 mb-4 border-b border-gray-300">
@@ -117,7 +120,7 @@ export default function UserDetailsPage(): JSX.Element {
               {favoriteCircles && favoriteCircles.length > 0 ? (
                 <select
                   name="defaultCircle"
-                  defaultValue={defaultCircleId ? defaultCircleId : ""}
+                  value={defaultCircleId ? defaultCircleId : ""}
                   onChange={(e) => {
                     setDefaultCircleId(e.target.value);
                   }}
