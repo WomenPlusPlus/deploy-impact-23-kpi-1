@@ -46,20 +46,6 @@ export default function App() {
     }
   };
 
-  async function getFavoriteCircles() {
-    if (!user.id) return;
-    try {
-      const { data, error } = await supabase
-        .from("circle")
-        .select("circle_name, circle_user!inner(*)")
-        .eq("circle_user.user_id", user.id);
-      if (error) throw error;
-      setFavoriteCircles(data);
-    } catch (error) {
-      console.log("Error getting data:", error);
-    }
-  }
-
   async function fetchUserDetails() {
     if (!user.id) return;
     try {
@@ -79,9 +65,23 @@ export default function App() {
     }
   }
 
-  useEffect(() => {
-    fetchUserDetails();
-  }, [user.id, userDetails.defaultCircleId]);
+  async function getFavoriteCircles() {
+    if (!user.id) return;
+    try {
+      const { data, error } = await supabase
+        .from("circle")
+        .select("circle_name, circle_user!inner(*)")
+        .eq("circle_user.user_id", user.id);
+      if (error) throw error;
+      setFavoriteCircles(data);
+    } catch (error) {
+      console.log("Error getting data:", error);
+    }
+  }
+
+  // useEffect(() => {
+  //   fetchUserDetails();
+  // }, [user.id, userDetails.defaultCircleId]);
 
   const fetchKpiDefinitions = async () => {
     try {
@@ -98,10 +98,19 @@ export default function App() {
   };
 
   useEffect(() => {
-    fetchUser();
-    getFavoriteCircles();
     fetchCircles();
     fetchKpiDefinitions();
+  }, []);
+
+  useEffect(() => {
+    fetchUser();
+    async function fetchData() {
+      await fetchUserDetails();
+      await getFavoriteCircles();
+    }
+    if (user.id) {
+      fetchData();
+    }
   }, [user.id]);
 
   return (

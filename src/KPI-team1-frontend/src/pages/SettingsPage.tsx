@@ -4,7 +4,6 @@ import { FavoriteCircle } from "../model/circle";
 import { User, UserDetails } from "../model/user";
 import { supabase } from "../supabase";
 import { HiMiniArrowUpTray, HiOutlineInformationCircle } from "react-icons/hi2";
-import { de } from "date-fns/locale";
 
 interface OutletContext {
   user: User;
@@ -66,7 +65,6 @@ export default function UserDetailsPage(): JSX.Element {
       setDefaultCircleId(userDetails.defaultCircleId);
     }
   }, [userDetails.defaultCircleId]);
-  console.log("userDetails", userDetails, defaultCircleId);
   return (
     <form onSubmit={(e: React.SyntheticEvent) => handleSubmit(e)}>
       <div className="bg-grey-800 p-4 mb-4 border-b border-gray-300">
@@ -79,7 +77,10 @@ export default function UserDetailsPage(): JSX.Element {
             >
               Cancel
             </button>
-            <button className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium">
+            <button
+              className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium"
+              disabled={defaultCircleId === ""}
+            >
               Save
             </button>
           </div>
@@ -126,6 +127,9 @@ export default function UserDetailsPage(): JSX.Element {
                   }}
                   className="bg-[#FFF] border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-gray-500 block w-full p-2"
                 >
+                  <option value="" disabled>
+                    Please select a circle
+                  </option>
                   {favoriteCircles.map((c) => (
                     <option
                       value={c.circle_user[0].circle_id}
