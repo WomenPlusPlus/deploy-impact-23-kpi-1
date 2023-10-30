@@ -102,7 +102,7 @@ export default function AddKpiModalPage({
 
       if (isNameExists) {
         setError(
-          "This KPI's name already exists in the system. Please enter a new KPI name."
+          "This KPI's name already exists in the system. Please enter a new KPI name or check the already existing KPI"
         );
       } else {
         const { data, error } = await supabase
