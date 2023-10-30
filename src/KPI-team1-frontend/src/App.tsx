@@ -99,6 +99,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    if (!user.id) return;
     fetchUser();
     getFavoriteCircles();
     fetchCircles();

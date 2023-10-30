@@ -4,18 +4,24 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { supabase } from "../supabase";
 import Logo from "../assets/images/logo .png";
 import { FavoriteCircle } from "../model/circle";
-import { UserDetails } from "../model/user";
+import { User, UserDetails } from "../model/user";
 
 interface OutletContext {
-  setUser: any;
-  circles: FavoriteCircle[];
+  user: User;
+  setUser: (user: User) => void;
+  favoriteCircles: FavoriteCircle[];
   userDetails: UserDetails;
   setCircleId: (circleId: number) => void;
 }
 
 export default function LoginPage(): JSX.Element {
-  const { setUser, circles, userDetails, setCircleId }: OutletContext =
-    useOutletContext();
+  const {
+    user,
+    setUser,
+    favoriteCircles,
+    userDetails,
+    setCircleId,
+  }: OutletContext = useOutletContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +39,7 @@ export default function LoginPage(): JSX.Element {
         if (data.user) {
           const userData = {
             id: data.user.id,
-            email: data.user.email,
+            email: data.user.email || "",
           };
           userData && setUser(userData);
         } else {
@@ -49,11 +55,16 @@ export default function LoginPage(): JSX.Element {
     if (userDetails && userDetails.defaultCircleId) {
       setCircleId(Number(userDetails.defaultCircleId));
       navigate(`/kpi/circles/${userDetails.defaultCircleId}`);
-    } else if (circles.length > 0 && circles[0].circle_user?.length > 0) {
-      setCircleId(circles[0].circle_user[0].circle_id);
-      navigate(`/kpi/circles/${circles[0].circle_user[0].circle_id}`);
+    } else if (
+      favoriteCircles.length > 0 &&
+      favoriteCircles[0].circle_user?.length > 0
+    ) {
+      setCircleId(favoriteCircles[0].circle_user[0].circle_id);
+      navigate(`/kpi/circles/${favoriteCircles[0].circle_user[0].circle_id}`);
+    } else if (user && user.id) {
+      navigate(`/kpi/settings`);
     }
-  }, [userDetails, circles]);
+  }, [userDetails, favoriteCircles]);
 
   return (
     <div className="flex justify-center items-center h-screen">
