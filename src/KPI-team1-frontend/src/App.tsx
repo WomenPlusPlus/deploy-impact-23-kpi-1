@@ -21,6 +21,19 @@ export default function App() {
   });
   const [circleId, setCircleId] = useState<number | null>(null);
 
+  async function fetchUser() {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUser({ id: user.id, email: user.email || "" });
+      }
+    } catch (error) {
+      console.error("Error getting user data:", error);
+    }
+  }
+
   const fetchCircles = async () => {
     try {
       let { data: circle, error } = await supabase.from("circle").select("*");
@@ -32,6 +45,20 @@ export default function App() {
       console.log(error.message);
     }
   };
+
+  async function getFavoriteCircles() {
+    if (!user.id) return;
+    try {
+      const { data, error } = await supabase
+        .from("circle")
+        .select("circle_name, circle_user!inner(*)")
+        .eq("circle_user.user_id", user.id);
+      if (error) throw error;
+      setFavoriteCircles(data);
+    } catch (error) {
+      console.log("Error getting data:", error);
+    }
+  }
 
   async function fetchUserDetails() {
     if (!user.id) return;
@@ -71,9 +98,11 @@ export default function App() {
   };
 
   useEffect(() => {
-    fetchKpiDefinitions();
+    fetchUser();
+    getFavoriteCircles();
     fetchCircles();
-  }, []);
+    fetchKpiDefinitions();
+  }, [user.id]);
 
   return (
     <Outlet
