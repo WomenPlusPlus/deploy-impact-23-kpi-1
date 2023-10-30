@@ -10,6 +10,7 @@ interface OutletContext {
   user: User;
   setUser: (user: User) => void;
   favoriteCircles: FavoriteCircle[];
+  setFavoriteCircles: (circles: FavoriteCircle[]) => void;
   userDetails: UserDetails;
   setCircleId: (circleId: number) => void;
 }
@@ -19,6 +20,7 @@ export default function LoginPage(): JSX.Element {
     user,
     setUser,
     favoriteCircles,
+    setFavoriteCircles,
     userDetails,
     setCircleId,
   }: OutletContext = useOutletContext();
@@ -50,6 +52,37 @@ export default function LoginPage(): JSX.Element {
       console.error(error);
     }
   }
+
+  async function fetchUser() {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUser({ id: user.id, email: user.email || "" });
+      }
+    } catch (error) {
+      console.error("Error getting user data:", error);
+    }
+  }
+
+  async function getFavoriteCircles() {
+    if (!user.id) return;
+    try {
+      const { data, error } = await supabase
+        .from("circle")
+        .select("circle_name, circle_user!inner(*)")
+        .eq("circle_user.user_id", user.id);
+      if (error) throw error;
+      setFavoriteCircles(data);
+    } catch (error) {
+      console.log("Error getting data:", error);
+    }
+  }
+  useEffect(() => {
+    fetchUser();
+    getFavoriteCircles();
+  }, [user.id]);
 
   useEffect(() => {
     if (userDetails && userDetails.defaultCircleId) {

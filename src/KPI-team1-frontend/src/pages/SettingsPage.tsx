@@ -10,11 +10,17 @@ interface OutletContext {
   favoriteCircles: FavoriteCircle[];
   userDetails: UserDetails;
   setUserDetails: (u: UserDetails) => void;
+  setCircleId: (circleId: number | null) => void;
 }
 
 export default function UserDetailsPage(): JSX.Element {
-  const { favoriteCircles, user, userDetails, setUserDetails }: OutletContext =
-    useOutletContext();
+  const {
+    favoriteCircles,
+    user,
+    userDetails,
+    setUserDetails,
+    setCircleId,
+  }: OutletContext = useOutletContext();
 
   const [defaultCircleId, setDefaultCircleId] = useState(
     userDetails?.defaultCircleId
@@ -41,6 +47,9 @@ export default function UserDetailsPage(): JSX.Element {
     });
 
     setUserDetails(newDetails);
+    setCircleId(
+      newDetails?.defaultCircleId ? Number(newDetails.defaultCircleId) : null
+    );
     navigate(
       newDetails?.defaultCircleId
         ? "/kpi/circles/" + newDetails.defaultCircleId
