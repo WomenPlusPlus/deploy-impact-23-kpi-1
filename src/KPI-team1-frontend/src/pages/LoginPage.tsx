@@ -64,7 +64,7 @@ export default function LoginPage(): JSX.Element {
     } else if (user && user.id) {
       navigate(`/kpi/settings`);
     }
-  }, [userDetails, favoriteCircles]);
+  }, [userDetails.defaultCircleId, favoriteCircles]);
 
   return (
     <div className="flex justify-center items-center h-screen">

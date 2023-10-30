@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { FavoriteCircle } from "../model/circle";
 import { User, UserDetails } from "../model/user";
@@ -10,16 +10,19 @@ interface OutletContext {
   favoriteCircles: FavoriteCircle[];
   userDetails: UserDetails;
   setUserDetails: (u: UserDetails) => void;
+  setCircleId: (circleId: number | null) => void;
 }
 
 export default function UserDetailsPage(): JSX.Element {
-  const { favoriteCircles, user, userDetails, setUserDetails }: OutletContext =
-    useOutletContext();
+  const {
+    favoriteCircles,
+    user,
+    userDetails,
+    setUserDetails,
+    setCircleId,
+  }: OutletContext = useOutletContext();
 
-  const [defaultCircleId, setDefaultCircleId] = useState(
-    userDetails?.defaultCircleId
-  );
-
+  const [defaultCircleId, setDefaultCircleId] = useState<string | null>(null);
   const [username, setUsername] = useState(userDetails?.username);
   const navigate = useNavigate();
 
@@ -41,6 +44,9 @@ export default function UserDetailsPage(): JSX.Element {
     });
 
     setUserDetails(newDetails);
+    setCircleId(
+      newDetails?.defaultCircleId ? Number(newDetails.defaultCircleId) : null
+    );
     navigate(
       newDetails?.defaultCircleId
         ? "/kpi/circles/" + newDetails.defaultCircleId
@@ -54,7 +60,11 @@ export default function UserDetailsPage(): JSX.Element {
 
     navigate(-1);
   }
-
+  useEffect(() => {
+    if (userDetails && userDetails.defaultCircleId) {
+      setDefaultCircleId(userDetails.defaultCircleId);
+    }
+  }, [userDetails.defaultCircleId]);
   return (
     <form onSubmit={(e: React.SyntheticEvent) => handleSubmit(e)}>
       <div className="bg-grey-800 p-4 mb-4 border-b border-gray-300">
@@ -67,7 +77,10 @@ export default function UserDetailsPage(): JSX.Element {
             >
               Cancel
             </button>
-            <button className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium">
+            <button
+              className="w-28 h-10 bg-customYellow rounded justify-center items-center gap-2 inline-flex text-base font-medium"
+              disabled={defaultCircleId === ""}
+            >
               Save
             </button>
           </div>
@@ -108,12 +121,15 @@ export default function UserDetailsPage(): JSX.Element {
               {favoriteCircles && favoriteCircles.length > 0 ? (
                 <select
                   name="defaultCircle"
-                  defaultValue={defaultCircleId ? defaultCircleId : ""}
+                  value={defaultCircleId ? defaultCircleId : ""}
                   onChange={(e) => {
                     setDefaultCircleId(e.target.value);
                   }}
                   className="bg-[#FFF] border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:border-gray-500 block w-full p-2"
                 >
+                  <option value="" disabled>
+                    Please select a circle
+                  </option>
                   {favoriteCircles.map((c) => (
                     <option
                       value={c.circle_user[0].circle_id}

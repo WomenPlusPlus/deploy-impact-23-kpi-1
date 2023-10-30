@@ -32,14 +32,18 @@ export default function SearchBar({
       }
       const results =
         kpi_definition &&
-        kpi_definition.filter((kpi) => {
-          return (
-            value &&
-            kpi &&
-            kpi.kpi_name &&
-            kpi.kpi_name.toLowerCase().includes(value.toLocaleLowerCase())
-          );
-        });
+        kpi_definition
+          .filter((kpi) => {
+            return (
+              value &&
+              kpi &&
+              kpi.kpi_name &&
+              kpi.kpi_name.toLowerCase().includes(value.toLocaleLowerCase())
+            );
+          })
+          .sort((a, b) => {
+            return a.kpi_name > b.kpi_name ? 1 : -1;
+          });
       if (results) setKpiResult(results);
     } catch (error: any) {
       console.log(error.message);
@@ -52,14 +56,20 @@ export default function SearchBar({
       if (error) throw error;
       const results =
         data &&
-        data.filter((circle) => {
-          return (
-            value &&
-            circle &&
-            circle.circle_name &&
-            circle.circle_name.toLowerCase().includes(value.toLocaleLowerCase())
-          );
-        });
+        data
+          .filter((circle) => {
+            return (
+              value &&
+              circle &&
+              circle.circle_name &&
+              circle.circle_name
+                .toLowerCase()
+                .includes(value.toLocaleLowerCase())
+            );
+          })
+          .sort((a, b) => {
+            return a.circle_name > b.circle_name ? 1 : -1;
+          });
       if (results) setCircleResult(results);
     } catch (error) {
       console.log("Error getting data:", error);

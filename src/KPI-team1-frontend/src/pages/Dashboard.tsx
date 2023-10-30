@@ -159,6 +159,12 @@ export default function Dashboard(): JSX.Element {
 
   return (
     <div>
+      {circleId === 0 && (
+        <div className="flex justify-between items-center text-red-600 text-xl mb-4">
+          You are not part of any circle. You can still search for KPIs or
+          Circles.
+        </div>
+      )}
       {circleKpis?.[0] && (
         <div className="text-2xl m-5 pb-4 border-b border-gray-300">
           KPIs - {circleKpis[0].circle_name}
