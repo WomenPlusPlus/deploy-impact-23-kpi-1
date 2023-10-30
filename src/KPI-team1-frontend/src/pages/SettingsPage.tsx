@@ -133,7 +133,7 @@ export default function UserDetailsPage(): JSX.Element {
                       There are no circles to choose from.
                     </div>
                     <div className="text-gray-700 text-base">
-                      Please contact your gatekeeper.
+                      Please contact your gatekeeper, to be added to a circle.
                     </div>
                   </div>
                 </div>
