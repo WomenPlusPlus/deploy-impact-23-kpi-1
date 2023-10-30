@@ -136,12 +136,13 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
     headerName: "Target",
     field: "target_value",
-    width: 150,
+    width: 180,
     sortable: false,
     headerAlign: "center",
     align: "center",
     renderCell: (params) => {
       const value = params.value as number;
+      const target = params.row.target_fulfilled as number;
       const getDisplayValue = (value: number) => {
         if (value === null) {
           return null;
@@ -151,7 +152,25 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
           return value.toLocaleString("fr-ch");
         }
       };
-      return <div>{getDisplayValue(value)}</div>;
+      return (
+        <Grid
+          container
+          className="flex justify-center items-center [&>*]:text-center"
+        >
+          <Grid xs={3} />
+          <Grid xs={6}>{getDisplayValue(value)}</Grid>
+          <Grid
+            xs={3}
+            className={`${
+              target
+                ? "border border 4 bg-gray-200 bg-opacity-50 rounded w-[60px] h-[29px] p-1.5 text-[12px] font-medium font-['Inter']"
+                : ""
+            }`}
+          >
+            {target ? `${target.toFixed(0)}%` : null}
+          </Grid>
+        </Grid>
+      );
     },
   },
   {
