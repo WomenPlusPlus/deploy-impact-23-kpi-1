@@ -12,7 +12,7 @@ import SearchBar from "./Searchbar";
 
 interface SideBarProps {
   user: User;
-  setUser: any;
+  setUser: (user: User) => void;
   favoriteCircles: FavoriteCircle[];
   setFavoriteCircles: (circles: FavoriteCircle[]) => void;
   userDetails: UserDetails;
@@ -37,7 +37,7 @@ export default function SideBar({
   async function handleLogout() {
     let { error } = await supabase.auth.signOut();
     if (error) throw error;
-    setUser({});
+    setUser({ id: "", email: "" });
     setCircleId(null);
     setFavoriteCircles([]);
     setUserDetails({ username: null, defaultCircleId: null });

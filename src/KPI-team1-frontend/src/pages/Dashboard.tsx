@@ -14,6 +14,20 @@ interface OutletContext {
   kpiDefinitions: KpiExtended[];
   userDetails: UserDetails;
 }
+interface AllKpis {
+  kpi_id: number;
+  values: {
+    standardized_date: string;
+    cumulative_value: number;
+  }[];
+  kpi_name: string;
+  periodicity: string;
+  target_value: number | null;
+  percentage_change: number | null;
+  graph_type: string;
+  show: boolean;
+  target_fulfilled: number | null;
+}
 export default function Dashboard(): JSX.Element {
   const { circleId: circleIdParam } = useParams();
   const [kpiAllValues, setAllKpiValues] = useState<KpiValue[]>([]);
@@ -61,17 +75,17 @@ export default function Dashboard(): JSX.Element {
   useEffect(() => {
     fetchAllKpiValues();
   }, [selectedCircleId]);
-  const allKpis = kpiAllValues.reduce((acc: any, curr: any) => {
-    const foundKpi = acc.find((item: any) => item.kpi_id === curr.kpi_id);
+
+  const allKpis = kpiAllValues.reduce((acc: AllKpis[], curr: KpiValue) => {
+    const foundKpi = acc.find((item) => item.kpi_id === curr.kpi_id);
     if (foundKpi) {
       foundKpi.values.push({
         standardized_date: curr.standardized_date,
         cumulative_value:
           curr.graph_type === GraphType.LineGraph ||
           curr.graph_type === GraphType.DonutGraph
-            ? curr.cumulative_value.toFixed(2)
+            ? Number(curr.cumulative_value.toFixed(2))
             : curr.cumulative_value,
-        target_fulfilled: curr.target_fulfilled,
       });
     } else {
       const kpiDefinition = kpiDefinitions.find(
@@ -86,18 +100,22 @@ export default function Dashboard(): JSX.Element {
             kpiDefinition.unit === "boolean"
           ) {
             return {
-              value: (kpiDefinition.target_value / 100).toFixed(2),
+              value: Number((kpiDefinition.target_value / 100).toFixed(2)),
               target_percentage: kpiDefinition?.target_fulfilled
-                ? (kpiDefinition.target_fulfilled * 100).toFixed(2)
+                ? Number((kpiDefinition.target_fulfilled * 100).toFixed(2))
                 : null,
             };
           }
           return {
-            value: kpiDefinition?.target_value,
-            target_percentage: kpiDefinition?.target_fulfilled,
+            value: kpiDefinition?.target_value
+              ? Number(kpiDefinition.target_value)
+              : null,
+            target_percentage: kpiDefinition?.target_fulfilled
+              ? Number(kpiDefinition.target_fulfilled)
+              : null,
           };
         }
-        return { value: null };
+        return { value: null, target_percentage: null };
       };
       acc.push({
         kpi_id: curr.kpi_id,
@@ -107,15 +125,15 @@ export default function Dashboard(): JSX.Element {
             cumulative_value:
               curr.graph_type === GraphType.LineGraph ||
               curr.graph_type === GraphType.DonutGraph
-                ? curr.cumulative_value.toFixed(2)
+                ? Number(curr.cumulative_value.toFixed(2))
                 : curr.cumulative_value,
           },
         ],
         kpi_name: kpiDefinition?.kpi_name || "",
         periodicity: kpiDefinition?.periodicity || "",
         target_value: getTargetValue().value,
-        percentage_change: kpiDefinition?.percentage_change,
-        graph_type: curr.graph_type,
+        percentage_change: kpiDefinition?.percentage_change || null,
+        graph_type: curr.graph_type || "line",
         show: kpiDefinition?.is_approved || false,
         target_fulfilled: getTargetValue().target_percentage,
       });
@@ -148,17 +166,13 @@ export default function Dashboard(): JSX.Element {
       )}
       <Grid container>
         {allKpis
-          .filter((item: any) => item.show === true)
-          .map((item: any) => {
+          .filter((item) => item.show === true)
+          .map((item) => {
             return (
               <Grid item xs={6} key={item.kpi_id}>
                 <AreaAndLineGraph
-                  xValues={item.values.map(
-                    (value: any) => value.standardized_date
-                  )}
-                  yValues={item.values.map(
-                    (value: any) => value.cumulative_value
-                  )}
+                  xValues={item.values.map((value) => value.standardized_date)}
+                  yValues={item.values.map((value) => value.cumulative_value)}
                   seriesName={item.kpi_name}
                   periodicity={item.periodicity}
                   target_value={item.target_value}
