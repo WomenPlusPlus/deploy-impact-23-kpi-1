@@ -260,6 +260,7 @@ const KpiValuesModalSection = ({
         <div className="mt-4 text-2xl">Previous Values</div>
         <div className="">
           <DataGrid
+            sx={{ fontFamily: "Inter" }}
             slots={{
               loadingOverlay: LinearProgress,
               toolbar: CustomGridToolbar,

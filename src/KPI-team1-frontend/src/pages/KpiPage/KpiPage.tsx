@@ -3,7 +3,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { KpiExtended } from "../../model/kpi";
 import KpiDetailModalPage from "../KpiModalPage/KpiDetailModalPage";
 import { useOutletContext, useParams } from "react-router-dom";
-import { Circle } from "../../model/circle";
 import { UserDetails } from "../../model/user";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 import AddKpiModalPage from "../AddKpiModalPage";
@@ -117,6 +116,7 @@ export default function KpiPage(): JSX.Element {
         </div>
         <div className="shadow-md border-0 border-primary-light mb-10">
           <DataGrid
+            sx={{ fontFamily: "Inter" }}
             getRowId={(row) => row.circle_kpidef_id}
             rows={filteredKpiDefinitions}
             rowSelection={false}

@@ -117,6 +117,7 @@ export default function KpiHistoryModalSection({
   return (
     <>
       <DataGrid
+        sx={{ fontFamily: "Inter" }}
         getRowId={(row) => row.kpi_value_history_id}
         rows={kpiLogs}
         slots={{

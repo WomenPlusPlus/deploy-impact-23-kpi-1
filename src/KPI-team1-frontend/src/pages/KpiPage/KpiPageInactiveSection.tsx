@@ -152,6 +152,7 @@ const KpiPageInactiveSection = ({
         </button>
       </div>
       <DataGrid
+        sx={{ fontFamily: "Inter" }}
         getRowId={(row) => row.kpi_id}
         rows={kpiDefinitions}
         columns={HEADER_KPI_COLUMNS_INACTIVE}
