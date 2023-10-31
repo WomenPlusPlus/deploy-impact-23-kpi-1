@@ -1,3 +1,4 @@
+import "./App.css"
 import { Outlet } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
