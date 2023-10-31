@@ -6,7 +6,6 @@ import { Grid } from "@mui/material";
 import { useOutletContext, useParams } from "react-router-dom";
 import { UserDetails } from "../model/user";
 import { GRAPH_TYPES } from "../constants";
-import SnackBarComponent from "../components/SnackBarComponent";
 import startOfYear from "date-fns/startOfYear";
 import { format } from "date-fns";
 
@@ -154,7 +153,7 @@ export default function Dashboard(): JSX.Element {
       )}
       {circleKpis?.[0] && (
         <div className="text-2xl m-5 pb-4 border-b border-gray-300">
-          KPIs - {circleKpis[0].circle_name}
+          {circleKpis[0].circle_name} {format(new Date(), "yyyy")}
         </div>
       )}
       <Grid container>

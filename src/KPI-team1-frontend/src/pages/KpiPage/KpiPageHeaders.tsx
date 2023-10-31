@@ -12,10 +12,10 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
     headerName: "KPI Name",
     field: "kpi_name",
-    width: 300,
+    flex: 3,
     sortable: true,
     hideable: false,
-    headerAlign: "center",
+    headerAlign: "left",
     renderCell: (params) => {
       if (params.row.unit === "%") {
         return (
@@ -34,7 +34,7 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
     headerName: "Latest Value",
     field: "latest_value",
-    width: 200,
+    flex: 3,
     sortable: true,
     headerAlign: "center",
     align: "center",
@@ -62,25 +62,25 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
       };
       return (
         <Grid container className="flex justify-center items-center">
-          <Grid item xs={4}></Grid>
-          <Grid item xs={4} className="mr-1 text-center">
+          <Grid item xs={3}></Grid>
+          <Grid item xs={6} className="mr-1 text-center">
             {getDisplayValue(value)}{" "}
           </Grid>
           {params.row.percentage_change &&
           typeof params.row.percentage_change === "number" ? (
             <Grid
               item
-              xs={4}
+              xs={3}
               className={`w-[60px] h-[29px] p-1.5 ${getChangeColor(
                 params.row.percentage_change
               )} text-red-600 bg-opacity-50 rounded justify-center items-center gap-1 inline-flex`}
             >
               <div className="text-center text-neutral-900 text-[12px] font-medium font-['Inter']">
-                {params.row.percentage_change?.toFixed(2)}%
+                {params.row.percentage_change?.toFixed(0)}%
               </div>
             </Grid>
           ) : (
-            <Grid item xs={4}></Grid>
+            <Grid item xs={3}></Grid>
           )}
         </Grid>
       );
@@ -89,7 +89,7 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
     headerName: "Last Update",
     field: "latest_standardized_date",
-    width: 150,
+    flex: 2,
     sortable: true,
     headerAlign: "center",
     align: "center",
@@ -127,7 +127,7 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
     headerName: "Description",
     field: "description",
-    width: 200,
+    flex: 3,
     sortable: false,
     filterable: false,
     headerAlign: "center",
@@ -136,7 +136,7 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
   {
     headerName: "Target",
     field: "target_value",
-    width: 180,
+    flex: 3,
     sortable: false,
     headerAlign: "center",
     align: "center",
@@ -162,12 +162,12 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
           <Grid
             xs={3}
             className={`${
-              target
-                ? "border border 4 bg-gray-200 bg-opacity-50 rounded w-[60px] h-[29px] p-1.5 text-[12px] font-medium font-['Inter']"
-                : ""
+              target ? "w-[60px] h-[29px] p-1.5 bg-gray-200 rounded gap-1" : ""
             }`}
           >
-            {target ? `${target.toFixed(0)}%` : null}
+            <div className="text-center text-neutral-900 text-[12px] font-medium font-['Inter']">
+              {target ? `${target.toFixed(0)}%` : null}
+            </div>
           </Grid>
         </Grid>
       );
@@ -194,7 +194,7 @@ export const HEADER_KPI_COLUMNS: GridColDef[] = [
         <div></div>
       );
     },
-    width: 150,
+    flex: 2,
     sortable: false,
     filterable: false,
     headerAlign: "center",

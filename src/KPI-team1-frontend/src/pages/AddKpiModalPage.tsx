@@ -311,7 +311,7 @@ export default function AddKpiModalPage({
                     row
                     className="flex gap-16 items-center"
                   >
-                    <div className="flex gap-16 items-center mr-36">
+                    <div className="flex items-center mr-36">
                       <FormControlLabel
                         control={
                           <Radio
@@ -333,7 +333,7 @@ export default function AddKpiModalPage({
                         </span>
                       </Tooltip>
                     </div>
-                    <div className="flex gap-16 items-center">
+                    <div className="flex items-center">
                       <FormControlLabel
                         control={
                           <Radio
@@ -377,7 +377,7 @@ export default function AddKpiModalPage({
                     row
                     className="flex gap-8 items-center"
                   >
-                    <div className="flex gap-8 items-center mr-32">
+                    <div className="flex items-center mr-32">
                       <FormControlLabel
                         control={
                           <Radio
@@ -408,7 +408,7 @@ export default function AddKpiModalPage({
                         </span>
                       </Tooltip>
                     </div>
-                    <div className="flex gap-8 items-center">
+                    <div className="flex items-center">
                       <FormControlLabel
                         control={
                           <Radio
@@ -462,7 +462,7 @@ export default function AddKpiModalPage({
   };
 
   return (
-    <ModalRightSide isOpen={isOpen} onRequestClose={onRequestClose}>
+    <ModalRightSide isOpen={isOpen} onRequestClose={onRequestClose} width="40%">
       {renderAddKpiModal()}
     </ModalRightSide>
   );
