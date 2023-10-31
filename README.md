@@ -54,6 +54,9 @@ npm run dev
 
 ### 3. Considerations for production deployment
 
+The application is deployed in a [test environment](https://deploy-impact-23-kpi-1.vercel.app/). Should you want to use 
+it, please contact one of the KPI 1 team members for credentials.
+
 The project heavily relies on Supabase. The deployment could be done using a self-hosted Supabase instance, which should
 be [secured](https://supabase.com/docs/guides/self-hosting/docker#securing-your-services). An alternative approach is to
 create a Supabase account. Current GitHub setup allows applying the database migrations automatically:
