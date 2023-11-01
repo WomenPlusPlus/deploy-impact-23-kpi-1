@@ -58,7 +58,7 @@ export default function Layout() {
             <SearchBar isSearchKpi={isSearchKpi} setCircleId={setCircleId} />
           </div>
 
-          <div className="flex justify-end items-center gap-20 border-l border-[#D0D8DB] w-1/3 py-1.5">
+          <div className="flex justify-end items-center gap-5 border-l border-[#D0D8DB] w-1/3 py-1.5">
             <span className="text-xl">
               <PiBell />
             </span>
@@ -71,22 +71,24 @@ export default function Layout() {
             )}
           </div>
         </div>
-        <div className="w-full bg-[#F9F9FA] h-full p-8">
-          <Outlet
-            context={{
-              setUser,
-              favoriteCircles,
-              circles,
-              setCircles,
-              user,
-              userDetails,
-              setUserDetails,
-              kpiDefinitions,
-              fetchKpiDefinitions,
-              circleId,
-              setCircleId,
-            }}
-          />
+        <div className="w-full bg-[#F9F9FA] h-full p-8 ">
+          <div className="max-w-[95%]">
+            <Outlet
+              context={{
+                setUser,
+                favoriteCircles,
+                circles,
+                setCircles,
+                user,
+                userDetails,
+                setUserDetails,
+                kpiDefinitions,
+                fetchKpiDefinitions,
+                circleId,
+                setCircleId,
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

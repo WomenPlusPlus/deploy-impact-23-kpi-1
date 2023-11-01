@@ -6,7 +6,8 @@ import { Grid } from "@mui/material";
 import { useOutletContext, useParams } from "react-router-dom";
 import { UserDetails } from "../model/user";
 import { GRAPH_TYPES } from "../constants";
-import SnackBarComponent from "../components/SnackBarComponent";
+import startOfYear from "date-fns/startOfYear";
+import { format } from "date-fns";
 
 interface OutletContext {
   circleId: number | null;
@@ -32,11 +33,6 @@ export default function Dashboard(): JSX.Element {
   const { circleId: circleIdParam } = useParams();
   const [kpiAllValues, setAllKpiValues] = useState<KpiValue[]>([]);
   const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
-  const [open, setOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState<string>("");
-  const [severity, setSeverity] = useState<
-    "success" | "error" | "info" | "warning"
-  >("info");
   const { circleId, setCircleId, kpiDefinitions, userDetails }: OutletContext =
     useOutletContext();
 
@@ -56,14 +52,14 @@ export default function Dashboard(): JSX.Element {
       }
     }
   }, [circleIdParam, circleId, userDetails]);
-
   const fetchAllKpiValues = async () => {
     try {
       if (!selectedCircleId) return;
       const { data, error } = await supabase
         .from("kpi_values_period_standardized")
         .select("*")
-        .eq("circle_id", selectedCircleId);
+        .eq("circle_id", selectedCircleId)
+        .gte("period_date", format(startOfYear(new Date()), "yyyy-MM-dd"));
 
       if (data) {
         setAllKpiValues(data);
@@ -141,16 +137,6 @@ export default function Dashboard(): JSX.Element {
     return acc;
   }, []);
 
-  const handleCloseAlert = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
-
   const circleKpis =
     kpiDefinitions &&
     kpiDefinitions.filter(
@@ -167,7 +153,7 @@ export default function Dashboard(): JSX.Element {
       )}
       {circleKpis?.[0] && (
         <div className="text-2xl m-5 pb-4 border-b border-gray-300">
-          KPIs - {circleKpis[0].circle_name}
+          {circleKpis[0].circle_name} {format(new Date(), "yyyy")}
         </div>
       )}
       <Grid container>
@@ -190,12 +176,6 @@ export default function Dashboard(): JSX.Element {
             );
           })}
       </Grid>
-      <SnackBarComponent
-        open={open}
-        alertMessage={alertMessage}
-        severity={severity}
-        handleCloseAlert={handleCloseAlert}
-      />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import "./App.css";
 import { Outlet } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useEffect, useState } from "react";
@@ -78,10 +79,6 @@ export default function App() {
       console.log("Error getting data:", error);
     }
   }
-
-  // useEffect(() => {
-  //   fetchUserDetails();
-  // }, [user.id, userDetails.defaultCircleId]);
 
   const fetchKpiDefinitions = async () => {
     try {

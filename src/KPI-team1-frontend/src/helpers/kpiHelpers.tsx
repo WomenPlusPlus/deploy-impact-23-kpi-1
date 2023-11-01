@@ -84,21 +84,26 @@ export const getStringDisplayValueByPeriodicity = (
   date: Date
 ) => {
   const newDate = new Date(date);
+  let value = "";
   if (periodicity === "quarterly") {
-    return `Q${getQuarter(newDate)}`;
+    value = `Q${getQuarter(newDate)}`;
   } else if (periodicity === "yearly") {
-    return format(newDate, "yyyy");
+    value = format(newDate, "yyyy");
   } else if (periodicity === "weekly") {
     const firstDayOfWeek = startOfWeek(newDate, { weekStartsOn: 1 });
-    return `Week ${getWeek(firstDayOfWeek, {
+    value = `Week ${getWeek(firstDayOfWeek, {
       weekStartsOn: 1,
       firstWeekContainsDate: 4,
     })}`;
   } else if (periodicity === "monthly") {
-    return format(newDate, "MMM");
+    value = format(newDate, "MMM");
   } else {
-    return format(newDate, "yyyy-MM-dd");
+    value = format(newDate, "yyyy-MM-dd");
   }
+  if (getYear(newDate) !== getYear(new Date())) {
+    value += ` ${getYear(newDate)}`;
+  }
+  return value;
 };
 
 export const getPreviousPeriodByPeriodicity = (

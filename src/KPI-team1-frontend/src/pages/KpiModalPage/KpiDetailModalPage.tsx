@@ -104,7 +104,7 @@ const KpiDetailModalPage = ({
           throw error;
         }
         if (kpi && kpi.length > 0) {
-          setAlertMessage("KPI deactivated");
+          setAlertMessage("KPI activated");
           setSeverity("success");
           setOpenAlert(true);
           fetchKpiDefinitions();

@@ -147,7 +147,11 @@ const AreaAndLineGraph = ({
               color: "#fff",
               background: "#22AD5C",
             },
-            text: `Target : ${target_value} | Reached at ${target_fulfilled}%`,
+            text: `Target : ${target_value}${
+              target_fulfilled !== null
+                ? ` | Reached at ${target_fulfilled}%`
+                : ""
+            }`,
           },
         },
       ];
