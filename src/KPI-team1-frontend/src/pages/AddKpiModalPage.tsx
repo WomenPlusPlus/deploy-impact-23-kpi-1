@@ -144,7 +144,7 @@ export default function AddKpiModalPage({
 
   const renderAddKpiModal = () => {
     return (
-      <>
+      <div className="mx-4">
         <div
           className="text-xl text-[#414445] float-right cursor-pointer"
           onClick={handleCloseModal}
@@ -186,15 +186,15 @@ export default function AddKpiModalPage({
             <div className="text-2xl font-normal mb-4">
               Periodicity - How often do you track this KPI?
             </div>
-            <div className="flex justify-center">
+            <div>
               <Box>
-                <FormControl>
+                <FormControl className="w-full">
                   <RadioGroup
                     value={periodicityValue}
                     name="periodicity-group"
                     onChange={(e) => setPeriodicityValue(e.target.value)}
                     row
-                    className="flex gap-10"
+                    className="flex justify-between"
                   >
                     <FormControlLabel
                       control={
@@ -250,15 +250,15 @@ export default function AddKpiModalPage({
             <div className="text-2xl font-normal mb-4">
               Unit - What quantity is your KPI measured in?
             </div>
-            <div className="flex justify-center">
+            <div>
               <Box>
-                <FormControl>
+                <FormControl className="w-full">
                   <RadioGroup
                     value={unitValue}
                     name="unit-group"
                     onChange={(e) => setUnitValue(e.target.value)}
                     row
-                    className="flex gap-16"
+                    className="flex justify-between"
                   >
                     <FormControlLabel
                       control={
@@ -301,17 +301,17 @@ export default function AddKpiModalPage({
               If you're unsure about any options in the form, check for more
               info with each selection.
             </div>
-            <div className="flex justify-center">
+            <div>
               <Box>
-                <FormControl>
+                <FormControl className="w-full">
                   <RadioGroup
                     value={formulaValue}
                     name="formula-group"
                     onChange={(e) => setFormulaValue(e.target.value)}
                     row
-                    className="flex gap-16 items-center"
+                    className="flex items-center justify-center"
                   >
-                    <div className="flex items-center mr-36">
+                    <div className="flex items-center w-[30%] min-w-[240px] ">
                       <FormControlLabel
                         control={
                           <Radio
@@ -333,7 +333,7 @@ export default function AddKpiModalPage({
                         </span>
                       </Tooltip>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center w-[30%] min-w-[240px]">
                       <FormControlLabel
                         control={
                           <Radio
@@ -365,9 +365,9 @@ export default function AddKpiModalPage({
             <div className="text-2xl font-normal mb-4">
               Value Type - How would you like the values to be entered?
             </div>
-            <div className="flex justify-center">
+            <div>
               <Box>
-                <FormControl>
+                <FormControl className="flex w-full">
                   <RadioGroup
                     value={cumulativeValue}
                     name="cumulative-group"
@@ -375,9 +375,9 @@ export default function AddKpiModalPage({
                       setCumulativeValue(e.target.value === "true")
                     }
                     row
-                    className="flex gap-8 items-center"
+                    className="flex items-center justify-center"
                   >
-                    <div className="flex items-center mr-32">
+                    <div className="flex items-center w-[30%] min-w-[240px]">
                       <FormControlLabel
                         control={
                           <Radio
@@ -408,7 +408,7 @@ export default function AddKpiModalPage({
                         </span>
                       </Tooltip>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center w-[30%] min-w-[240px]">
                       <FormControlLabel
                         control={
                           <Radio
@@ -457,12 +457,12 @@ export default function AddKpiModalPage({
             </button>
           </div>
         </form>
-      </>
+      </div>
     );
   };
 
   return (
-    <ModalRightSide isOpen={isOpen} onRequestClose={onRequestClose} width="40%">
+    <ModalRightSide isOpen={isOpen} onRequestClose={onRequestClose} width="50%">
       {renderAddKpiModal()}
     </ModalRightSide>
   );
